@@ -1,3 +1,4 @@
+*.o
 *.pyc
 __pycache__
 dist
