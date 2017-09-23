@@ -10,7 +10,7 @@ Usage::
 
 Available modules
 ---------------------
-e13pyplottools
+pyplottools
     Provides a collection of functions useful in various plotting routines.
 
 """
@@ -19,7 +19,8 @@ import sys
 import six
 import distutils.version
 
-from . import e13pyplottools
+from . import pyplottools
+from .version import __version__
 
 
 # List of version requirements
@@ -42,9 +43,9 @@ def e13_compare_versions(a, b):
     else:
         return(False)
 
-# Check for Python 2.7 or higher
-if not sys.version_info[:2] >= (2, 7):
-    raise ImportError("e13Tools requires Python 2.7 or later")
+# Check for Python 3.3 or higher
+if not sys.version_info[:2] >= (3, 3):
+    raise ImportError("e13Tools requires Python 3.3 or later")
 
 # Check for NumPy version
 try:

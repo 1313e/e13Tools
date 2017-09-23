@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 """
-e13PyPlotTools
+PyPlotTools
 =======
 Provides a collection of functions useful in various plotting routines.
 Usage::
 
-    import e13tools.e13pyplottools as e13ppt
+    import e13tools.pyplottools as e13ppt
 
 """
 # %% IMPORTS
@@ -14,9 +14,10 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import astropy.units as apu
-import e13tools as e13
+# import e13tools as e13
 
 
+# %% FUNCTIONS
 def apu2tex(unit, unitfrac=False):
     """
     Transform an :class:`~astropy.units.core.Unit` object into a (La)TeX string
