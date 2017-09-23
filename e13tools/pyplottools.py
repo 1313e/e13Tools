@@ -4,7 +4,7 @@
 PyPlotTools
 =======
 Provides a collection of functions useful in various plotting routines.
-Usage::
+Recommended usage::
 
     import e13tools.pyplottools as e13ppt
 
