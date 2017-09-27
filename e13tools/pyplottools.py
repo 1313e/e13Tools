@@ -145,9 +145,9 @@ class CenteredFormatter(mpl.ticker.ScalarFormatter):
             return(mpl.ticker.ScalarFormatter.__call__(self, value, pos))
 
 
-def draw_textline(text, x=None, y=None, pos='start', ax=None):
+def draw_textline(text, x=None, y=None, pos='start', linestyle='k:', ax=None):
     """
-    Draws a dotted line on the axis `ax` in a
+    Draws a line on the axis `ax` in a
     :mod:`~matplotlib.pyplot.figure` instance and prints `text`
     on top.
 
@@ -167,6 +167,9 @@ def draw_textline(text, x=None, y=None, pos='start', ax=None):
         If 'start', prints the text at the start of the drawn line.
 
         If 'end', prints the text at the end of the drawn line.
+    linestyle : string; optional. Default: 'k:'
+        Format string characters for controlling the line style. Default is a
+        dotted black line.
     ax : :class:`~matplotlib.axes._subplots.AxesSubplot` object or None; optional. Default: None
         If :class:`~matplotlib.axes._subplots.AxesSubplot` object, draws line
         in specified :mod:`~matplotlib.pyplot.figure`.
@@ -181,7 +184,7 @@ def draw_textline(text, x=None, y=None, pos='start', ax=None):
 
     if x is None and y is not None:
         # Draw a line
-        ax.plot(ax.set_xlim(), [y, y], 'k:')
+        ax.plot(ax.set_xlim(), [y, y], linestyle)
 
         if(pos == 'start'):
             ax.text(ax.set_xlim()[0], y, text, fontsize=14, color='k',
@@ -381,7 +384,7 @@ if(__name__ == '__main__'):
     plt.title(r"$A=%s$, $A=%s$" % (q2tex(A, unitfrac=True), q2tex(A)))
     plt.plot(x, y, label=r"$y = \frac{arctan(x)}{\pi}$")
     plt.axis([-150, 150, 1.5, -1.5])
-    draw_textline('hoi', y=-1)
+    draw_textline('hoi', y=-1, linestyle='b-')
     print(plt.ylim())
     plt.legend(loc='upper left', fontsize=20)
     plt.show()
