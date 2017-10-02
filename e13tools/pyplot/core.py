@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 
 """
-PyPlotTools
-=======
-Provides a collection of functions useful in various plotting routines.
-Recommended usage::
-
-    import e13tools.pyplottools as e13ppt
+PyPlot Core
+===========
+Provides a collection of functions that are core to PyPlot and are imported
+automatically.
 
 """
 # %% IMPORTS
@@ -27,7 +25,10 @@ def apu2tex(unit, unitfrac=False):
     ----------
     unit : :class:`~astropy.units.core.Unit` object
         Unit to be transformed.
-    unitfrac : bool, optional. Default: False
+
+    Optional
+    --------
+    unitfrac : bool. Default: False
         Whether or not to write `unit` as a LaTeX fraction.
 
     Returns
@@ -38,15 +39,15 @@ def apu2tex(unit, unitfrac=False):
     Examples
     --------
     >>> import astropy.units as apu
-    >>> e13ppt.apu2tex(apu.solMass)
+    >>> e13plt.apu2tex(apu.solMass)
     '\\mathrm{M_{\\odot}}'
 
     >>> import astropy.units as apu
-    >>> e13ppt.apu2tex(apu.solMass/apu.yr, unitfrac=False)
+    >>> e13plt.apu2tex(apu.solMass/apu.yr, unitfrac=False)
     '\\mathrm{M_{\\odot}\\,yr^{-1}}'
 
     >>> import astropy.units as apu
-    >>> e13ppt.apu2tex(apu.solMass/apu.yr, unitfrac=True)
+    >>> e13plt.apu2tex(apu.solMass/apu.yr, unitfrac=True)
     '\\mathrm{\\frac{M_{\\odot}}{yr}}'
 
     """
@@ -67,21 +68,21 @@ def center_spines(centerx=0, centery=0, set_xticker=False,
     :mod:`~matplotlib.pyplot.figure`. Centers the axis spines at the origin by
     default.
 
-    Parameters
+    Optional
     ----------
-    centerx : int or float; optional. Default: 0
+    centerx : int or float. Default: 0
         Centers x-axis at value `centerx`.
-    centery : int or float; optional. Default: 0
+    centery : int or float. Default: 0
         Centers y-axis at value `centery`.
-    set_xticker : int, float or False; optional. Default: False
+    set_xticker : int, float or False. Default: False
         If int or float, sets the x-axis ticker to `set_xticker`.
 
         If *False*, let :mod:`~matplotlib.pyplot.figure` instance decide.
-    set_yticker : int, float or False; optional. Default: False
+    set_yticker : int, float or False. Default: False
         If int or float, sets the y-axis ticker to `set_yticker`.
 
         If *False*, let :mod:`~matplotlib.pyplot.figure` instance decide.
-    ax : :class:`~matplotlib.axes._subplots.AxesSubplot` object or None; optional. Default: None
+    ax : :class:`~matplotlib.axes._subplots.AxesSubplot` object or None. Default: None
         If :class:`~matplotlib.axes._subplots.AxesSubplot` object, centers the
         axis spines of specified :mod:`~matplotlib.pyplot.figure`.
 
@@ -163,14 +164,17 @@ def draw_textline(text, x=None, y=None, pos='start', linestyle='k:', ax=None):
         If scalar, text/line y-coordinate.
 
         If *None*, line covers complete y-axis.
-    pos : 'start' or 'end'; optional. Default: 'start'
+
+    Optional
+    --------
+    pos : 'start' or 'end'. Default: 'start'
         If 'start', prints the text at the start of the drawn line.
 
         If 'end', prints the text at the end of the drawn line.
-    linestyle : string; optional. Default: 'k:'
+    linestyle : string. Default: 'k:'
         Format string characters for controlling the line style. Default is a
         dotted black line.
-    ax : :class:`~matplotlib.axes._subplots.AxesSubplot` object or None; optional. Default: None
+    ax : :class:`~matplotlib.axes._subplots.AxesSubplot` object or None. Default: None
         If :class:`~matplotlib.axes._subplots.AxesSubplot` object, draws line
         in specified :mod:`~matplotlib.pyplot.figure`.
 
@@ -251,12 +255,15 @@ def f2tex(value, sdigits=4, power=3, nobase1=True):
     ----------
     value : int or float
         Value to be transformed.
-    sdigits : int; optional. Default: 4
+
+    Optional
+    --------
+    sdigits : int. Default: 4
         Maximum amount of significant digits `value` is returned with.
-    power : int; optional. Default: 3
+    power : int. Default: 3
         Minimum log10(`value`) required before `value` is written in
         scientific form.
-    nobase1 : bool; optional. Default: True
+    nobase1 : bool. Default: True
         Whether or not to include `base` in scientific form if `base=1`.
 
     Returns
@@ -266,19 +273,19 @@ def f2tex(value, sdigits=4, power=3, nobase1=True):
 
     Examples
     --------
-    >>> e13ppt.f2tex(20.2935826592)
+    >>> e13plt.f2tex(20.2935826592)
     '20.29'
 
-    >>> e13ppt.f2tex(20.2935826592, sdigits=6)
+    >>> e13plt.f2tex(20.2935826592, sdigits=6)
     '20.2936'
 
-    >>> e13ppt.f2tex(20.2935826592, power=1)
+    >>> e13plt.f2tex(20.2935826592, power=1)
     '2.029\\cdot 10^{1}'
 
-    >>> e13ppt.f2tex(1e6, nobase1=True)
+    >>> e13plt.f2tex(1e6, nobase1=True)
     '10^{6}'
 
-    >>> e13ppt.f2tex(1e6, nobase1=False)
+    >>> e13plt.f2tex(1e6, nobase1=False)
     '1\\cdot 10^{6}'
 
     """
@@ -298,8 +305,8 @@ def f2tex(value, sdigits=4, power=3, nobase1=True):
 
 def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
     """
-    Combination of :func:`~e13tools.e13pyplottools.f2tex` and
-    :func:`~e13tools.e13pyplottools.apu2tex`.
+    Combination of :func:`~e13tools.e13pyplot.f2tex` and
+    :func:`~e13tools.e13pyplot.apu2tex`.
 
     Transform a quantity into a (La)TeX string for usage in
     :mod:`~matplotlib.pyplot.figure`.
@@ -308,14 +315,17 @@ def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
     ----------
     quantity : int, float or :class:`~astropy.units.quantity.Quantity` object
         Quantity to be transformed.
-    sdigits : int; optional. Default: 4
+
+    Optional
+    --------
+    sdigits : int. Default: 4
         Maximum amount of significant digits `value` is returned with.
-    power : int; optional. Default: 3
+    power : int. Default: 3
         Minimum log10(`value`) required before `value` is written in
         scientific form.
-    nobase1 : bool; optional. Default: True
+    nobase1 : bool. Default: True
         Whether or not to include `base` in scientific form if `base=1`.
-    unitfrac : bool, optional. Default: False
+    unitfrac : bool. Default: False
         Whether or not to write `unit` as a LaTeX fraction.
 
     Returns
@@ -326,31 +336,31 @@ def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
     Examples
     --------
     >>> import astropy.units as apu
-    >>> e13ppt.q2tex(20.2935826592*apu.solMass/apu.yr)
+    >>> e13plt.q2tex(20.2935826592*apu.solMass/apu.yr)
     '20.29\\ \\mathrm{M_{\\odot}\\,yr^{-1}}'
 
     >>> import astropy.units as apu
-    >>> e13ppt.q2tex(20.2935826592*apu.solMass/apu.yr, sdigits=6)
+    >>> e13plt.q2tex(20.2935826592*apu.solMass/apu.yr, sdigits=6)
     '20.2936\\ \\mathrm{M_{\\odot}\\,yr^{-1}}'
 
     >>> import astropy.units as apu
-    >>> e13ppt.q2tex(20.2935826592*apu.solMass/apu.yr, power=1)
+    >>> e13plt.q2tex(20.2935826592*apu.solMass/apu.yr, power=1)
     '2.029\\ \\cdot 10^{1}\\mathrm{M_{\\odot}\\,yr^{-1}}'
 
     >>> import astropy.units as apu
-    >>> e13ppt.q2tex(1e6*apu.solMass/apu.yr, nobase1=True)
+    >>> e13plt.q2tex(1e6*apu.solMass/apu.yr, nobase1=True)
     '10^{6}\\ \\mathrm{M_{\\odot}\\,yr^{-1}}'
 
     >>> import astropy.units as apu
-    >>> e13ppt.q2tex(1e6*apu.solMass/apu.yr, nobase1=False)
+    >>> e13plt.q2tex(1e6*apu.solMass/apu.yr, nobase1=False)
     '1\\cdot 10^{6}\\ \\mathrm{M_{\\odot}\\,yr^{-1}}'
 
     >>> import astropy.units as apu
-    >>> e13ppt.q2tex(20.2935826592*apu.solMass/apu.yr, unitfrac=False)
+    >>> e13plt.q2tex(20.2935826592*apu.solMass/apu.yr, unitfrac=False)
     '20.29\\ \\mathrm{M_{\\odot}\\,yr^{-1}}'
 
     >>> import astropy.units as apu
-    >>> e13ppt.q2tex(20.2935826592*apu.solMass/apu.yr, unitfrac=True)
+    >>> e13plt.q2tex(20.2935826592*apu.solMass/apu.yr, unitfrac=True)
     '20.29\\ \\mathrm{\\frac{M_{\\odot}}{yr}}'
 
     """

@@ -9,9 +9,12 @@ Recommended usage::
     import e13tools as e13
 
 Available modules
----------------------
-pyplottools
+-----------------
+pyplot
     Provides a collection of functions useful in various plotting routines.
+sampling
+    Provides a collection of functions and techniques useful in sampling
+    problems.
 
 """
 
@@ -19,7 +22,8 @@ import sys
 import six
 import distutils.version
 
-from . import pyplottools
+from . import pyplot
+from . import sampling
 from .version import __version__
 
 
