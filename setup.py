@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 setup(name="e13tools",
-      version='0.1.0.a2',
+      version='0.1.0.a3',
       author="Ellert van der Velden",
       author_email='ellert_vandervelden@outlook.com',
       description=("Provides a collection of functions that were created by "
@@ -21,6 +21,7 @@ setup(name="e13tools",
       python_requires='>=3.3',
       packages=find_packages(),
       package_dir={'e13tools': "e13tools"},
+      install_requires=['numpy', 'matplotlib', 'astropy'],
       zip_safe=False,
       entry_points={
           'console_scripts': [
