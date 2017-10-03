@@ -2,14 +2,29 @@
 
 from setuptools import setup, find_packages
 
-exec(open('e13tools/version.py').read())
-
 setup(name="e13tools",
-      version=__version__,
-      author="1313e",
+      version='0.1.0.a2',
+      author="Ellert van der Velden",
+      author_email='ellert_vandervelden@outlook.com',
       description=("Provides a collection of functions that were created by "
-                   "1313e."),
+                   "Ellert van der Velden/1313e."),
+      url='https://www.github.com/1313e/e13tools',
+      license='BSD-3',
+      classifiers=[
+          'Development Status :: 3 - Alpha',
+          'Programming Language :: Python :: 3',
+          'Programming Language :: Python :: 3.3',
+          'Programming Language :: Python :: 3.4',
+          'Programming Language :: Python :: 3.5',
+          ],
+      keywords='e13tools',
+      python_requires='>=3.3',
       packages=find_packages(),
       package_dir={'e13tools': "e13tools"},
-      zip_safe=False
+      zip_safe=False,
+      entry_points={
+          'console_scripts': [
+              'e13tools=e13tools:main'
+          ],
+      }
       )
