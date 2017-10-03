@@ -180,7 +180,7 @@ def _get_p_dist(sam_set):
     n_sam, n_val = np.shape(sam_set)
 
     # Initialize point distance vector
-    p_dist_vec = np.zeros(0.5*n_sam*(n_sam-1))
+    p_dist_vec = np.zeros(int(0.5*n_sam*(n_sam-1)))
 
     # Calculate pair-wise point distances
     k = 0
