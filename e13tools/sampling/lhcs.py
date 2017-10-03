@@ -34,7 +34,8 @@ def lhs(n_val, n_sam, val_rng=None, criterion=None, iterations=1000):
     criterion : string or None. Default: None
         Allowed are 'center'/'c', 'maximin'/'m', 'centermaximin'/'cm' and
         'correlate'/'corr' for specific methods or *None* for randomized.
-        If `n_sam` == 1, `criterion` is set to *None*.
+        If `n_sam` == 1, `criterion` is set to the closest corresponding
+        method.
     iterations : int. Default: 1000
         Number of iterations for the maximin and correlations algorithms.
 
@@ -45,16 +46,19 @@ def lhs(n_val, n_sam, val_rng=None, criterion=None, iterations=1000):
 
     """
 
-    # Check if n_sam > 1. If not, a random value will be chosen.
-    if(n_sam == 1):
-        criterion = None
-
     # Check if valid 'criterion' is given
     if criterion is not None:
         if not criterion.lower() in ('center', 'c', 'maximin', 'm',
                                      'centermaximin', 'cm', 'correlate',
                                      'corr'):
             raise ValueError("Invalid value for 'criterion': %s" % (criterion))
+
+    # Check if n_sam > 1. If not, criterion will be changed to something useful
+    if(n_sam == 1 and criterion.lower() in ('centermaximin', 'cm')):
+        criterion = 'center'
+    elif(n_sam == 1 and criterion.lower() in ('maximin', 'm', 'correlate',
+                                              'corr')):
+        criterion = None
 
     # Pick correct lhs-method according to criterion
     if criterion is None:
