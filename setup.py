@@ -3,11 +3,11 @@
 from setuptools import setup, find_packages
 
 setup(name="e13tools",
-      version='0.1.0.a3',
+      version='0.1.0a3',
       author="Ellert van der Velden",
       author_email='ellert_vandervelden@outlook.com',
       description=("Provides a collection of functions that were created by "
-                   "Ellert van der Velden/1313e."),
+                   "1313e."),
       url='https://www.github.com/1313e/e13tools',
       license='BSD-3',
       classifiers=[
