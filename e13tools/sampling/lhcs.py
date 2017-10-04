@@ -14,7 +14,7 @@ import numpy as np
 
 
 # %% FUNCTIONS
-def lhs(n_val, n_sam, val_rng=None, criterion=None, iterations=1000):
+def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000):
     """
     Generate a Latin Hypercube of `n_sam` samples, each with `n_val` values.
 
@@ -31,9 +31,9 @@ def lhs(n_val, n_sam, val_rng=None, criterion=None, iterations=1000):
         Array defining the lower and upper limits of every value in a sample.
         Requires: numpy.shape(val_rng) = (`n_val`, 2).
         If *None*, output is normalized.
-    criterion : string or None. Default: None
+    criterion : string. Default: 'random'
         Allowed are 'center'/'c', 'maximin'/'m', 'centermaximin'/'cm' and
-        'correlate'/'corr' for specific methods or *None* for randomized.
+        'correlate'/'corr' for specific methods or 'random'/'r' for randomized.
         If `n_sam` == 1, `criterion` is set to the closest corresponding
         method.
     iterations : int. Default: 1000
@@ -47,21 +47,22 @@ def lhs(n_val, n_sam, val_rng=None, criterion=None, iterations=1000):
     """
 
     # Check if valid 'criterion' is given
-    if criterion is not None:
-        if not criterion.lower() in ('center', 'c', 'maximin', 'm',
-                                     'centermaximin', 'cm', 'correlate',
-                                     'corr'):
-            raise ValueError("Invalid value for 'criterion': %s" % (criterion))
+    if not criterion.lower() in ('center', 'c', 'maximin', 'm',
+                                 'centermaximin', 'cm', 'correlate',
+                                 'corr', 'random', 'r'):
+        raise ValueError("Invalid value for 'criterion': %s" % (criterion))
 
     # Check if n_sam > 1. If not, criterion will be changed to something useful
-    if(n_sam == 1 and criterion.lower() in ('centermaximin', 'cm')):
+    if(n_sam == 1 and criterion.lower() in ('center', 'c', 'random', 'r')):
+        pass
+    elif(n_sam == 1 and criterion.lower() in ('centermaximin', 'cm')):
         criterion = 'center'
     elif(n_sam == 1 and criterion.lower() in ('maximin', 'm', 'correlate',
                                               'corr')):
-        criterion = None
+        criterion = 'random'
 
     # Pick correct lhs-method according to criterion
-    if criterion is None:
+    if criterion.lower() in ('random', 'r'):
         sam_set = _lhs_classic(n_val, n_sam)
     elif criterion.lower() in ('center', 'c'):
         sam_set = _lhs_center(n_val, n_sam)

@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 setup(name="e13tools",
-      version='0.1.0a3',
+      version='0.1.0a4',
       author="Ellert van der Velden",
       author_email='ellert_vandervelden@outlook.com',
       description=("Provides a collection of functions that were created by "
@@ -17,7 +17,7 @@ setup(name="e13tools",
           'Programming Language :: Python :: 3.4',
           'Programming Language :: Python :: 3.5',
           ],
-      keywords='e13tools',
+      keywords='e13tools utilities',
       python_requires='>=3.3',
       packages=find_packages(),
       package_dir={'e13tools': "e13tools"},
