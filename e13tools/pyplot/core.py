@@ -215,7 +215,7 @@ def draw_textline(text, x=None, y=None, pos='start', linestyle='k:', ax=None):
             ax.set_ylim(ax.set_ylim()[0], y-0.1*ax_ysize)
 
     elif y is None and x is not None:
-        ax.plot([x, x], ax.set_ylim(), 'k:')
+        ax.plot([x, x], ax.set_ylim(), linestyle)
 
         if(pos == 'start'):
             ax.text(x, ax.set_ylim()[0], text, fontsize=14, color='k',
