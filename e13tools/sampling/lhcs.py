@@ -306,6 +306,5 @@ def _extract_sam_set(sam_set, val_rng):
          np.shape(ext_sam_set) != np.shape([[]])):
         ext_sam_set = np.vstack([ext_sam_set, np.atleast_2d(upper_sam)])
 
-    print(ext_sam_set)
     # Return sam_set
     return(ext_sam_set)
