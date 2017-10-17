@@ -293,18 +293,19 @@ def _extract_sam_set(sam_set, val_rng):
 
     # If lower_sam and/or upper_sam are not empty, add them to sam_set
     # Take into account that sam_set might still be empty
-    if(np.shape(lower_sam) != np.shape([[]] and
-       np.shape(ext_sam_set) == np.shape([[]]))):
+    if(np.shape(lower_sam) != np.shape([[]]) and
+       np.shape(ext_sam_set) == np.shape([[]])):
         ext_sam_set = np.atleast_2d(lower_sam)
     elif(np.shape(lower_sam) != np.shape([[]]) and
          np.shape(ext_sam_set) != np.shape([[]])):
         ext_sam_set = np.vstack([ext_sam_set, np.atleast_2d(lower_sam)])
-    if(np.shape(upper_sam) != np.shape([[]] and
-       np.shape(ext_sam_set) == np.shape([[]]))):
+    if(np.shape(upper_sam) != np.shape([[]]) and
+       np.shape(ext_sam_set) == np.shape([[]])):
         ext_sam_set = np.atleast_2d(upper_sam)
     elif(np.shape(upper_sam) != np.shape([[]]) and
          np.shape(ext_sam_set) != np.shape([[]])):
         ext_sam_set = np.vstack([ext_sam_set, np.atleast_2d(upper_sam)])
 
+    print(ext_sam_set)
     # Return sam_set
     return(ext_sam_set)
