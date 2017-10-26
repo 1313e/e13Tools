@@ -12,7 +12,6 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import astropy.units as apu
-# import e13tools as e13
 
 
 # %% FUNCTIONS

@@ -5,13 +5,13 @@ from setuptools import setup, find_packages
 version = {}
 exec(open('e13tools/version.py').read(), version)
 
-setup(name="e13tools",
+setup(name="e13Tools",
       version=version['__version__'],
       author="Ellert van der Velden",
       author_email='ellert_vandervelden@outlook.com',
       description=("Provides a collection of functions that were created by "
                    "1313e."),
-      url='https://www.github.com/1313e/e13tools',
+      url='https://www.github.com/1313e/e13Tools',
       license='BSD-3',
       classifiers=[
           'Development Status :: 3 - Alpha',

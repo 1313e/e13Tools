@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
 
-__version__ = str('0.1.2a2')
+__version__ = str('0.1.2a3')
