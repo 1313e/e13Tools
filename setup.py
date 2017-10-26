@@ -2,8 +2,11 @@
 
 from setuptools import setup, find_packages
 
+version = {}
+exec(open('e13tools/version.py').read(), version)
+
 setup(name="e13tools",
-      version='0.1.2a1',
+      version=version['__version__'],
       author="Ellert van der Velden",
       author_email='ellert_vandervelden@outlook.com',
       description=("Provides a collection of functions that were created by "
@@ -17,7 +20,7 @@ setup(name="e13tools",
           'Programming Language :: Python :: 3.4',
           'Programming Language :: Python :: 3.5',
           ],
-      keywords='e13tools utilities',
+      keywords='e13tools utilities sampling',
       python_requires='>=3.3',
       packages=find_packages(),
       package_dir={'e13tools': "e13tools"},
