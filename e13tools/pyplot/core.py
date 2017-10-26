@@ -381,19 +381,3 @@ def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
         string = ''.join([string, '\\ ', unit_string])
 
     return(string)
-
-
-# %% Main program if run directly
-if(__name__ == '__main__'):
-    A = 1e6*apu.solMass/apu.yr
-    x = np.linspace(-150, 150, 1001)
-    y = np.arctan(x)/(np.pi)
-    plt.rc('text', usetex=True)
-    center_spines(centerx=0.0, centery=0.0, set_yticker=0.2)
-    plt.title(r"$A=%s$, $A=%s$" % (q2tex(A, unitfrac=True), q2tex(A)))
-    plt.plot(x, y, label=r"$y = \frac{arctan(x)}{\pi}$")
-    plt.axis([-150, 150, 1.5, -1.5])
-    draw_textline('hoi', y=-1, linestyle='b-')
-    print(plt.ylim())
-    plt.legend(loc='upper left', fontsize=20)
-    plt.show()

@@ -49,6 +49,71 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
     sam_set : 2D array_like
         Sample set array of shape [`n_sam`, `n_val`].
 
+    Examples
+    --------
+    Latin Hypercube with 2 values and 5 samples:
+
+    >>> lhs(2, 5)
+    array([[ 0.33049758,  0.46107203],
+           [ 0.0489103 ,  0.24679923],
+           [ 0.59167567,  0.74001012],
+           [ 0.78958876,  0.10264081],
+           [ 0.98245615,  0.99973969]])
+
+
+    Latin Hypercube with 3 values, 4 samples in a specified value range:
+
+    >>> val_rng = [[0, 2], [1, 4], [0.3, 0.5]]
+    >>> lhs(3, 4, val_rng=val_rng)
+    array([[ 0.94523229,  3.66450868,  0.49843528],
+           [ 1.13087439,  2.80949861,  0.31239253],
+           [ 0.17403476,  2.11747903,  0.4113592 ],
+           [ 1.59869101,  1.16117621,  0.38345357]])
+
+
+    Latin Hypercube with 5 values and 6 centered samples:
+
+    >>> lhs(5, 6, criterion='center')
+    array([[ 0.91666667,  0.91666667,  0.75      ,  0.25      ,  0.58333333],
+           [ 0.08333333,  0.58333333,  0.25      ,  0.41666667,  0.41666667],
+           [ 0.58333333,  0.25      ,  0.08333333,  0.58333333,  0.25      ],
+           [ 0.25      ,  0.08333333,  0.58333333,  0.91666667,  0.08333333],
+           [ 0.41666667,  0.41666667,  0.41666667,  0.08333333,  0.91666667],
+           [ 0.75      ,  0.75      ,  0.91666667,  0.75      ,  0.75      ]])
+
+
+    Latin Hypercubes can also be created with the 'maximin' criterion:
+
+    >>> lhs(3, 4, criterion='maximin')
+    array([[ 0.13666344,  0.04666906,  0.41487346],
+           [ 0.863929  ,  0.35886462,  0.99011525],
+           [ 0.73400563,  0.55282619,  0.07831996],
+           [ 0.26816676,  0.8538964 ,  0.71979893]])
+
+
+    Finally, an existing Latin Hypercube can be provided as an additional
+    constraint for calculating maximin Latin Hypercubes, if the number of
+    values are equal:
+
+    >>> cube1 = lhs(1, 2, criterion='random')
+    >>> cube2 = lhs(1, 6, criterion='center')
+    >>> cube = np.vstack([cube1, cube2])
+    >>> cube
+    array([[ 0.06495814],
+           [ 0.85064614],
+           [ 0.91666667],
+           [ 0.41666667],
+           [ 0.58333333],
+           [ 0.25      ],
+           [ 0.08333333],
+           [ 0.75      ]])
+    >>> lhs(1, 5, criterion='maximin', constraints=cube)
+    array([[ 0.51435233],
+           [ 0.15430434],
+           [ 0.6062859 ],
+           [ 0.22938232],
+           [ 0.999933  ]])
+
     """
 
     # Check if valid 'criterion' is given

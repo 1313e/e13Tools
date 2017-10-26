@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 version = {}
 exec(open('e13tools/version.py').read(), version)
 
-setup(name="e13Tools",
+setup(name="e13tools",
       version=version['__version__'],
       author="Ellert van der Velden",
       author_email='ellert_vandervelden@outlook.com',
@@ -24,10 +24,10 @@ setup(name="e13Tools",
           'Programming Language :: Python :: 3.6',
           ],
       keywords='e13tools utilities sampling',
-      python_requires='2.7, >=3.3',
+      python_requires='==2.7, >=3.3',
       packages=find_packages(),
       package_dir={'e13tools': "e13tools"},
-      install_requires=['numpy>=1.6', 'matplotlib>=1.4.3', 'astropy'],
+      install_requires=['numpy>=1.6', 'matplotlib>=1.4.3', 'astropy>=1.3'],
       zip_safe=False,
       entry_points={
           'console_scripts': [
