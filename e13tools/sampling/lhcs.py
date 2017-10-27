@@ -10,7 +10,11 @@ pyDOE-package (version: 0.3.8). URL: <https://github.com/tisimst/pyDOE>
 
 """
 # %% IMPORTS
+from __future__ import division, absolute_import, print_function
+
 import numpy as np
+
+__all__ = ['lhs']
 
 
 # %% FUNCTIONS

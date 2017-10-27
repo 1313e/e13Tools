@@ -8,10 +8,14 @@ automatically.
 
 """
 # %% IMPORTS
+from __future__ import division, absolute_import, print_function
+
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import astropy.units as apu
+
+__all__ = ['apu2tex', 'center_spines', 'draw_textline', 'f2tex', 'q2tex']
 
 
 # %% FUNCTIONS
@@ -289,7 +293,11 @@ def f2tex(value, sdigits=4, power=3, nobase1=True):
 
     """
 
-    n = int(np.floor(np.log10(value)))
+    # If value is zero, it cannot be converted to a log
+    if(value == 0):
+        return('0')
+    else:
+        n = int(np.floor(np.log10(value)))
 
     if(abs(n) < power):
         string = r"%.{}g".format(sdigits) % (value)

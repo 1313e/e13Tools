@@ -18,16 +18,20 @@ sampling
 
 """
 
+from __future__ import division, absolute_import, print_function
+
 import sys
 import six
 import distutils.version
 
 from . import pyplot
 from . import sampling
-from .version import __version__
+
+__all__ = ['pyplot', 'sampling']
 
 
 # List of version requirements
+__version__ = str('0.1.3a3')
 __version__numpy__ = str('1.6')
 __version__mpl__ = str('1.4.3')
 __version__astropy__ = str('1.3')
