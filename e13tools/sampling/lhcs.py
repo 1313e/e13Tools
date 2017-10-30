@@ -19,7 +19,7 @@ __all__ = ['lhs']
 
 # %% FUNCTIONS
 def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
-        constraints=[]):
+        constraints=[[]]):
     """
     Generate a Latin Hypercube of `n_sam` samples, each with `n_val` values.
 
@@ -43,7 +43,7 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
         method.
     iterations : int. Default: 1000
         Number of iterations for the maximin and correlations algorithms.
-    constraints : 2D array_like. Default: []
+    constraints : 2D array_like. Default: [[]]
         If `constraints` is not empty and `criterion` is set to 'maximin'/'m'
         or 'centermaximin'/'cm', both `sam_set` and `sam_set` + `constraints`
         will satisfy the given criterion.
@@ -126,20 +126,21 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
         raise ValueError("Invalid value for 'criterion': %s" % (criterion))
 
     # Check the shape of 'constraints' and act accordingly
-    if(np.shape(constraints) == np.shape([])):
+    if(np.shape(constraints)[-1] == 0):
         # If constraints is empty, there are no constraints
         constraints = None
     elif not criterion.lower() in ('maximin', 'm', 'centermaximin', 'cm'):
         # If non-compatible criterion is provided, there are no constraints
         constraints = None
     elif(np.shape(np.shape(constraints))[0] != 2):
+        # If constraints is not two-dimensional, it is invalid
         raise ValueError("Constraints is not two-dimensional!")
     elif(np.shape(constraints)[1] == n_val):
         # If constraints has the same number of values, it is valid
         constraints = _extract_sam_set(constraints, val_rng)
 
         # If constraints is empty after extraction, there are no constraints
-        if(np.shape(constraints) == (1, 0)):
+        if(np.shape(constraints)[-1] == 0):
             constraints = None
     else:
         # If not empty and not right shape, it is invalid
