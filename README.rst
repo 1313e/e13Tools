@@ -1,4 +1,6 @@
-e13Tools
+|Release| |PyPI| |BSD-3 licensed| |Travis Build|
+
+Description
 ========
 
 This repository contains a collection of functions that were created by 1313e.
