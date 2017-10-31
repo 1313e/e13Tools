@@ -13,7 +13,7 @@ Dependencies
 ------------
 e13Tools requires:
 
-- ``python >= 2.6`` or ``python >= 3.3``,
+- ``python >= 2.7`` or ``python >= 3.3``,
 - ``numpy >= 1.6``,
-- ``matplotlib >= 1.4.3``,
+- ``matplotlib >= 1.4.3, < 2``,
 - ``astropy >= 1.3``.
