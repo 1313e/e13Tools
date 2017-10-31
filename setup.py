@@ -2,6 +2,7 @@
 
 import e13tools
 from setuptools import setup, find_packages
+from codecs import open
 
 # Get the long description from the README file
 with open('README.rst'), encoding='utf-8') as f:
