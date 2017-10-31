@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 from codecs import open
 
 # Get the long description from the README file
-with open('README.rst'), encoding='utf-8') as f:
+with open('README.rst') as f:
     long_description = f.read()
 
 setup(name="e13tools",
