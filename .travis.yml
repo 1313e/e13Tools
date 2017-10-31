@@ -7,3 +7,6 @@ python:
 
 install:
   - pip install e13tools
+
+script:
+  - py.test
