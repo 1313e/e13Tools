@@ -4,6 +4,8 @@ Testing script for travis
 
 """
 
+import pytest
+
 def tests():
   # Check if all modules can be imported
   import e13tools as e13
