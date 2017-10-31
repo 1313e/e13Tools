@@ -6,7 +6,7 @@ python:
   - "3.3"
 
 install:
-  - pip install e13tools
+  - pip install -r requirements.txt
 
 script:
   - py.test
