@@ -3,12 +3,17 @@
 import e13tools
 from setuptools import setup, find_packages
 
+# Get the long description from the README file
+with open('README.rst'), encoding='utf-8') as f:
+    long_description = f.read()
+
 setup(name="e13tools",
       version=e13tools.__version__,
       author="Ellert van der Velden",
       author_email='ellert_vandervelden@outlook.com',
       description=("Provides a collection of functions that were created by "
                    "1313e."),
+      long_description=long_description,
       url='https://www.github.com/1313e/e13Tools',
       license='BSD-3',
       classifiers=[
@@ -23,9 +28,9 @@ setup(name="e13tools",
           ],
       keywords='e13tools utilities sampling',
       python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, <4',
-      packages=find_packages(),
+      packages=find_packages(exclude=['test']),
       package_dir={'e13tools': "e13tools"},
-      install_requires=['numpy>=1.6', 'matplotlib>=1.4.3, <2', 'astropy>=1.3'],
+      install_requires=['numpy>=1.6', 'matplotlib>=1.4.3,<2', 'astropy>=1.3'],
       zip_safe=False,
       entry_points={
           'console_scripts': [
