@@ -38,5 +38,5 @@ build: false
 
 test_script:
   # Run the project tests
-  - "%CMD_IN_ENV% check-manifest --ignore .travis.yml,.appveyor.yml"
+  - "%CMD_IN_ENV% check-manifest --ignore .travis.yml,.appveyor.yml,tests*"
   - "%CMD_IN_ENV% python setup.py check -m -r -s"
