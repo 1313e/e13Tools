@@ -21,7 +21,7 @@ e13Tools requires:
 - ``astropy >= 1.3``.
 
 .. |PyPI| image:: https://img.shields.io/pypi/v/e13Tools.svg
-   :target: https://pypi.python.org/pypi/e13tools
+   :target: https://pypi.python.org/pypi/e13Tools
    :alt: PyPI Release
 .. |License| image:: https://img.shields.io/badge/license-BSD--3-blue.svg
    :target: https://raw.githubusercontent.com/1313e/e13Tools/master/LICENSE
@@ -29,6 +29,6 @@ e13Tools requires:
 .. |Travis| image:: https://api.travis-ci.org/1313e/e13Tools.svg
    :target: https://travis-ci.org/1313e/e13Tools
    :alt: Travis Build Status
-.. |AppVeyor| image:: https://ci.appveyor.com/api/projects/status/2dow1xe9xr9o22x6?svg=true
-   :target: https://ci.appveyor.com/project/1313e/e13tools
+.. |AppVeyor| image:: https://ci.appveyor.com/api/projects/status/github/1313e/e13Tools?svg=true
+   :target: https://ci.appveyor.com/project/1313e/e13Tools
    :alt: AppVeyor Build Status
