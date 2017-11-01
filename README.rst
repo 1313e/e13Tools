@@ -24,7 +24,7 @@ e13Tools requires:
    :target: https://pypi.python.org/pypi/e13tools
    :alt: PyPI Release
 .. |BSD-3| image:: https://img.shields.io/github/license/1313e/e13Tools.svg
-   :target: https://raw.githubusercontent.com/1313e/e13Tools/master/LICENSE.txt
+   :target: https://raw.githubusercontent.com/1313e/e13Tools/master/LICENSE
    :alt: BSD-3 License
 .. |Travis| image:: https://img.shields.io/travis/1313e/e13Tools.svg
    :target: https://travis-ci.org/1313e/e13Tools
