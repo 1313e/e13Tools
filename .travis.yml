@@ -1,8 +1,11 @@
 language: python
-env:
-    - TOXENV=py27
-    - TOXENV=py33
+python:
+    - "2.7"
+    - "3.3"
 install:
-    - pip install tox -r requirements
+    - pip install -r requirements
 script:
-    - tox
+    - check-manifest --ignore tox.ini,test*
+    - python setup.py check -m -r -s
+    - flake8 .
+    - py.test test
