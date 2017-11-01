@@ -33,8 +33,9 @@ __all__ = ['pyplot', 'sampling']
 
 
 # Get the version
-root = path.abspath(path.dirname(__file__))
-with open(path.join(root, 'VERSION'), 'r', encoding='utf-8') as version_file:
+root_dir = path.abspath(path.dirname(__file__))
+with open(path.join(root_dir, 'VERSION'), 'r',
+          encoding='utf-8') as version_file:
     __version__ = version_file.read().strip()
 
 # List of version requirements
