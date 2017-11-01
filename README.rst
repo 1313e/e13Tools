@@ -1,4 +1,4 @@
-|PyPI| |BSD-3| |Travis|
+|PyPI| |License| |Travis|
 
 Description
 ===========
@@ -23,7 +23,7 @@ e13Tools requires:
 .. |PyPI| image:: https://img.shields.io/pypi/v/e13Tools.svg
    :target: https://pypi.python.org/pypi/e13tools
    :alt: PyPI Release
-.. |BSD-3| image:: https://img.shields.io/github/license/1313e/e13Tools.svg
+.. |License| image:: https://img.shields.io/badge/license-BSD--3-blue.svg
    :target: https://raw.githubusercontent.com/1313e/e13Tools/master/LICENSE
    :alt: BSD-3 License
 .. |Travis| image:: https://img.shields.io/travis/1313e/e13Tools.svg
