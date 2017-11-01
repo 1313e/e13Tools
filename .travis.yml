@@ -7,5 +7,3 @@ install:
 script:
     - check-manifest --ignore test*
     - python setup.py check -m -r -s
-    - flake8 .
-    - py.test test
