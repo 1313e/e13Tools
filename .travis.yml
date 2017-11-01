@@ -8,4 +8,4 @@ script:
     - check-manifest
     - python setup.py check -m -r -s
 notifications:
-    - email: false
+    email: false
