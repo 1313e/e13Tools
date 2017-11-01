@@ -14,5 +14,7 @@ def tests():
     import e13tools.pyplot as e13plt
     import e13tools.sampling as e13spl
 
+    assert True
+
 if(__name__ == '__main__'):
     tests()
