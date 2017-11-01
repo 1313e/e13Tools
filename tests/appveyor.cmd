@@ -1,34 +1,3 @@
-:: To build extensions for 64 bit Python 3, we need to configure environment
-:: variables to use the MSVC 2010 C++ compilers from GRMSDKX_EN_DVD.iso of:
-:: MS Windows SDK for Windows 7 and .NET Framework 4 (SDK v7.1)
-::
-:: To build extensions for 64 bit Python 2, we need to configure environment
-:: variables to use the MSVC 2008 C++ compilers from GRMSDKX_EN_DVD.iso of:
-:: MS Windows SDK for Windows 7 and .NET Framework 3.5 (SDK v7.0)
-::
-:: 32 bit builds, and 64-bit builds for 3.5 and beyond, do not require specific
-:: environment configurations.
-::
-:: Note: this script needs to be run with the /E:ON and /V:ON flags for the
-:: cmd interpreter, at least for (SDK v7.0)
-::
-:: More details at:
-:: https://github.com/cython/cython/wiki/64BitCythonExtensionsOnWindows
-:: http://stackoverflow.com/a/13751649/163740
-::
-:: Author: Olivier Grisel
-:: License: CC0 1.0 Universal: http://creativecommons.org/publicdomain/zero/1.0/
-::
-:: Notes about batch files for Python people:
-::
-:: Quotes in values are literally part of the values:
-::      SET FOO="bar"
-:: FOO is now five characters long: " b a r "
-:: If you don't want quotes, don't include them on the right-hand side.
-::
-:: The CALL lines at the end of this file look redundant, but if you move them
-:: outside of the IF clauses, they do not run properly in the SET_SDK_64==Y
-:: case, I don't know why.
 @ECHO OFF
 
 SET COMMAND_TO_RUN=%*
