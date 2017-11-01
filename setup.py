@@ -3,12 +3,12 @@
 import e13tools
 from setuptools import setup, find_packages
 from codecs import open
-from os import path
+#from os import path
 
-here = path.abspath(path.dirname(__file__))
+#here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
-with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
+with open('README.rst', 'r', encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name="e13tools",
@@ -22,6 +22,7 @@ setup(name="e13tools",
       license='BSD-3',
       classifiers=[
           'Development Status :: 3 - Alpha',
+          'License :: OSI Approved :: BSD-3 License',
           'Programming Language :: Python :: 2',
           'Programming Language :: Python :: 2.7',
           'Programming Language :: Python :: 3',
@@ -38,7 +39,7 @@ setup(name="e13tools",
       zip_safe=False,
       entry_points={
           'console_scripts': [
-              'e13tools=e13tools:main'
-          ],
-      }
+              'e13tools=e13tools:main',
+              ],
+          },
       )
