@@ -2,20 +2,17 @@
 
 from setuptools import setup, find_packages
 from codecs import open
-#from os import path
-
-#here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
-with open('README.rst', 'r', encoding='utf-8') as f:
+with open('README.rst', 'r') as f:
     long_description = f.read()
 
 # Get the version
 with open('VERSION', 'r', encoding='utf-8') as version_file:
-    version = version_file.read().strip()
+    __version__ = version_file.read().strip()
 
 setup(name="e13tools",
-      version=version,
+      version=__version__,
       author="Ellert van der Velden",
       author_email='ellert_vandervelden@outlook.com',
       description=("Provides a collection of functions that were created by "
@@ -25,7 +22,7 @@ setup(name="e13tools",
       license='BSD-3',
       classifiers=[
           'Development Status :: 3 - Alpha',
-          'License :: OSI Approved :: BSD-3 License',
+          'License :: OSI Approved :: BSD License',
           'Programming Language :: Python :: 2',
           'Programming Language :: Python :: 2.7',
           'Programming Language :: Python :: 3',

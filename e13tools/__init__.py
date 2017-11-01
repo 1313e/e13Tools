@@ -23,6 +23,7 @@ from __future__ import division, absolute_import, print_function
 import sys
 import six
 import distutils.version
+from os import path
 
 # Import package modules
 from . import pyplot
@@ -31,10 +32,16 @@ from . import sampling
 __all__ = ['pyplot', 'sampling']
 
 
+# Get the version
+root = path.abspath(path.dirname(__file__))
+with open(path.join(root, 'VERSION'), 'r', encoding='utf-8') as version_file:
+    __version__ = version_file.read().strip()
+
 # List of version requirements
 __version__numpy__ = str('1.6')
 __version__mpl__ = str('1.4.3')
 __version__astropy__ = str('1.3')
+
 
 # Function to compare versions
 def e13_compare_versions(a, b):
