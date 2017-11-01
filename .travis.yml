@@ -5,7 +5,7 @@ python:
 install:
     - pip install -r requirements.txt
 script:
-    - check-manifest
+    - check-manifest --ignore .appveyor.yml
     - python setup.py check -m -r -s
 notifications:
     email: false
