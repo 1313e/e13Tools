@@ -2,5 +2,3 @@ include LICENSE
 include README.rst
 include VERSION
 include requirements.txt
-
-recursive-include test *.py
