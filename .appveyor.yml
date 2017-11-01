@@ -43,6 +43,8 @@ install:
   # target Python version and architecture
   - "%CMD_IN_ENV% pip install -r requirements.txt"
 
+build: false
+
 test_script:
   # Run the project tests
   - "%CMD_IN_ENV% check-manifest --ignore .travis.yml"
