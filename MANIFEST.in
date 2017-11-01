@@ -2,5 +2,3 @@ include LICENSE
 include README.rst
 include e13tools/VERSION
 include requirements.txt
-
-reverse_include tests/*
