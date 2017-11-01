@@ -1,6 +1,6 @@
 environment:
   global:
-    CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\appveyor.cmd"
+    CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\tests\\appveyor.cmd"
 
   matrix:
     - PYTHON: "C:\\Python27"
