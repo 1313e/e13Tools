@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import e13tools.__version__
+from e13tools import __version__
 from setuptools import setup, find_packages
 from codecs import open
 #from os import path
@@ -12,7 +12,7 @@ with open('README.rst', 'r', encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name="e13tools",
-      version=e13tools.__version__,
+      version=__version__,
       author="Ellert van der Velden",
       author_email='ellert_vandervelden@outlook.com',
       description=("Provides a collection of functions that were created by "
