@@ -8,7 +8,7 @@ with open('README.rst', 'r') as f:
     long_description = f.read()
 
 # Get the version
-with open('VERSION', 'r', encoding='utf-8') as version_file:
+with open('e13tools/VERSION', 'r', encoding='utf-8') as version_file:
     __version__ = version_file.read().strip()
 
 setup(name="e13tools",
@@ -35,7 +35,7 @@ setup(name="e13tools",
       python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, <4',
       packages=find_packages(exclude=['test']),
       package_dir={'e13tools': "e13tools"},
-      package_data={'e13tools': ['VERSION']},
+      include_package_data=True,
       install_requires=['numpy>=1.6', 'matplotlib>=1.4.3,<2', 'astropy>=1.3'],
       zip_safe=False,
       entry_points={
