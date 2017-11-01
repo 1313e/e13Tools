@@ -7,3 +7,5 @@ install:
 script:
     - check-manifest --ignore test
     - python setup.py check -m -r -s
+notifications:
+    - email: false
