@@ -17,7 +17,7 @@ e13Tools requires:
 
 - ``python >= 2.7`` or ``python >= 3.3``,
 - ``numpy >= 1.6``,
-- ``matplotlib >= 1.4.3, < 2``,
+- ``matplotlib >= 1.4.3``,
 - ``astropy >= 1.3``.
 
 .. |PyPI| image:: https://img.shields.io/pypi/v/e13Tools.svg
