@@ -24,9 +24,6 @@ import sys
 import six
 import distutils.version
 
-from . import pyplot
-from . import sampling
-
 __all__ = ['pyplot', 'sampling']
 
 
@@ -36,6 +33,9 @@ __version__numpy__ = str('1.6')
 __version__mpl__ = str('1.4.3')
 __version__astropy__ = str('1.3')
 
+# Import package modules
+from . import pyplot
+from . import sampling
 
 # Function to compare versions
 def e13_compare_versions(a, b):
