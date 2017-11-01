@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import e13tools
+import e13tools.__version__
 from setuptools import setup, find_packages
 from codecs import open
 #from os import path
