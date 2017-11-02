@@ -8,7 +8,7 @@ with open('README.rst', 'r') as f:
     long_description = f.read()
 
 # Get the version
-with open('e13tools/VERSION', 'r', encoding='utf-8') as version_file:
+with open('e13tools/VERSION', 'r') as version_file:
     __version__ = version_file.read().strip()
 
 setup(name="e13tools",

@@ -46,8 +46,7 @@ __all__.extend(core.__all__)
 
 # Get the version
 _root_dir = path.abspath(path.dirname(__file__))
-with open(path.join(_root_dir, 'VERSION'), 'r',
-          encoding='utf-8') as _version_file:
+with open(path.join(_root_dir, 'VERSION'), 'r') as _version_file:
     __version__ = _version_file.read().strip()
 
 # List of version requirements
