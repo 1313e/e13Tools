@@ -1,4 +1,4 @@
-|PyPI| |License| |Travis| |AppVeyor|
+|PyPI| |Python| |License| |Travis| |AppVeyor|
 
 Description
 ===========
@@ -23,12 +23,15 @@ e13Tools requires:
 .. |PyPI| image:: https://img.shields.io/pypi/v/e13Tools.svg
    :target: https://pypi.python.org/pypi/e13Tools
    :alt: PyPI Release
+.. |Python| image:: https://img.shields.io/pypi/pyversions/e13Tools.svg
+   :target: https://pypi.python.org/pypi/e13Tools
+   :alt: Python Versions
 .. |License| image:: https://img.shields.io/badge/license-BSD--3-blue.svg
    :target: https://raw.githubusercontent.com/1313e/e13Tools/master/LICENSE
    :alt: BSD-3 License
-.. |Travis| image:: https://api.travis-ci.org/1313e/e13Tools.svg
+.. |Travis| image:: https://api.travis-ci.org/1313e/e13Tools.svg?branch=master
    :target: https://travis-ci.org/1313e/e13Tools
    :alt: Travis Build Status
-.. |AppVeyor| image:: https://ci.appveyor.com/api/projects/status/github/1313e/e13Tools?svg=true
+.. |AppVeyor| image:: https://ci.appveyor.com/api/projects/status/2dow1xe9xr9o22x6/branch/master?svg=true
    :target: https://ci.appveyor.com/project/1313e/e13Tools
    :alt: AppVeyor Build Status
