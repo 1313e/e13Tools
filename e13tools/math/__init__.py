@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
 """
-PyPlot
-======
-Provides a collection of functions useful in various plotting routines.
+Math
+====
+Provides a collection of functions useful in various mathematical calculations.
 Recommended usage::
 
-    import e13tools.pyplot as e13plt
+    import e13tools.math as e13m
 
 Available submodules
 --------------------
 core
-    Provides a collection of functions that are core to PyPlot and are imported
+    Provides a collection of functions that are core to Math and are imported
     automatically.
 
 """

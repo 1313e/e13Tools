@@ -7,9 +7,12 @@ Provides a collection of functions that are core to PyPlot and are imported
 automatically.
 
 """
+
+
 # %% IMPORTS
 from __future__ import division, absolute_import, print_function
 
+from e13tools import InputError
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -42,15 +45,15 @@ def apu2tex(unit, unitfrac=False):
     Examples
     --------
     >>> import astropy.units as apu
-    >>> e13plt.apu2tex(apu.solMass)
+    >>> apu2tex(apu.solMass)
     '\\mathrm{M_{\\odot}}'
 
     >>> import astropy.units as apu
-    >>> e13plt.apu2tex(apu.solMass/apu.yr, unitfrac=False)
+    >>> apu2tex(apu.solMass/apu.yr, unitfrac=False)
     '\\mathrm{M_{\\odot}\\,yr^{-1}}'
 
     >>> import astropy.units as apu
-    >>> e13plt.apu2tex(apu.solMass/apu.yr, unitfrac=True)
+    >>> apu2tex(apu.solMass/apu.yr, unitfrac=True)
     '\\mathrm{\\frac{M_{\\odot}}{yr}}'
 
     """
@@ -72,7 +75,7 @@ def center_spines(centerx=0, centery=0, set_xticker=False,
     default.
 
     Optional
-    ----------
+    --------
     centerx : int or float. Default: 0
         Centers x-axis at value `centerx`.
     centery : int or float. Default: 0
@@ -85,7 +88,8 @@ def center_spines(centerx=0, centery=0, set_xticker=False,
         If int or float, sets the y-axis ticker to `set_yticker`.
 
         If *False*, let :mod:`~matplotlib.pyplot.figure` instance decide.
-    ax : :class:`~matplotlib.axes._subplots.AxesSubplot` object or None. Default: None
+    ax : :class:`~matplotlib.axes._subplots.AxesSubplot` object or None.\
+        Default: None
         If :class:`~matplotlib.axes._subplots.AxesSubplot` object, centers the
         axis spines of specified :mod:`~matplotlib.pyplot.figure`.
 
@@ -177,7 +181,8 @@ def draw_textline(text, x=None, y=None, pos='start', linestyle='k:', ax=None):
     linestyle : string. Default: 'k:'
         Format string characters for controlling the line style. Default is a
         dotted black line.
-    ax : :class:`~matplotlib.axes._subplots.AxesSubplot` object or None. Default: None
+    ax : :class:`~matplotlib.axes._subplots.AxesSubplot` object or None.\
+        Default: None
         If :class:`~matplotlib.axes._subplots.AxesSubplot` object, draws line
         in specified :mod:`~matplotlib.pyplot.figure`.
 
@@ -246,7 +251,7 @@ def draw_textline(text, x=None, y=None, pos='start', linestyle='k:', ax=None):
         elif(ax.set_xlim()[1] >= x and ax.set_xlim()[1] <= x-0.1*ax_xsize):
             ax.set_xlim(ax.set_xlim()[0], x-0.1*ax_xsize)
     else:
-        raise ValueError('ERROR: No single line axis was given!')
+        raise InputError('ERROR: No single line axis was given!')
 
 
 def f2tex(value, sdigits=4, power=3, nobase1=True):
@@ -276,19 +281,19 @@ def f2tex(value, sdigits=4, power=3, nobase1=True):
 
     Examples
     --------
-    >>> e13plt.f2tex(20.2935826592)
+    >>> f2tex(20.2935826592)
     '20.29'
 
-    >>> e13plt.f2tex(20.2935826592, sdigits=6)
+    >>> f2tex(20.2935826592, sdigits=6)
     '20.2936'
 
-    >>> e13plt.f2tex(20.2935826592, power=1)
+    >>> f2tex(20.2935826592, power=1)
     '2.029\\cdot 10^{1}'
 
-    >>> e13plt.f2tex(1e6, nobase1=True)
+    >>> f2tex(1e6, nobase1=True)
     '10^{6}'
 
-    >>> e13plt.f2tex(1e6, nobase1=False)
+    >>> f2tex(1e6, nobase1=False)
     '1\\cdot 10^{6}'
 
     """
@@ -343,31 +348,31 @@ def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
     Examples
     --------
     >>> import astropy.units as apu
-    >>> e13plt.q2tex(20.2935826592*apu.solMass/apu.yr)
+    >>> q2tex(20.2935826592*apu.solMass/apu.yr)
     '20.29\\ \\mathrm{M_{\\odot}\\,yr^{-1}}'
 
     >>> import astropy.units as apu
-    >>> e13plt.q2tex(20.2935826592*apu.solMass/apu.yr, sdigits=6)
+    >>> q2tex(20.2935826592*apu.solMass/apu.yr, sdigits=6)
     '20.2936\\ \\mathrm{M_{\\odot}\\,yr^{-1}}'
 
     >>> import astropy.units as apu
-    >>> e13plt.q2tex(20.2935826592*apu.solMass/apu.yr, power=1)
+    >>> q2tex(20.2935826592*apu.solMass/apu.yr, power=1)
     '2.029\\ \\cdot 10^{1}\\mathrm{M_{\\odot}\\,yr^{-1}}'
 
     >>> import astropy.units as apu
-    >>> e13plt.q2tex(1e6*apu.solMass/apu.yr, nobase1=True)
+    >>> q2tex(1e6*apu.solMass/apu.yr, nobase1=True)
     '10^{6}\\ \\mathrm{M_{\\odot}\\,yr^{-1}}'
 
     >>> import astropy.units as apu
-    >>> e13plt.q2tex(1e6*apu.solMass/apu.yr, nobase1=False)
+    >>> q2tex(1e6*apu.solMass/apu.yr, nobase1=False)
     '1\\cdot 10^{6}\\ \\mathrm{M_{\\odot}\\,yr^{-1}}'
 
     >>> import astropy.units as apu
-    >>> e13plt.q2tex(20.2935826592*apu.solMass/apu.yr, unitfrac=False)
+    >>> q2tex(20.2935826592*apu.solMass/apu.yr, unitfrac=False)
     '20.29\\ \\mathrm{M_{\\odot}\\,yr^{-1}}'
 
     >>> import astropy.units as apu
-    >>> e13plt.q2tex(20.2935826592*apu.solMass/apu.yr, unitfrac=True)
+    >>> q2tex(20.2935826592*apu.solMass/apu.yr, unitfrac=True)
     '20.29\\ \\mathrm{\\frac{M_{\\odot}}{yr}}'
 
     """

@@ -35,11 +35,6 @@ setup(name="e13tools",
       packages=find_packages(exclude=['tests']),
       package_dir={'e13tools': "e13tools"},
       include_package_data=True,
-      install_requires=['numpy>=1.6', 'matplotlib>=1.4.3', 'astropy>=1.3'],
+      install_requires=['numpy>=1.8', 'matplotlib>=1.4.3', 'astropy>=1.3'],
       zip_safe=False,
-      entry_points={
-          'console_scripts': [
-              'e13tools=e13tools:main',
-              ],
-          },
       )

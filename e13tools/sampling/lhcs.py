@@ -9,9 +9,12 @@ This code is an adaptation of the original code published by Abraham Lee in the
 pyDOE-package (version: 0.3.8). URL: <https://github.com/tisimst/pyDOE>
 
 """
+
+
 # %% IMPORTS
 from __future__ import division, absolute_import, print_function
 
+from e13tools import ShapeError
 import numpy as np
 
 __all__ = ['lhs']
@@ -134,7 +137,7 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
         constraints = None
     elif(np.shape(np.shape(constraints))[0] != 2):
         # If constraints is not two-dimensional, it is invalid
-        raise ValueError("Constraints is not two-dimensional!")
+        raise ShapeError("Constraints must be two-dimensional!")
     elif(np.shape(constraints)[1] == n_val):
         # If constraints has the same number of values, it is valid
         constraints = _extract_sam_set(constraints, val_rng)
@@ -144,7 +147,7 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
             constraints = None
     else:
         # If not empty and not right shape, it is invalid
-        raise ValueError("Constraints has incompatible number of values: "
+        raise ShapeError("Constraints has incompatible number of values: "
                          "%s =! %s" % (np.shape(constraints)[1], n_val))
 
     # Check if n_sam > 1. If not, criterion will be changed to something useful
@@ -176,7 +179,7 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
 
         # Check if the given val_rng is in the correct shape
         if not(np.shape(val_rng) == (n_val, 2)):
-            raise ValueError("'val_rng' has incompatible shape: (%s, %s) != "
+            raise ShapeError("'val_rng' has incompatible shape: (%s, %s) != "
                              "(%s, %s)" % (np.shape(val_rng)[0],
                                            np.shape(val_rng)[1], n_val, 2))
 

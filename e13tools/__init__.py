@@ -10,6 +10,12 @@ Recommended usage::
 
 Available modules
 -----------------
+core
+    Provides a collection of functions that are core to e13Tools and are
+    imported automatically.
+math
+    Provides a collection of functions useful in various mathematical
+    calculations.
 pyplot
     Provides a collection of functions useful in various plotting routines.
 sampling
@@ -18,6 +24,8 @@ sampling
 
 """
 
+
+# %% IMPORTS AND DECLARATIONS
 from __future__ import division, absolute_import, print_function
 
 import sys
@@ -26,26 +34,31 @@ import distutils.version
 from os import path
 
 # Import package modules
+from . import core
+from .core import *
+from . import math
 from . import pyplot
 from . import sampling
 
-__all__ = ['pyplot', 'sampling']
+__all__ = ['math', 'pyplot', 'sampling']
+__all__.extend(core.__all__)
 
 
 # Get the version
-root_dir = path.abspath(path.dirname(__file__))
-with open(path.join(root_dir, 'VERSION'), 'r',
-          encoding='utf-8') as version_file:
-    __version__ = version_file.read().strip()
+_root_dir = path.abspath(path.dirname(__file__))
+with open(path.join(_root_dir, 'VERSION'), 'r',
+          encoding='utf-8') as _version_file:
+    __version__ = _version_file.read().strip()
 
 # List of version requirements
-__version__numpy__ = str('1.6')
+__version__numpy__ = str('1.8')
 __version__mpl__ = str('1.4.3')
 __version__astropy__ = str('1.3')
 
 
+# %% FUNCTIONS AND CHECKS
 # Function to compare versions
-def e13_compare_versions(a, b):
+def _compare_versions(a, b):
     "Return True if `a` is greater than or equal to `b`."
     if a:
         if six.PY3:
@@ -59,12 +72,12 @@ def e13_compare_versions(a, b):
     else:
         return(False)
 
-# Check for Python 3.3 or higher
+# Check for Python 2.7 or 3.4 and higher
 if sys.version_info[0] == 2:
     if not sys.version_info[1] == 7:
         raise ImportError("e13Tools requires Python 2.7")
-elif not sys.version_info[:2] >= (3, 3):
-    raise ImportError("e13Tools requires Python 3.3 or later")
+elif not sys.version_info[:2] >= (3, 4):
+    raise ImportError("e13Tools requires Python 3.4 or later")
 
 # Check for NumPy version
 try:
@@ -72,7 +85,7 @@ try:
 except ImportError:
     raise ImportError("e13Tools requires NumPy")
 else:
-    if not e13_compare_versions(numpy.__version__, __version__numpy__):
+    if not _compare_versions(numpy.__version__, __version__numpy__):
         raise ImportError("NumPy %s was detected. e13Tools requires NumPy %s "
                           "or later" % (numpy.__version__, __version__numpy__))
 
@@ -82,7 +95,7 @@ try:
 except ImportError:
     raise ImportError("e13Tools requires Matplotlib")
 else:
-    if not e13_compare_versions(matplotlib.__version__, __version__mpl__):
+    if not _compare_versions(matplotlib.__version__, __version__mpl__):
         raise ImportError("Matplotlib %s was detected. e13Tools requires "
                           "Matplotlib %s or later" % (matplotlib.__version__,
                                                       __version__mpl__))
@@ -92,7 +105,7 @@ try:
 except ImportError:
     raise ImportError("e13Tools requires AstroPy")
 else:
-    if not e13_compare_versions(astropy.__version__, __version__astropy__):
+    if not _compare_versions(astropy.__version__, __version__astropy__):
         raise ImportError("AstroPy %s was detected. e13Tools requires "
                           "AstroPy %s or later" % (astropy.__version__,
                                                    __version__astropy__))

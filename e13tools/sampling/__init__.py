@@ -15,6 +15,8 @@ lhcs
 
 """
 
+
+# %% IMPORTS
 from __future__ import division, absolute_import, print_function
 
 from .lhcs import lhs
