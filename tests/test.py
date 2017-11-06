@@ -4,13 +4,12 @@ Created on Mon Nov  6 15:56:20 2017
 
 @author: 1313e
 """
-
-import unittest
 import doctest
-import pkgutil
+from pkgutil import walk_packages
 import e13tools
 
-mod_list = [name for _, name, _ in pkgutil.walk_packages(e13tools.__path__, e13tools.__name__+'.')]
+mod_list = [name for _, name, _ in walk_packages(e13tools.__path__,
+                                                 e13tools.__name__+'.')]
 tests = doctest.DocTestSuite()
 
 skip_cases = ['e13tools.sampling.lhcs']
