@@ -9,5 +9,6 @@ install:
 script:
     - check-manifest --ignore .appveyor.yml,tests*
     - python setup.py check -m -r -s
+    - python tests/test.py
 notifications:
     email: false
