@@ -7,7 +7,7 @@ Created on Mon Nov  6 15:56:20 2017
 
 import doctest
 import pkgutil
-import e13tools
+from e13Tools import e13tools
 
 mod_list = [name for _, name, _ in pkgutil.walk_packages(e13tools.__path__, e13tools.__name__+'.')]
 tests = doctest.DocTestSuite()
