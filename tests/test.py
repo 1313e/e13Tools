@@ -20,6 +20,4 @@ for name in mod_list:
         tests.addTests(doctest.DocTestSuite(name, optionflags=doctest.SKIP))
     else:
         tests.addTests(doctest.DocTestSuite(name))
-#tests.debug()
-result = unittest.TestResult()
-tests.run(result)
+tests.debug()
