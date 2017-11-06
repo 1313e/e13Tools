@@ -229,12 +229,12 @@ def nearest_PD(matrix):
         return(mat_PD)
 
     # If it is not, change it very slightly to make it positive-definite
-    I = np.eye(rows)
+    In = np.eye(rows)
     k = 1
     spacing = np.spacing(np.linalg.norm(matrix))
     while is_PD(mat_PD) is not True:
         min_eig_val = np.min(np.real(np.linalg.eigvals(mat_PD)))
-        mat_PD += I*(-1*min_eig_val*pow(k, 2)+spacing)
+        mat_PD += In*(-1*min_eig_val*pow(k, 2)+spacing)
         k += 1
     else:
         return(mat_PD)
