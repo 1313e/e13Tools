@@ -2,7 +2,7 @@
 
 """
 Math Core
-===========
+=========
 Provides a collection of functions that are core to Math and are imported
 automatically.
 
@@ -55,6 +55,8 @@ def is_PD(matrix):
     array([[1, 2],
            [3, 4]])
     >>> is_PD(matrix)
+    Traceback (most recent call last):
+        ...
     ValueError: Input matrix must be Hermitian!
 
 
@@ -133,7 +135,9 @@ def nearest_PD(matrix):
     array([[1, 2],
            [3, 4]])
     >>> is_PD(matrix)
-    False
+    Traceback (most recent call last):
+        ...
+    ValueError: Input matrix must be Hermitian!
     >>> mat_PD = nearest_PD(matrix)
     >>> mat_PD
     array([[ 1.31461828,  2.32186616],
@@ -153,7 +157,7 @@ def nearest_PD(matrix):
     >>> mat_PD
     array([[ 4.0+0.j,  1.5-1.j],
            [ 1.5+1.j,  3.0+0.j]])
-    >>> is_PD(matrix)
+    >>> is_PD(mat_PD)
     True
 
     Notes
@@ -254,13 +258,13 @@ def transposeC(array):
     --------
     Using an array with only real values returns its transposed variant:
 
-    >>> array = np.array([[1, 2], [3, 4]])
+    >>> array = np.array([[1, 2.5], [3.5, 5]])
     >>> array
-    array([[1, 2],
-           [3, 4]])
+    array([[ 1. ,  2.5],
+           [ 3.5,  5. ]])
     >>> transposeC(array)
-    array([[1, 3],
-           [2, 4]], dtype=int32)
+    array([[ 1. ,  3.5],
+           [ 2.5,  5. ]])
 
 
     And using an array containing complex values returns its conjugate
@@ -278,3 +282,9 @@ def transposeC(array):
 
     # Take the transpose of the conjugate or the input array and return it
     return(np.transpose(np.conjugate(array)))
+
+
+# %% DOCTEST
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()

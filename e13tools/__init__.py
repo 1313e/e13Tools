@@ -108,3 +108,9 @@ else:
         raise ImportError("AstroPy %s was detected. e13Tools requires "
                           "AstroPy %s or later" % (astropy.__version__,
                                                    __version__astropy__))
+
+
+# %% DOCTEST
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()

@@ -3,7 +3,6 @@
 Testing program for e13Tools.
 
 """
-
 import doctest
 from pkgutil import walk_packages
 import e13tools

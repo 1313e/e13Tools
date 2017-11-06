@@ -22,3 +22,9 @@ from __future__ import division, absolute_import, print_function
 from .lhcs import lhs
 
 __all__ = ['lhs']
+
+
+# %% DOCTEST
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()

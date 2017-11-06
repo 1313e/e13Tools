@@ -52,7 +52,7 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
         will satisfy the given criterion.
 
     Returns
-    ------
+    -------
     sam_set : 2D array_like
         Sample set array of shape [`n_sam`, `n_val`].
 
@@ -381,3 +381,9 @@ def _extract_sam_set(sam_set, val_rng):
 
     # Return sam_set
     return(ext_sam_set)
+
+
+# %% DOCTEST
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
