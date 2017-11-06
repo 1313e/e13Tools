@@ -4,7 +4,6 @@ Created on Mon Nov  6 15:56:20 2017
 
 @author: 1313e
 """
-
 import doctest
 from pkgutil import walk_packages
 import e13tools
