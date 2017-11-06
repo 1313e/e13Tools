@@ -5,6 +5,7 @@ Created on Mon Nov  6 15:56:20 2017
 @author: 1313e
 """
 
+import unittest
 import doctest
 import pkgutil
 import e13tools
@@ -19,4 +20,6 @@ for name in mod_list:
         tests.addTests(doctest.DocTestSuite(name, optionflags=doctest.SKIP))
     else:
         tests.addTests(doctest.DocTestSuite(name))
-tests.debug()
+#tests.debug()
+result = unittest.TestResult()
+tests.run(result)

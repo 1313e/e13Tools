@@ -63,8 +63,8 @@ def apu2tex(unit, unitfrac=False):
     else:
         string = unit.to_string('latex')
 
-    # Remove '$' from the string
-    return(string.replace("$", ""))
+    # Remove '$' from the string and make sure the output is a string (py2.7)
+    return(str(string.replace("$", "")))
 
 
 def center_spines(centerx=0, centery=0, set_xticker=False,
