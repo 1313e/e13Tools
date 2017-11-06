@@ -258,13 +258,13 @@ def transposeC(array):
     --------
     Using an array with only real values returns its transposed variant:
 
-    >>> array = np.array([[1, 2], [3, 4]])
+    >>> array = np.array([[1, 2.5], [3.5, 4]])
     >>> array
-    array([[1, 2],
-           [3, 4]])
+    array([[ 1. ,  2.5],
+           [ 3.5,  5. ]])
     >>> transposeC(array)
-    array([[1, 3],
-           [2, 4]], dtype=int32)
+    array([[ 1. ,  3.5],
+           [ 2.5,  5. ]])
 
 
     And using an array containing complex values returns its conjugate
