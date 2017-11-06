@@ -258,7 +258,7 @@ def transposeC(array):
     --------
     Using an array with only real values returns its transposed variant:
 
-    >>> array = np.array([[1, 2.5], [3.5, 4]])
+    >>> array = np.array([[1, 2.5], [3.5, 5]])
     >>> array
     array([[ 1. ,  2.5],
            [ 3.5,  5. ]])
