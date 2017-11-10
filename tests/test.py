@@ -13,8 +13,8 @@ mod_list = [name for _, name, _ in walk_packages(e13tools.__path__,
 
 tests = doctest.DocTestSuite()
 
-# Make list of modules containing scripts that involve randomness
-skip_cases = ['e13tools.sampling.lhcs']
+# Make list of modules containing doctests that should be skipped
+skip_cases = []
 
 # Make a unittest for every doctest found in the package
 for name in mod_list:

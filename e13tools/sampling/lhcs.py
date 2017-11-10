@@ -63,54 +63,64 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
     --------
     Latin Hypercube with 2 values and 5 samples:
 
+    >>> import numpy as np
+    >>> np.random.seed(0)
     >>> lhs(2, 5)
-    array([[ 0.33049758,  0.46107203],
-           [ 0.0489103 ,  0.24679923],
-           [ 0.59167567,  0.74001012],
-           [ 0.78958876,  0.10264081],
-           [ 0.98245615,  0.99973969]])
+    array([[ 0.99273255,  0.52917882],
+           [ 0.48473096,  0.7783546 ],
+           [ 0.68751744,  0.8766883 ],
+           [ 0.32055268,  0.30897664],
+           [ 0.1097627 ,  0.14303787]])
 
 
     Latin Hypercube with 3 values, 4 samples in a specified value range:
 
+    >>> import numpy as np
+    >>> np.random.seed(0)
     >>> val_rng = [[0, 2], [1, 4], [0.3, 0.5]]
     >>> lhs(3, 4, val_rng=val_rng)
-    array([[ 0.94523229,  3.66450868,  0.49843528],
-           [ 1.13087439,  2.80949861,  0.31239253],
-           [ 0.17403476,  2.11747903,  0.4113592 ],
-           [ 1.59869101,  1.16117621,  0.38345357]])
+    array([[ 1.69172076,  3.16882975,  0.44818314],
+           [ 1.21879361,  1.53639202,  0.47644475],
+           [ 0.77244159,  3.84379378,  0.33013817],
+           [ 0.27440675,  2.0677411 ,  0.38229471]])
 
 
     Latin Hypercube with 5 values and 6 centered samples:
 
+    >>> import numpy as np
+    >>> np.random.seed(0)
     >>> lhs(5, 6, criterion='center')
-    array([[ 0.91666667,  0.91666667,  0.75      ,  0.25      ,  0.58333333],
-           [ 0.08333333,  0.58333333,  0.25      ,  0.41666667,  0.41666667],
-           [ 0.58333333,  0.25      ,  0.08333333,  0.58333333,  0.25      ],
-           [ 0.25      ,  0.08333333,  0.58333333,  0.91666667,  0.08333333],
-           [ 0.41666667,  0.41666667,  0.41666667,  0.08333333,  0.91666667],
-           [ 0.75      ,  0.75      ,  0.91666667,  0.75      ,  0.75      ]])
+    array([[ 0.91666667,  0.25      ,  0.58333333,  0.91666667,  0.41666667],
+           [ 0.41666667,  0.58333333,  0.91666667,  0.41666667,  0.75      ],
+           [ 0.25      ,  0.75      ,  0.25      ,  0.58333333,  0.58333333],
+           [ 0.58333333,  0.08333333,  0.41666667,  0.75      ,  0.91666667],
+           [ 0.08333333,  0.41666667,  0.75      ,  0.25      ,  0.25      ],
+           [ 0.75      ,  0.91666667,  0.08333333,  0.08333333,  0.08333333]])
 
 
     Latin Hypercubes can also be created with the 'maximin' criterion, which
     tries to maximize the minimum distance between any pair of samples:
 
+    >>> import numpy as np
+    >>> np.random.seed(0)
     >>> lhs(3, 4, criterion='maximin')
-    array([[ 0.13666344,  0.04666906,  0.41487346],
-           [ 0.863929  ,  0.35886462,  0.99011525],
-           [ 0.73400563,  0.55282619,  0.07831996],
-           [ 0.26816676,  0.8538964 ,  0.71979893]])
+    array([[ 0.08100411,  0.55109059,  0.98770574],
+           [ 0.94884763,  0.06408875,  0.47267367],
+           [ 0.6185228 ,  0.93678597,  0.57340588],
+           [ 0.30578765,  0.36615149,  0.03109426]])
 
 
     Additionally, Latin Hypercubes can be made with the 'correlation'
     criterion, which instead tries to minimize the cross-correlation between
     any pair of samples:
 
+    >>> import numpy as np
+    >>> np.random.seed(0)
     >>> lhs(3, 4, criterion='correlation')
-    array([[ 0.59248275,  0.500076  ,  0.33836536],
-           [ 0.89500233,  0.04831665,  0.6891592 ],
-           [ 0.08223136,  0.87907617,  0.8142178 ],
-           [ 0.30950514,  0.45548182,  0.09802957]])
+    array([[ 0.41147073,  0.59818732,  0.88777821],
+           [ 0.00810594,  0.45088779,  0.36427319],
+           [ 0.58325785,  0.82611929,  0.07753951],
+           [ 0.75243756,  0.06350269,  0.6532874 ]])
 
 
     If one wants to combine both the 'maximin' and the 'correlation'
@@ -118,11 +128,13 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
     that tries to maximize the minimum distance and minimize the
     cross-correlation between any pair of samples simultaneously:
 
+    >>> import numpy as np
+    >>> np.random.seed(0)
     >>> lhs(3, 4, criterion='multi')
-    array([[ 0.03612175,  0.46903638,  0.02233707],
-           [ 0.88992134,  0.57888616,  0.2588855 ],
-           [ 0.55147305,  0.04057838,  0.95252719],
-           [ 0.31951143,  0.99777721,  0.67487922]])
+    array([[ 0.08100411,  0.55109059,  0.98770574],
+           [ 0.94884763,  0.06408875,  0.47267367],
+           [ 0.6185228 ,  0.93678597,  0.57340588],
+           [ 0.30578765,  0.36615149,  0.03109426]])
 
 
     Finally, an existing Latin Hypercube can be provided as an additional
@@ -130,24 +142,22 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
     number of values are equal (using `n_val` = 1 shows its impact clearly):
 
     >>> import numpy as np
-    >>> cube1 = lhs(1, 2, criterion='random')
-    >>> cube2 = lhs(1, 6, criterion='center')
-    >>> cube = np.vstack([cube1, cube2])
+    >>> np.random.seed(0)
+    >>> cube = lhs(1, 7, criterion='random')
     >>> cube
-    array([[ 0.06495814],
-           [ 0.85064614],
-           [ 0.91666667],
-           [ 0.41666667],
-           [ 0.58333333],
-           [ 0.25      ],
-           [ 0.08333333],
-           [ 0.75      ]])
+    array([[ 0.50641188],
+           [ 0.24502705],
+           [ 0.37182334],
+           [ 0.63195069],
+           [ 0.8065563 ],
+           [ 0.07840193],
+           [ 0.91965532]])
     >>> lhs(1, 5, criterion='maximin', constraints=cube)
-    array([[ 0.51435233],
-           [ 0.15430434],
-           [ 0.6062859 ],
-           [ 0.22938232],
-           [ 0.999933  ]])
+    array([[ 0.15064606],
+           [ 0.31477266],
+           [ 0.75363001],
+           [ 0.85907534],
+           [ 0.45615529]])
 
     """
 
@@ -452,4 +462,4 @@ def _extract_sam_set(sam_set, val_rng):
 # %% DOCTEST
 if __name__ == '__main__':
     import doctest
-    doctest.testmod(optionflags=doctest.SKIP)
+    doctest.testmod()
