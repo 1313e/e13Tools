@@ -19,8 +19,7 @@ __all__ = ['InputError', 'ShapeError']
 # Define Error class for wrong inputs
 class InputError(Exception):
     """
-    Generic exception raised for errors in a single or multiple function input
-    argument(s).
+    Generic exception raised for errors in the function input arguments.
 
     General purpose exception class, raised whenever the function input
     arguments prevent the correct execution of the function without specifying

@@ -25,6 +25,8 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
         constraints=[[]]):
     """
     Generate a Latin Hypercube of `n_sam` samples, each with `n_val` values.
+    Method for choosing the 'best' Latin Hypercube Design depends on the
+    `criterion` that is used.
 
     Parameters
     ----------
@@ -40,16 +42,17 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
         Requires: numpy.shape(val_rng) = (`n_val`, 2).
         If *None*, output is normalized.
     criterion : string. Default: 'random'
-        Allowed are 'center'/'c', 'maximin'/'m', 'centermaximin'/'cm' for
-        specific methods or 'random'/'r' for randomized.
-        If `n_sam` == 1, `criterion` is set to the closest corresponding
-        method.
+        Allowed are 'center'/'c', 'maximin'/'m', 'centermaximin'/'cm',
+        'correlation'/'corr', 'maximincorr'/'multi' for specific methods or
+        'random'/'r' for randomized.
+        If `n_sam` == 1 or `n_val == 1`, `criterion` is set to the closest
+        corresponding method if necessary.
     iterations : int. Default: 1000
-        Number of iterations for the maximin and correlations algorithms.
+        Number of iterations for the maximin and correlation algorithms.
     constraints : 2D array_like. Default: [[]]
-        If `constraints` is not empty and `criterion` is set to 'maximin'/'m'
-        or 'centermaximin'/'cm', both `sam_set` and `sam_set` + `constraints`
-        will satisfy the given criterion.
+        If `constraints` is not empty and `criterion` is set to any maximin or
+        correlation method, both `sam_set` and `sam_set` + `constraints` will
+        satisfy the given criterion.
 
     Returns
     -------
@@ -89,7 +92,8 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
            [ 0.75      ,  0.75      ,  0.91666667,  0.75      ,  0.75      ]])
 
 
-    Latin Hypercubes can also be created with the 'maximin' criterion:
+    Latin Hypercubes can also be created with the 'maximin' criterion, which
+    tries to maximize the minimum distance between any pair of samples:
 
     >>> lhs(3, 4, criterion='maximin')
     array([[ 0.13666344,  0.04666906,  0.41487346],
@@ -98,10 +102,34 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
            [ 0.26816676,  0.8538964 ,  0.71979893]])
 
 
-    Finally, an existing Latin Hypercube can be provided as an additional
-    constraint for calculating maximin Latin Hypercubes, if the number of
-    values are equal:
+    Additionally, Latin Hypercubes can be made with the 'correlation'
+    criterion, which instead tries to minimize the cross-correlation between
+    any pair of samples:
 
+    >>> lhs(3, 4, criterion='correlation')
+    array([[ 0.59248275,  0.500076  ,  0.33836536],
+           [ 0.89500233,  0.04831665,  0.6891592 ],
+           [ 0.08223136,  0.87907617,  0.8142178 ],
+           [ 0.30950514,  0.45548182,  0.09802957]])
+
+
+    If one wants to combine both the 'maximin' and the 'correlation'
+    criterions, the 'multi' criterion can be used to generate a Latin Hypercube
+    that tries to maximize the minimum distance and minimize the
+    cross-correlation between any pair of samples simultaneously:
+
+    >>> lhs(3, 4, criterion='multi')
+    array([[ 0.03612175,  0.46903638,  0.02233707],
+           [ 0.88992134,  0.57888616,  0.2588855 ],
+           [ 0.55147305,  0.04057838,  0.95252719],
+           [ 0.31951143,  0.99777721,  0.67487922]])
+
+
+    Finally, an existing Latin Hypercube can be provided as an additional
+    constraint for calculating maximin or correlation Latin Hypercubes, if the
+    number of values are equal (using `n_val` = 1 shows its impact clearly):
+
+    >>> import numpy as np
     >>> cube1 = lhs(1, 2, criterion='random')
     >>> cube2 = lhs(1, 6, criterion='center')
     >>> cube = np.vstack([cube1, cube2])
@@ -125,14 +153,17 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
 
     # Check if valid 'criterion' is given
     if not criterion.lower() in ('center', 'c', 'maximin', 'm',
-                                 'centermaximin', 'cm', 'random', 'r'):
+                                 'centermaximin', 'cm', 'correlation', 'corr',
+                                 'maximincorr', 'multi', 'random', 'r'):
         raise ValueError("Invalid value for 'criterion': %s" % (criterion))
 
     # Check the shape of 'constraints' and act accordingly
     if(np.shape(constraints)[-1] == 0):
         # If constraints is empty, there are no constraints
         constraints = None
-    elif not criterion.lower() in ('maximin', 'm', 'centermaximin', 'cm'):
+    elif not criterion.lower() in ('maximin', 'm', 'centermaximin', 'cm',
+                                   'correlation', 'corr', 'maximincorr',
+                                   'multi'):
         # If non-compatible criterion is provided, there are no constraints
         constraints = None
     elif(np.shape(np.shape(constraints))[0] != 2):
@@ -150,15 +181,22 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
         raise ShapeError("Constraints has incompatible number of values: "
                          "%s =! %s" % (np.shape(constraints)[1], n_val))
 
-    # Check if n_sam > 1. If not, criterion will be changed to something useful
+    # Check for cases in which some criterions make no sense
+    # If so, criterion will be changed to something useful
     if(n_sam == 1 and criterion.lower() in ('center', 'c', 'random', 'r')):
         pass
-    elif(n_sam == 1 and criterion.lower() in ('centermaximin', 'cm') and
-         constraints is None):
+    elif((n_val == 1 or n_sam == 1) and
+         criterion.lower() in ('centermaximin', 'cm')):
         criterion = 'center'
-    elif(n_sam == 1 and criterion.lower() in ('maximin', 'm') and
+    elif(n_sam == 1 and
+         criterion.lower() in ('maximin', 'm', 'correlation', 'corr',
+                               'maximincorr', 'multi') and
          constraints is None):
         criterion = 'random'
+    elif(n_val <= 2 and criterion.lower() in ('correlation', 'corr')):
+        criterion = 'random'
+    elif(n_val == 1 and criterion.lower() in ('maximincorr', 'multi')):
+        criterion = 'maximin'
 
     # Pick correct lhs-method according to criterion
     if criterion.lower() in ('random', 'r'):
@@ -171,6 +209,10 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
     elif criterion.lower() in ('centermaximin', 'cm'):
         sam_set = _lhs_maximin(n_val, n_sam, 'centermaximin', iterations,
                                constraints)
+    elif criterion.lower() in ('correlation', 'corr'):
+        sam_set = _lhs_correlation(n_val, n_sam, iterations, constraints)
+    elif criterion.lower() in ('maximincorr', 'multi'):
+        sam_set = _lhs_maximincorr(n_val, n_sam, iterations, constraints)
 
     # If a val_rng was given, scale sam_set to this range
     if val_rng is not None:
@@ -248,15 +290,70 @@ def _lhs_maximin(n_val, n_sam, maximin_type, iterations, constraints):
         # If constraints is not None, then it needs to be added to sam_set_try
         if constraints is not None:
             sam_set_try_full = np.vstack([sam_set_try, constraints])
-
-            # Calculate the distances between all points in 'sam_set_try'
-            p_dist = _get_p_dist(sam_set_try_full)
         else:
-            p_dist = _get_p_dist(sam_set_try)
+            sam_set_try_full = sam_set_try
+
+        # Calculate the distances between all points
+        p_dist = _get_p_dist(sam_set_try_full)
 
         # If the smallest distance in this list is bigger than 'd_max', save it
-        if(d_max < np.min(p_dist)):
-            d_max = np.min(p_dist)
+        d_min = np.min(p_dist)
+        if(d_max < d_min):
+            d_max = d_min
+            sam_set = sam_set_try
+
+    # Return sam_set
+    return(sam_set)
+
+
+def _lhs_correlation(n_val, n_sam, iterations, constraints):
+    # Initialize minimum correlation variable
+    c_min = np.infty
+
+    # Minimize cross-correlation between samples
+    for i in range(iterations):
+        sam_set_try = _lhs_classic(n_val, n_sam)
+
+        # Calculate the correlation between all points
+        R_corr = np.corrcoef(sam_set_try, constraints)
+
+        # If the highest cross-correlation is lower than 'c_min', save it
+        c_max = np.max(np.abs(R_corr-np.eye(len(R_corr))))
+        if(c_max < c_min):
+            c_min = c_max
+            sam_set = sam_set_try
+
+    # Return sam_set
+    return(sam_set)
+
+
+def _lhs_maximincorr(n_val, n_sam, iterations, constraints):
+    # Initialize maximum distance and minimum correlation variables
+    d_max = 0
+    c_min = np.infty
+
+    # Maximize the minimum distance and minimize the cross-correlation between
+    # samples
+    for i in range(iterations):
+        sam_set_try = _lhs_classic(n_val, n_sam)
+
+        # If constraints is not None, then it needs to be added to sam_set_try
+        if constraints is not None:
+            sam_set_try_full = np.vstack([sam_set_try, constraints])
+        else:
+            sam_set_try_full = sam_set_try
+
+        # Calculate the distances and correlation between all points
+        p_dist = _get_p_dist(sam_set_try_full)
+        R_corr = np.corrcoef(sam_set_try, constraints)
+
+        # If the smallest distance is bigger than 'd_max' and the highest
+        # cross-correlation is lower than 'corr_min', save it
+        d_min = np.min(p_dist)
+        c_max = np.max(np.abs(R_corr-np.eye(len(R_corr))))
+        if(d_max < d_min and c_max < c_min):
+            d_max = d_min
+            c_max = c_min
             sam_set = sam_set_try
 
     # Return sam_set
@@ -334,50 +431,19 @@ def _extract_sam_set(sam_set, val_rng):
     # Create empty array of valid samples
     ext_sam_set = np.array([[]])
 
-    # Create empty arrays of samples that are just outside the val_rng
-    upper_sam = np.array([[]])
-    upper_dist_min = np.infty
-    lower_sam = np.array([[]])
-    lower_dist_min = np.infty
+    # Create lower and upper limits of the hypercube containing samples that
+    # can influence the created hypercube
+    lower_lim = 0-np.sqrt(n_val)
+    upper_lim = 1+np.sqrt(n_val)
 
     # Check which samples are within val_rng or just outside of it
     for i in range(n_sam):
-        # If a sample is within the value range, save it
-        if((0 <= sam_set[i, :]).any() and (sam_set[i, :] <= 1).any()):
+        # If a sample is within the outer hypercube, save it
+        if(((lower_lim <= sam_set[i, :])*(sam_set[i, :] <= upper_lim)).all()):
             if(np.shape(ext_sam_set)[1] == 0):
                 ext_sam_set = np.atleast_2d(sam_set[i])
             else:
                 ext_sam_set = np.vstack([ext_sam_set, sam_set[i, :]])
-        # If a sample is just outside the value range, save it if it is closer
-        # than the one that is currently saved
-        elif((sam_set[i, :] < 0).all()):
-            lower_dist = np.sqrt(sum(pow(sam_set[i, :] -
-                                         np.zeros_like(sam_set[i, :]), 2)))
-            if(lower_dist_min > lower_dist):
-                lower_dist_min = lower_dist
-                lower_sam = sam_set[i, :]
-        # Do the same thing for the upper limit of the value range as well
-        elif((1 < sam_set[i, :]).all()):
-            upper_dist = np.sqrt(sum(pow(sam_set[i, :] -
-                                         np.ones_like(sam_set[i, :]), 2)))
-            if(upper_dist_min > upper_dist):
-                upper_dist_min = upper_dist
-                upper_sam = sam_set[i, :]
-
-    # If lower_sam and/or upper_sam are not empty, add them to sam_set
-    # Take into account that sam_set might still be empty
-    if(np.shape(lower_sam) != np.shape([[]]) and
-       np.shape(ext_sam_set) == np.shape([[]])):
-        ext_sam_set = np.atleast_2d(lower_sam)
-    elif(np.shape(lower_sam) != np.shape([[]]) and
-         np.shape(ext_sam_set) != np.shape([[]])):
-        ext_sam_set = np.vstack([ext_sam_set, np.atleast_2d(lower_sam)])
-    if(np.shape(upper_sam) != np.shape([[]]) and
-       np.shape(ext_sam_set) == np.shape([[]])):
-        ext_sam_set = np.atleast_2d(upper_sam)
-    elif(np.shape(upper_sam) != np.shape([[]]) and
-         np.shape(ext_sam_set) != np.shape([[]])):
-        ext_sam_set = np.vstack([ext_sam_set, np.atleast_2d(upper_sam)])
 
     # Return sam_set
     return(ext_sam_set)
@@ -386,4 +452,4 @@ def _extract_sam_set(sam_set, val_rng):
 # %% DOCTEST
 if __name__ == '__main__':
     import doctest
-    doctest.testmod()
+    doctest.testmod(optionflags=doctest.SKIP)

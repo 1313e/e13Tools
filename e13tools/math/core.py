@@ -12,13 +12,64 @@ automatically.
 # %% IMPORTS
 from __future__ import division, absolute_import, print_function
 
-from e13tools import ShapeError
+from e13tools import InputError, ShapeError
+from math import factorial as _factorialm
 import numpy as np
 
-__all__ = ['is_PD', 'nearest_PD', 'transposeC']
+__all__ = ['factorial', 'is_PD', 'nCr', 'nPr', 'nearest_PD', 'transposeC']
 
 
 # %% FUNCTIONS
+def factorial(n):
+    """
+    Calculates the factorial of the given integer `n`. Raises an Exception if
+    the input is not a positive integer, zero or cannot be converted to one.
+
+    Parameters
+    ----------
+    n : int
+        Integer to calculate the factorial for. If `n` is a float, it will be
+        round down to an integer.
+
+    Returns
+    -------
+    f : int
+        Factorial of given integer `n`.
+
+    Examples
+    --------
+    >>> factorial(5)
+    120
+
+
+    >>> factorial(7.8)
+    5040
+
+
+    >>> factorial('4')
+    24
+
+    """
+
+    # Make sure n is an integer
+    try:
+        int(n)
+    except Exception:
+        raise InputError("Input cannot be converted to an integer!")
+    else:
+        n = int(n)
+
+    # Check if given n is positive
+    if(n < 0):
+        raise ValueError("Input has a negative value!")
+
+    # Calculate factorial
+    f = _factorialm(n)
+
+    # Return it
+    return(f)
+
+
 def is_PD(matrix):
     """
     Checks if `matrix` is positive-definite or not, by using the
@@ -93,6 +144,125 @@ def is_PD(matrix):
         return(False)
     else:
         return(True)
+
+
+def nCr(n, r, repeat=False):
+    """
+    For a given set S of `n` elements, returns the number of unordered
+    arrangements ("combinations") of length `r` one can make with S.
+    Returns zero if `r` > `n` and `repeat` is *False*.
+
+    Parameters
+    ----------
+    n : int
+        Number of elements in the set S.
+    r : int
+        Number of elements in the sub-set of set S.
+
+    Optional
+    --------
+    repeat : bool. Default: False
+        If *False*, each element in S can only be chosen once.
+        If *True*, they can be chosen more than once.
+
+    Returns
+    -------
+    n_comb : int
+        Number of "combinations" that can be made with S.
+
+    Examples
+    --------
+    >>> nCr(4, 2)
+    6
+
+
+    >>> nCr(4, 2, repeat=True)
+    10
+
+
+    >>> nCr(2, 4, repeat=True)
+    5
+
+
+    >>> nCr(2, 4)
+    0
+
+    See also
+    --------
+    - :func:`~e13tools.math.factorial`
+    - :func:`~e13tools.math.nPr`: Returns the number of ordered arrangements.
+
+    """
+
+    # Check if repeat is True or not and act accordingly
+    if repeat is True:
+        n_comb = factorial(n+r-1)//(factorial(r)*factorial(n-1))
+    elif(r > n):
+        n_comb = 0
+    else:
+        n_comb = factorial(n)//(factorial(r)*factorial(n-r))
+
+    # Return it
+    return(n_comb)
+
+
+def nPr(n, r, repeat=False):
+    """
+    For a given set S of `n` elements, returns the number of ordered
+    arrangements ("permutations") of length `r` one can make with S.
+    Returns zero if `r` > `n` and `repeat` is *False*.
+
+    Parameters
+    ----------
+    n : int
+        Number of elements in the set S.
+    r : int
+        Number of elements in the sub-set of set S.
+
+    Optional
+    --------
+    repeat : bool. Default: False
+        If *False*, each element in S can only be chosen once.
+        If *True*, they can be chosen more than once.
+
+    Returns
+    -------
+    n_perm : int
+        Number of "permutations" that can be made with S.
+
+    Examples
+    --------
+    >>> nPr(4, 2)
+    12
+
+
+    >>> nPr(4, 2, repeat=True)
+    16
+
+
+    >>> nPr(2, 4, repeat=True)
+    16
+
+
+    >>> nPr(2, 4)
+    0
+
+    See also
+    --------
+    :func:`~e13tools.math.nCr`: Returns the number of unordered arrangements.
+
+    """
+
+    # Check if repeat is True or not and act accordingly
+    if repeat is True:
+        n_perm = pow(n, r)
+    elif(r > n):
+        n_perm = 0
+    else:
+        n_perm = factorial(n)//factorial(n-r)
+
+    # Return it
+    return(n_perm)
 
 
 def nearest_PD(matrix):
