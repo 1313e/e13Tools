@@ -16,7 +16,7 @@ from e13tools import InputError, ShapeError
 from math import factorial as _factorialm
 import numpy as np
 
-__all__ = ['factorial', 'is_PD', 'nCr', 'nPr', 'nearest_PD', 'transposeC']
+__all__ = ['factorial', 'is_PD', 'nCr', 'nearest_PD', 'nPr', 'transposeC']
 
 
 # %% FUNCTIONS
@@ -53,21 +53,16 @@ def factorial(n):
 
     # Make sure n is an integer
     try:
-        int(n)
+        n = int(n)
     except Exception:
         raise InputError("Input cannot be converted to an integer!")
-    else:
-        n = int(n)
 
     # Check if given n is positive
     if(n < 0):
         raise ValueError("Input has a negative value!")
 
-    # Calculate factorial
-    f = _factorialm(n)
-
-    # Return it
-    return(f)
+    # Return the factorial
+    return(_factorialm(n))
 
 
 def is_PD(matrix):
@@ -196,73 +191,13 @@ def nCr(n, r, repeat=False):
 
     # Check if repeat is True or not and act accordingly
     if repeat is True:
-        n_comb = factorial(n+r-1)//(factorial(r)*factorial(n-1))
+        return(_factorialm(n+r-1)//(_factorialm(r)*_factorialm(n-1)))
+    elif r in (0, n):
+        return(1)
     elif(r > n):
-        n_comb = 0
+        return(0)
     else:
-        n_comb = factorial(n)//(factorial(r)*factorial(n-r))
-
-    # Return it
-    return(n_comb)
-
-
-def nPr(n, r, repeat=False):
-    """
-    For a given set S of `n` elements, returns the number of ordered
-    arrangements ("permutations") of length `r` one can make with S.
-    Returns zero if `r` > `n` and `repeat` is *False*.
-
-    Parameters
-    ----------
-    n : int
-        Number of elements in the set S.
-    r : int
-        Number of elements in the sub-set of set S.
-
-    Optional
-    --------
-    repeat : bool. Default: False
-        If *False*, each element in S can only be chosen once.
-        If *True*, they can be chosen more than once.
-
-    Returns
-    -------
-    n_perm : int
-        Number of "permutations" that can be made with S.
-
-    Examples
-    --------
-    >>> nPr(4, 2)
-    12
-
-
-    >>> nPr(4, 2, repeat=True)
-    16
-
-
-    >>> nPr(2, 4, repeat=True)
-    16
-
-
-    >>> nPr(2, 4)
-    0
-
-    See also
-    --------
-    :func:`~e13tools.math.nCr`: Returns the number of unordered arrangements.
-
-    """
-
-    # Check if repeat is True or not and act accordingly
-    if repeat is True:
-        n_perm = pow(n, r)
-    elif(r > n):
-        n_perm = 0
-    else:
-        n_perm = factorial(n)//factorial(n-r)
-
-    # Return it
-    return(n_perm)
+        return(_factorialm(n)//(_factorialm(r)*_factorialm(n-r)))
 
 
 def nearest_PD(matrix):
@@ -408,6 +343,65 @@ def nearest_PD(matrix):
         k += 1
     else:
         return(mat_PD)
+
+
+def nPr(n, r, repeat=False):
+    """
+    For a given set S of `n` elements, returns the number of ordered
+    arrangements ("permutations") of length `r` one can make with S.
+    Returns zero if `r` > `n` and `repeat` is *False*.
+
+    Parameters
+    ----------
+    n : int
+        Number of elements in the set S.
+    r : int
+        Number of elements in the sub-set of set S.
+
+    Optional
+    --------
+    repeat : bool. Default: False
+        If *False*, each element in S can only be chosen once.
+        If *True*, they can be chosen more than once.
+
+    Returns
+    -------
+    n_perm : int
+        Number of "permutations" that can be made with S.
+
+    Examples
+    --------
+    >>> nPr(4, 2)
+    12
+
+
+    >>> nPr(4, 2, repeat=True)
+    16
+
+
+    >>> nPr(2, 4, repeat=True)
+    16
+
+
+    >>> nPr(2, 4)
+    0
+
+    See also
+    --------
+    - :func:`~e13tools.math.factorial`
+    - :func:`~e13tools.math.nCr`: Returns the number of unordered arrangements.
+
+    """
+
+    # Check if repeat is True or not and act accordingly
+    if repeat is True:
+        return(pow(n, r))
+    elif(r == 0):
+        return(1)
+    elif(r > n):
+        return(0)
+    else:
+        return(_factorialm(n)//_factorialm(n-r))
 
 
 def transposeC(array):
