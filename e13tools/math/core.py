@@ -97,7 +97,7 @@ def diff(array1, array2=None, flatten=True):
         array1 = np.array(array1)
 
         # Obtain the dimensionality of the input argument
-        n_dim = np.shape(array1.shape)[0]
+        n_dim = array1.ndim
 
         # If n_dim is more than two, raise an Exception
         if(n_dim > 2):
@@ -161,8 +161,8 @@ def diff(array1, array2=None, flatten=True):
         array2 = np.array(array2)
 
         # Obtain the dimensionality of the input arguments
-        n_dim1 = np.shape(array1.shape)[0]
-        n_dim2 = np.shape(array2.shape)[0]
+        n_dim1 = array1.ndim
+        n_dim2 = array2.ndim
 
         # If either n_dim is more than two, raise an Exception
         if(n_dim1 > 2 or n_dim2 > 2):
@@ -271,11 +271,14 @@ def is_PD(matrix):
 
     """
 
+    # Make sure that matrix is a numpy array
+    matrix = np.array(matrix)
+
     # Check if input is a matrix
-    if(np.shape(np.shape(matrix))[0] != 2):
+    if(matrix.ndim != 2):
         raise e13.ShapeError("Input must be two-dimensional!")
     else:
-        rows, columns = np.shape(matrix)
+        rows, columns = matrix.shape
 
     # Check if matrix is a square
     if(rows != columns):
@@ -448,11 +451,14 @@ def nearest_PD(matrix):
 
     """
 
+    # Make sure that matrix is a numpy array
+    matrix = np.array(matrix)
+
     # Check if input is a matrix
-    if(np.shape(np.shape(matrix))[0] != 2):
+    if(matrix.ndim != 2):
         raise e13.ShapeError("Input must be two-dimensional!")
     else:
-        rows, columns = np.shape(matrix)
+        rows, columns = matrix.shape
 
     # Check if matrix is a square
     if(rows != columns):

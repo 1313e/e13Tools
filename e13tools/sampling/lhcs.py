@@ -16,12 +16,13 @@ from __future__ import division, absolute_import, print_function
 
 import e13tools as e13
 import numpy as np
+from collections import Counter
 
 __all__ = ['lhs']
 
 
 # %% FUNCTIONS
-def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
+def lhs(n_sam, n_val, val_rng=None, criterion='random', iterations=1000,
         constraints=[[]]):
     """
     Generate a Latin Hypercube of `n_sam` samples, each with `n_val` values.
@@ -30,10 +31,10 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
 
     Parameters
     ----------
-    n_val : int
-        The number of values in a single sample.
     n_sam : int
         The number of samples to generate.
+    n_val : int
+        The number of values in a single sample.
 
     Optional
     --------
@@ -61,11 +62,11 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
 
     Examples
     --------
-    Latin Hypercube with 2 values and 5 samples:
+    Latin Hypercube with 5 samples with each 2 values:
 
         >>> import numpy as np
         >>> np.random.seed(0)
-        >>> lhs(2, 5)
+        >>> lhs(5, 2)
         array([[ 0.99273255,  0.52917882],
                [ 0.48473096,  0.7783546 ],
                [ 0.68751744,  0.8766883 ],
@@ -73,23 +74,23 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
                [ 0.1097627 ,  0.14303787]])
 
 
-    Latin Hypercube with 3 values, 4 samples in a specified value range:
+    Latin Hypercube with 4 samples, 3 values in a specified value range:
 
         >>> import numpy as np
         >>> np.random.seed(0)
         >>> val_rng = [[0, 2], [1, 4], [0.3, 0.5]]
-        >>> lhs(3, 4, val_rng=val_rng)
+        >>> lhs(4, 3, val_rng=val_rng)
         array([[ 1.69172076,  3.16882975,  0.44818314],
                [ 1.21879361,  1.53639202,  0.47644475],
                [ 0.77244159,  3.84379378,  0.33013817],
                [ 0.27440675,  2.0677411 ,  0.38229471]])
 
 
-    Latin Hypercube with 4 values and 6 centered samples:
+    Latin Hypercube with 6 centered samples with each 4 values:
 
         >>> import numpy as np
         >>> np.random.seed(0)
-        >>> lhs(4, 6, criterion='center')
+        >>> lhs(6, 4, criterion='center')
         array([[ 0.91666667,  0.25      ,  0.58333333,  0.91666667],
                [ 0.41666667,  0.58333333,  0.91666667,  0.41666667],
                [ 0.25      ,  0.75      ,  0.25      ,  0.58333333],
@@ -103,7 +104,7 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
 
         >>> import numpy as np
         >>> np.random.seed(0)
-        >>> lhs(3, 4, criterion='maximin')
+        >>> lhs(4, 3, criterion='maximin')
         array([[ 0.08100411,  0.55109059,  0.98770574],
                [ 0.94884763,  0.06408875,  0.47267367],
                [ 0.6185228 ,  0.93678597,  0.57340588],
@@ -116,7 +117,7 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
 
         >>> import numpy as np
         >>> np.random.seed(0)
-        >>> lhs(3, 4, criterion='correlation')
+        >>> lhs(4, 3, criterion='correlation')
         array([[ 0.41147073,  0.59818732,  0.88777821],
                [ 0.00810594,  0.45088779,  0.36427319],
                [ 0.58325785,  0.82611929,  0.07753951],
@@ -130,7 +131,7 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
 
         >>> import numpy as np
         >>> np.random.seed(0)
-        >>> lhs(3, 4, criterion='multi')
+        >>> lhs(4, 3, criterion='multi')
         array([[ 0.08100411,  0.55109059,  0.98770574],
                [ 0.94884763,  0.06408875,  0.47267367],
                [ 0.6185228 ,  0.93678597,  0.57340588],
@@ -143,7 +144,7 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
 
         >>> import numpy as np
         >>> np.random.seed(0)
-        >>> cube = lhs(1, 7, criterion='random')
+        >>> cube = lhs(7, 1, criterion='random')
         >>> cube
         array([[ 0.50641188],
                [ 0.24502705],
@@ -152,7 +153,7 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
                [ 0.8065563 ],
                [ 0.07840193],
                [ 0.91965532]])
-        >>> lhs(1, 5, criterion='maximin', constraints=cube)
+        >>> lhs(5, 1, criterion='maximin', constraints=cube)
         array([[ 0.15064606],
                [ 0.31477266],
                [ 0.75363001],
@@ -161,6 +162,9 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
 
     """
 
+    # Make sure that constraints is a numpy array
+    constraints = np.array(constraints)
+
     # Check if valid 'criterion' is given
     if not criterion.lower() in ('center', 'c', 'maximin', 'm',
                                  'centermaximin', 'cm', 'correlation', 'corr',
@@ -168,7 +172,7 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
         raise ValueError("Invalid value for 'criterion': %s" % (criterion))
 
     # Check the shape of 'constraints' and act accordingly
-    if(np.shape(constraints)[-1] == 0):
+    if(constraints.shape[-1] == 0):
         # If constraints is empty, there are no constraints
         constraints = None
     elif not criterion.lower() in ('maximin', 'm', 'centermaximin', 'cm',
@@ -176,15 +180,15 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
                                    'multi'):
         # If non-compatible criterion is provided, there are no constraints
         constraints = None
-    elif(np.shape(np.shape(constraints))[0] != 2):
+    elif(constraints.ndim != 2):
         # If constraints is not two-dimensional, it is invalid
         raise e13.ShapeError("Constraints must be two-dimensional!")
-    elif(np.shape(constraints)[1] == n_val):
+    elif(constraints.shape[-1] == n_val):
         # If constraints has the same number of values, it is valid
         constraints = _extract_sam_set(constraints, val_rng)
 
         # If constraints is empty after extraction, there are no constraints
-        if(np.shape(constraints)[-1] == 0):
+        if(constraints.shape[-1] == 0):
             constraints = None
     else:
         # If not empty and not right shape, it is invalid
@@ -230,10 +234,10 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
         val_rng = np.atleast_2d(val_rng)
 
         # Check if the given val_rng is in the correct shape
-        if not(np.shape(val_rng) == (n_val, 2)):
+        if not(val_rng.shape == (n_val, 2)):
             raise e13.ShapeError("'val_rng' has incompatible shape: (%s, %s) "
                                  "!= (%s, %s)"
-                                 % (np.shape(val_rng)[0], np.shape(val_rng)[1],
+                                 % (val_rng.shape[0], val_rng.shape[1],
                                     n_val, 2))
 
         # Scale sam_set according to val_rng
@@ -388,7 +392,7 @@ def _get_p_dist(sam_set):
     """
 
     # Obtain number of values in number of samples
-    n_sam, n_val = np.shape(sam_set)
+    n_sam, n_val = sam_set.shape
 
     # Calculate pair-wise point distances
     p_dist_vec = np.linalg.norm(e13.math.diff(sam_set, flatten=True), axis=-1)
@@ -419,7 +423,7 @@ def _extract_sam_set(sam_set, val_rng):
     """
 
     # Obtain number of values in number of samples
-    n_sam, n_val = np.shape(sam_set)
+    n_sam, n_val = sam_set.shape
 
     # Check if val_rng is given. If not, set it to default range
     if val_rng is None:
@@ -443,8 +447,8 @@ def _extract_sam_set(sam_set, val_rng):
     # Check which samples are within val_rng or just outside of it
     for i in range(n_sam):
         # If a sample is within the outer hypercube, save it
-        if(((lower_lim <= sam_set[i, :])*(sam_set[i, :] <= upper_lim)).all()):
-            if(np.shape(ext_sam_set)[1] == 0):
+        if(((lower_lim <= sam_set[i, :] <= upper_lim)).all()):
+            if(ext_sam_set.shape[1] == 0):
                 ext_sam_set = np.atleast_2d(sam_set[i])
             else:
                 ext_sam_set = np.vstack([ext_sam_set, sam_set[i, :]])
