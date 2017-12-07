@@ -14,7 +14,7 @@ pyDOE-package (version: 0.3.8). URL: <https://github.com/tisimst/pyDOE>
 # %% IMPORTS
 from __future__ import division, absolute_import, print_function
 
-from e13tools import ShapeError
+import e13tools as e13
 import numpy as np
 
 __all__ = ['lhs']
@@ -63,64 +63,64 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
     --------
     Latin Hypercube with 2 values and 5 samples:
 
-    >>> import numpy as np
-    >>> np.random.seed(0)
-    >>> lhs(2, 5)
-    array([[ 0.99273255,  0.52917882],
-           [ 0.48473096,  0.7783546 ],
-           [ 0.68751744,  0.8766883 ],
-           [ 0.32055268,  0.30897664],
-           [ 0.1097627 ,  0.14303787]])
+        >>> import numpy as np
+        >>> np.random.seed(0)
+        >>> lhs(2, 5)
+        array([[ 0.99273255,  0.52917882],
+               [ 0.48473096,  0.7783546 ],
+               [ 0.68751744,  0.8766883 ],
+               [ 0.32055268,  0.30897664],
+               [ 0.1097627 ,  0.14303787]])
 
 
     Latin Hypercube with 3 values, 4 samples in a specified value range:
 
-    >>> import numpy as np
-    >>> np.random.seed(0)
-    >>> val_rng = [[0, 2], [1, 4], [0.3, 0.5]]
-    >>> lhs(3, 4, val_rng=val_rng)
-    array([[ 1.69172076,  3.16882975,  0.44818314],
-           [ 1.21879361,  1.53639202,  0.47644475],
-           [ 0.77244159,  3.84379378,  0.33013817],
-           [ 0.27440675,  2.0677411 ,  0.38229471]])
+        >>> import numpy as np
+        >>> np.random.seed(0)
+        >>> val_rng = [[0, 2], [1, 4], [0.3, 0.5]]
+        >>> lhs(3, 4, val_rng=val_rng)
+        array([[ 1.69172076,  3.16882975,  0.44818314],
+               [ 1.21879361,  1.53639202,  0.47644475],
+               [ 0.77244159,  3.84379378,  0.33013817],
+               [ 0.27440675,  2.0677411 ,  0.38229471]])
 
 
-    Latin Hypercube with 5 values and 6 centered samples:
+    Latin Hypercube with 4 values and 6 centered samples:
 
-    >>> import numpy as np
-    >>> np.random.seed(0)
-    >>> lhs(5, 6, criterion='center')
-    array([[ 0.91666667,  0.25      ,  0.58333333,  0.91666667,  0.41666667],
-           [ 0.41666667,  0.58333333,  0.91666667,  0.41666667,  0.75      ],
-           [ 0.25      ,  0.75      ,  0.25      ,  0.58333333,  0.58333333],
-           [ 0.58333333,  0.08333333,  0.41666667,  0.75      ,  0.91666667],
-           [ 0.08333333,  0.41666667,  0.75      ,  0.25      ,  0.25      ],
-           [ 0.75      ,  0.91666667,  0.08333333,  0.08333333,  0.08333333]])
+        >>> import numpy as np
+        >>> np.random.seed(0)
+        >>> lhs(4, 6, criterion='center')
+        array([[ 0.91666667,  0.25      ,  0.58333333,  0.91666667],
+               [ 0.41666667,  0.58333333,  0.91666667,  0.41666667],
+               [ 0.25      ,  0.75      ,  0.25      ,  0.58333333],
+               [ 0.58333333,  0.08333333,  0.41666667,  0.75      ],
+               [ 0.08333333,  0.41666667,  0.75      ,  0.25      ],
+               [ 0.75      ,  0.91666667,  0.08333333,  0.08333333]])
 
 
     Latin Hypercubes can also be created with the 'maximin' criterion, which
     tries to maximize the minimum distance between any pair of samples:
 
-    >>> import numpy as np
-    >>> np.random.seed(0)
-    >>> lhs(3, 4, criterion='maximin')
-    array([[ 0.08100411,  0.55109059,  0.98770574],
-           [ 0.94884763,  0.06408875,  0.47267367],
-           [ 0.6185228 ,  0.93678597,  0.57340588],
-           [ 0.30578765,  0.36615149,  0.03109426]])
+        >>> import numpy as np
+        >>> np.random.seed(0)
+        >>> lhs(3, 4, criterion='maximin')
+        array([[ 0.08100411,  0.55109059,  0.98770574],
+               [ 0.94884763,  0.06408875,  0.47267367],
+               [ 0.6185228 ,  0.93678597,  0.57340588],
+               [ 0.30578765,  0.36615149,  0.03109426]])
 
 
     Additionally, Latin Hypercubes can be made with the 'correlation'
     criterion, which instead tries to minimize the cross-correlation between
     any pair of samples:
 
-    >>> import numpy as np
-    >>> np.random.seed(0)
-    >>> lhs(3, 4, criterion='correlation')
-    array([[ 0.41147073,  0.59818732,  0.88777821],
-           [ 0.00810594,  0.45088779,  0.36427319],
-           [ 0.58325785,  0.82611929,  0.07753951],
-           [ 0.75243756,  0.06350269,  0.6532874 ]])
+        >>> import numpy as np
+        >>> np.random.seed(0)
+        >>> lhs(3, 4, criterion='correlation')
+        array([[ 0.41147073,  0.59818732,  0.88777821],
+               [ 0.00810594,  0.45088779,  0.36427319],
+               [ 0.58325785,  0.82611929,  0.07753951],
+               [ 0.75243756,  0.06350269,  0.6532874 ]])
 
 
     If one wants to combine both the 'maximin' and the 'correlation'
@@ -128,36 +128,36 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
     that tries to maximize the minimum distance and minimize the
     cross-correlation between any pair of samples simultaneously:
 
-    >>> import numpy as np
-    >>> np.random.seed(0)
-    >>> lhs(3, 4, criterion='multi')
-    array([[ 0.08100411,  0.55109059,  0.98770574],
-           [ 0.94884763,  0.06408875,  0.47267367],
-           [ 0.6185228 ,  0.93678597,  0.57340588],
-           [ 0.30578765,  0.36615149,  0.03109426]])
+        >>> import numpy as np
+        >>> np.random.seed(0)
+        >>> lhs(3, 4, criterion='multi')
+        array([[ 0.08100411,  0.55109059,  0.98770574],
+               [ 0.94884763,  0.06408875,  0.47267367],
+               [ 0.6185228 ,  0.93678597,  0.57340588],
+               [ 0.30578765,  0.36615149,  0.03109426]])
 
 
     Finally, an existing Latin Hypercube can be provided as an additional
     constraint for calculating maximin or correlation Latin Hypercubes, if the
     number of values are equal (using `n_val` = 1 shows its impact clearly):
 
-    >>> import numpy as np
-    >>> np.random.seed(0)
-    >>> cube = lhs(1, 7, criterion='random')
-    >>> cube
-    array([[ 0.50641188],
-           [ 0.24502705],
-           [ 0.37182334],
-           [ 0.63195069],
-           [ 0.8065563 ],
-           [ 0.07840193],
-           [ 0.91965532]])
-    >>> lhs(1, 5, criterion='maximin', constraints=cube)
-    array([[ 0.15064606],
-           [ 0.31477266],
-           [ 0.75363001],
-           [ 0.85907534],
-           [ 0.45615529]])
+        >>> import numpy as np
+        >>> np.random.seed(0)
+        >>> cube = lhs(1, 7, criterion='random')
+        >>> cube
+        array([[ 0.50641188],
+               [ 0.24502705],
+               [ 0.37182334],
+               [ 0.63195069],
+               [ 0.8065563 ],
+               [ 0.07840193],
+               [ 0.91965532]])
+        >>> lhs(1, 5, criterion='maximin', constraints=cube)
+        array([[ 0.15064606],
+               [ 0.31477266],
+               [ 0.75363001],
+               [ 0.85907534],
+               [ 0.45615529]])
 
     """
 
@@ -178,7 +178,7 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
         constraints = None
     elif(np.shape(np.shape(constraints))[0] != 2):
         # If constraints is not two-dimensional, it is invalid
-        raise ShapeError("Constraints must be two-dimensional!")
+        raise e13.ShapeError("Constraints must be two-dimensional!")
     elif(np.shape(constraints)[1] == n_val):
         # If constraints has the same number of values, it is valid
         constraints = _extract_sam_set(constraints, val_rng)
@@ -188,8 +188,8 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
             constraints = None
     else:
         # If not empty and not right shape, it is invalid
-        raise ShapeError("Constraints has incompatible number of values: "
-                         "%s =! %s" % (np.shape(constraints)[1], n_val))
+        raise e13.ShapeError("Constraints has incompatible number of values: "
+                             "%s =! %s" % (np.shape(constraints)[1], n_val))
 
     # Check for cases in which some criterions make no sense
     # If so, criterion will be changed to something useful
@@ -231,9 +231,10 @@ def lhs(n_val, n_sam, val_rng=None, criterion='random', iterations=1000,
 
         # Check if the given val_rng is in the correct shape
         if not(np.shape(val_rng) == (n_val, 2)):
-            raise ShapeError("'val_rng' has incompatible shape: (%s, %s) != "
-                             "(%s, %s)" % (np.shape(val_rng)[0],
-                                           np.shape(val_rng)[1], n_val, 2))
+            raise e13.ShapeError("'val_rng' has incompatible shape: (%s, %s) "
+                                 "!= (%s, %s)"
+                                 % (np.shape(val_rng)[0], np.shape(val_rng)[1],
+                                    n_val, 2))
 
         # Scale sam_set according to val_rng
         sam_set = val_rng[:, 0]+sam_set*(val_rng[:, 1]-val_rng[:, 0])
@@ -389,15 +390,8 @@ def _get_p_dist(sam_set):
     # Obtain number of values in number of samples
     n_sam, n_val = np.shape(sam_set)
 
-    # Initialize point distance vector
-    p_dist_vec = np.zeros(int(0.5*n_sam*(n_sam-1)))
-
     # Calculate pair-wise point distances
-    k = 0
-    for i in range(n_sam-1):
-        for j in range(i+1, n_sam):
-            p_dist_vec[k] = np.sqrt(sum(pow(sam_set[i, :]-sam_set[j, :], 2)))
-            k += 1
+    p_dist_vec = np.linalg.norm(e13.math.diff(sam_set, flatten=True), axis=-1)
 
     # Return point distance vector
     return(p_dist_vec)
