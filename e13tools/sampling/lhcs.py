@@ -214,19 +214,19 @@ def lhs(n_sam, n_val, val_rng=None, criterion='random', iterations=1000,
 
     # Pick correct lhs-method according to criterion
     if criterion.lower() in ('random', 'r'):
-        sam_set = _lhs_classic(n_val, n_sam)
+        sam_set = _lhs_classic(n_sam, n_val)
     elif criterion.lower() in ('center', 'c'):
-        sam_set = _lhs_center(n_val, n_sam)
+        sam_set = _lhs_center(n_sam, n_val)
     elif criterion.lower() in ('maximin', 'm'):
-        sam_set = _lhs_maximin(n_val, n_sam, 'maximin', iterations,
+        sam_set = _lhs_maximin(n_sam, n_val, 'maximin', iterations,
                                constraints)
     elif criterion.lower() in ('centermaximin', 'cm'):
-        sam_set = _lhs_maximin(n_val, n_sam, 'centermaximin', iterations,
+        sam_set = _lhs_maximin(n_sam, n_val, 'centermaximin', iterations,
                                constraints)
     elif criterion.lower() in ('correlation', 'corr'):
-        sam_set = _lhs_correlation(n_val, n_sam, iterations, constraints)
+        sam_set = _lhs_correlation(n_sam, n_val, iterations, constraints)
     elif criterion.lower() in ('maximincorr', 'multi'):
-        sam_set = _lhs_maximincorr(n_val, n_sam, iterations, constraints)
+        sam_set = _lhs_maximincorr(n_sam, n_val, iterations, constraints)
 
     # If a val_rng was given, scale sam_set to this range
     if val_rng is not None:
@@ -246,7 +246,7 @@ def lhs(n_sam, n_val, val_rng=None, criterion='random', iterations=1000,
     return(sam_set)
 
 
-def _lhs_classic(n_val, n_sam):
+def _lhs_classic(n_sam, n_val):
     # Generate the equally spaced intervals/bins
     bins = np.linspace(0, 1, n_sam+1)
 
@@ -271,7 +271,7 @@ def _lhs_classic(n_val, n_sam):
     return(sam_set)
 
 
-def _lhs_center(n_val, n_sam):
+def _lhs_center(n_sam, n_val):
     # Generate the equally spaced intervals/bins
     bins = np.linspace(0, 1, n_sam+1)
 
@@ -291,16 +291,16 @@ def _lhs_center(n_val, n_sam):
     return(sam_set)
 
 
-def _lhs_maximin(n_val, n_sam, maximin_type, iterations, constraints):
+def _lhs_maximin(n_sam, n_val, maximin_type, iterations, constraints):
     # Initialize maximum distance variable
     d_max = 0
 
     # Maximize the minimum distance between points
     for i in range(iterations):
         if(maximin_type == 'maximin'):
-            sam_set_try = _lhs_classic(n_val, n_sam)
+            sam_set_try = _lhs_classic(n_sam, n_val)
         else:
-            sam_set_try = _lhs_center(n_val, n_sam)
+            sam_set_try = _lhs_center(n_sam, n_val)
 
         # If constraints is not None, then it needs to be added to sam_set_try
         if constraints is not None:
@@ -321,13 +321,13 @@ def _lhs_maximin(n_val, n_sam, maximin_type, iterations, constraints):
     return(sam_set)
 
 
-def _lhs_correlation(n_val, n_sam, iterations, constraints):
+def _lhs_correlation(n_sam, n_val, iterations, constraints):
     # Initialize minimum correlation variable
     c_min = np.infty
 
     # Minimize cross-correlation between samples
     for i in range(iterations):
-        sam_set_try = _lhs_classic(n_val, n_sam)
+        sam_set_try = _lhs_classic(n_sam, n_val)
 
         # Calculate the correlation between all points
         R_corr = np.corrcoef(sam_set_try, constraints)
@@ -342,7 +342,7 @@ def _lhs_correlation(n_val, n_sam, iterations, constraints):
     return(sam_set)
 
 
-def _lhs_maximincorr(n_val, n_sam, iterations, constraints):
+def _lhs_maximincorr(n_sam, n_val, iterations, constraints):
     # Initialize maximum distance and minimum correlation variables
     d_max = 0
     c_min = np.infty
@@ -350,7 +350,7 @@ def _lhs_maximincorr(n_val, n_sam, iterations, constraints):
     # Maximize the minimum distance and minimize the cross-correlation between
     # samples
     for i in range(iterations):
-        sam_set_try = _lhs_classic(n_val, n_sam)
+        sam_set_try = _lhs_classic(n_sam, n_val)
 
         # If constraints is not None, then it needs to be added to sam_set_try
         if constraints is not None:
