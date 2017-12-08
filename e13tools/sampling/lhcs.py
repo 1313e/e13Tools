@@ -437,7 +437,7 @@ def _extract_sam_set(sam_set, val_rng):
     sam_set = ((sam_set-val_rng[:, 0])/(val_rng[:, 1]-val_rng[:, 0]))
 
     # Create empty array of valid samples
-    ext_sam_set = np.array([[]])
+    ext_sam_set = []
 
     # Create lower and upper limits of the hypercube containing samples that
     # can influence the created hypercube
@@ -447,14 +447,11 @@ def _extract_sam_set(sam_set, val_rng):
     # Check which samples are within val_rng or just outside of it
     for i in range(n_sam):
         # If a sample is within the outer hypercube, save it
-        if(((lower_lim <= sam_set[i, :] <= upper_lim)).all()):
-            if(ext_sam_set.shape[1] == 0):
-                ext_sam_set = np.atleast_2d(sam_set[i])
-            else:
-                ext_sam_set = np.vstack([ext_sam_set, sam_set[i, :]])
+        if(((lower_lim <= sam_set[i, :])*(sam_set[i, :] <= upper_lim)).all()):
+            ext_sam_set.append(sam_set[i, :])
 
     # Return sam_set
-    return(ext_sam_set)
+    return(np.array(ext_sam_set))
 
 
 # %% DOCTEST
