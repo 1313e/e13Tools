@@ -147,7 +147,6 @@ class CenteredFormatter(mpl.ticker.ScalarFormatter):
 
     def __call__(self, value, pos=None):
         if(value == self.center):
-            print(self.center)
             return("")
         else:
             return(mpl.ticker.ScalarFormatter.__call__(self, value, pos))
@@ -394,9 +393,3 @@ def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
         string = ''.join([string, '\ ', unit_string])
 
     return(string)
-
-
-# %% DOCTEST
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod()

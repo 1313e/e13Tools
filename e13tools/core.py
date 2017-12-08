@@ -38,9 +38,3 @@ class ShapeError(Exception):
     """
 
     pass
-
-
-# %% DOCTEST
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod()

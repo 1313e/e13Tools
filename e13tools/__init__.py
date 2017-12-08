@@ -71,6 +71,7 @@ def _compare_versions(a, b):
     else:
         return(False)
 
+
 # Check for Python 2.7 or 3.4 and higher
 if sys.version_info[0] == 2:
     if not sys.version_info[1] == 7:
@@ -108,9 +109,3 @@ else:
         raise ImportError("AstroPy %s was detected. e13Tools requires "
                           "AstroPy %s or later" % (astropy.__version__,
                                                    __version__astropy__))
-
-
-# %% DOCTEST
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod()

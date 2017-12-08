@@ -25,9 +25,3 @@ from .core import *
 
 __all__ = []
 __all__.extend(core.__all__)
-
-
-# %% DOCTEST
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod()

@@ -20,23 +20,26 @@ __all__ = ['diff', 'is_PD', 'nCr', 'nearest_PD', 'nPr', 'transposeC']
 
 
 # %% FUNCTIONS
-def diff(array1, array2=None, flatten=True):
+def diff(array1, array2=None, axis=0, flatten=True):
     """
     Calculates the pair-wise differences between inputs `array1` and `array2`
-    in the outer dimension. If the biggest input is 2D, the output contains the
-    1D pair-wise differences. If this input is 1D, the output contains the 0D
-    pair-wise differences.
+    along the given `axis`.
 
     Parameters
     ----------
-    array1 : 0D, 1D or 2D array_like
+    array1 : array_like
         One of the inputs used to calculate the pair-wise differences.
 
     Optional
     --------
-    array2 : 0D, 1D or 2D array_like. Default: None
+    array2 : array_like. Default: None
         The other input used to calculate the pair-wise differences.
         If *None*, `array2` is equal to `array1`.
+        If not *None*, the length of all axes except `axis` must be equal for
+        both arrays.
+    axis : int. Default: 0
+        Along which axis to calculate the pair-wise differences. A negative
+        value counts from the last to the first axis.
     flatten : bool. Default: True
         If `array2` is *None*, whether or not to calculate all pair-wise
         differences.
@@ -47,14 +50,14 @@ def diff(array1, array2=None, flatten=True):
 
     Returns
     -------
-    diff_array : 0D, 1D, 2D or 3D array_like
+    diff_array : array_like
         Depending on the input parameters, an array with n dimensions
-        containing the pair-wise differences between `array1` and `array2` in
-        the outer dimension.
+        containing the pair-wise differences between `array1` and `array2`
+        along the given `axis`.
 
     Examples
     --------
-    Using two matrices returns the pair-wise differences in vectors:
+    Using two matrices returns the pair-wise differences in row-vectors:
 
         >>> mat1 = np.array([[1, 2, 3], [4, 5, 6]])
         >>> mat2 = np.array([[4, 5, 6], [7, 8, 9]])
@@ -66,8 +69,26 @@ def diff(array1, array2=None, flatten=True):
                 [-3., -3., -3.]]])
 
 
-    Only using a single matrix returns the pair-wise differences in vectors in
-    that matrix (either flattened or not):
+    Setting `axis` to 1 returns the pair-wise differences in column-vectors:
+
+        >>> mat1 = np.array([[1, 2, 3], [4, 5, 6]])
+        >>> mat2 = np.array([[4, 5, 6], [7, 8, 9]])
+        >>> diff(mat1, mat2, axis=1)
+        array([[[-3., -3.],
+                [-4., -4.],
+                [-5., -5.]],
+        <BLANKLINE>
+               [[-2., -2.],
+                [-3., -3.],
+                [-4., -4.]],
+        <BLANKLINE>
+               [[-1., -1.],
+                [-2., -2.],
+                [-3., -3.]]])
+
+
+    Only using a single matrix returns the pair-wise differences in row-vectors
+    in that matrix (either flattened or not):
 
         >>> mat = np.array([[1, 2, 3], [4, 5, 6]])
         >>> diff(mat, flatten=True)
@@ -93,66 +114,43 @@ def diff(array1, array2=None, flatten=True):
 
     # If array2 is not provided, both arrays are the same
     if array2 is None:
-        # Make sure that input are numpy arrays
+        # Make sure that input is a numpy array
         array1 = np.array(array1)
 
-        # Obtain the dimensionality of the input argument
-        n_dim = array1.ndim
-
-        # If n_dim is more than two, raise an Exception
-        if(n_dim > 2):
-            raise e13.ShapeError("Input must be a scalar, vector or matrix!")
-        # If a matrix is provided, calculate the difference between all vectors
-        elif(n_dim == 2):
-            # Obtain the number of samples and values in the input matrix
-            n_sam, n_val = array1.shape
-
-            # If only the off-diagonal terms are requested
-            if flatten is True:
-                n_diff = n_sam*(n_sam-1)//2
-                diff_array = np.zeros([n_diff, n_val])
-
-                dist = 0
-                for i in range(n_sam):
-                    diff_array[dist:dist+n_sam-i-1] = array1[i]-array1[i+1:]
-                    dist += n_sam-i-1
-
-                return(diff_array)
-            # If the full matrix is requested
-            else:
-                diff_array = np.zeros([n_sam, n_sam, n_val])
-
-                for i in range(n_sam):
-                    diff_array[i] = array1[i]-array1
-
-                return(diff_array)
-        # If a vector is provided, calculate the difference between all scalars
-        elif(n_dim == 1):
-            # Obtain the number of values in the input matrix
-            n_val = array1.size
-
-            # If only the off-diagonal terms are requested
-            if flatten is True:
-                n_diff = n_val*(n_val-1)//2
-                diff_array = np.zeros([n_diff])
-
-                dist = 0
-                for i in range(n_val):
-                    diff_array[dist:dist+n_val-i-1] = array1[i]-array1[i+1:]
-                    dist += n_val-i-1
-
-                return(diff_array)
-            # If the full matrix is requested
-            else:
-                diff_array = np.zeros([n_val, n_val])
-
-                for i in range(n_val):
-                    diff_array[i] = array1[i]-array1
-
-                return(diff_array)
-        # If a scalar is provided, simply return the difference
-        else:
+        # Check if a scalar has been provided and act accordingly
+        if(array1.ndim == 0):
             return(0)
+
+        # Swap axes in array to put the given axis as the first axis
+        try:
+            array1 = np.moveaxis(array1, axis, 0).copy()
+        except Exception as error:
+            raise e13.InputError("Invalid input given for axis (%s)" % (error))
+        else:
+            n_dim = array1.ndim
+            len_axis = array1.shape[0]
+
+        if flatten is True:
+            n_diff = len_axis*(len_axis-1)//2
+            diff_shape = list(array1.shape[1:n_dim])
+            diff_shape.insert(0, n_diff)
+            diff_array = np.zeros(diff_shape)
+
+            dist = 0
+            for i in range(len_axis):
+                diff_array[dist:dist+len_axis-i-1] = array1[i]-array1[i+1:]
+                dist += len_axis-i-1
+
+            return(diff_array)
+        else:
+            diff_shape = list(array1.shape)
+            diff_shape.insert(0, len_axis)
+            diff_array = np.zeros(diff_shape)
+
+            for i in range(len_axis):
+                diff_array[i] = array1[i]-array1
+
+            return(diff_array)
 
     # If array2 is provided, both arrays are different
     else:
@@ -160,63 +158,79 @@ def diff(array1, array2=None, flatten=True):
         array1 = np.array(array1)
         array2 = np.array(array2)
 
-        # Obtain the dimensionality of the input arguments
+        # Get number of dimensions
         n_dim1 = array1.ndim
         n_dim2 = array2.ndim
 
-        # If either n_dim is more than two, raise an Exception
-        if(n_dim1 > 2 or n_dim2 > 2):
-            raise e13.ShapeError("Input must be a scalar, vector or matrix!")
-        # If both are matrices, calculate the difference between all vectors
-        elif(n_dim1 == 2 and n_dim2 == 2):
-            # Get number of samples and values in both matrices
-            n_sam1, n_val1 = array1.shape
-            n_sam2, n_val2 = array2.shape
-
-            # Check if number of values are equal
-            if(n_val1 != n_val2):
-                raise e13.ShapeError("Input has incompatible number of values:"
-                                     " %s != %s" % (n_val1, n_val2))
-
-            diff_array = np.zeros([n_sam1, n_sam2, n_val1])
-
-            for i in range(n_sam1):
-                diff_array[i] = array1[i]-array2
-
-            return(diff_array)
-        # If both are vectors, calculate the difference between all scalars
-        elif(n_dim1 == 1 and n_dim2 == 1):
-            # Get number of values in both vectors
-            n_val1 = array1.size
-            n_val2 = array2.size
-
-            diff_array = np.zeros([n_val1, n_val2])
-
-            for i in range(n_val1):
-                diff_array[i] = array1[i]-array2
-
-            return(diff_array)
-        # If a matrix and a vector are provided, return the difference in
-        # vectors
-        elif(n_dim1+n_dim2 == 3):
-            # Obtain the length of the last dimension of the input arguments
-            dim_l1 = array1.shape[-1]
-            dim_l2 = array2.shape[-1]
-
-            # Check if the last dimension has the same length
-            if(dim_l1 != dim_l2):
-                raise e13.ShapeError("Last dimension of inputs do not match: "
-                                     "%s != %s" % (dim_l1, dim_l2))
-            else:
-                return(array1-array2)
-        # If a matrix and a scalar are provided, raise an Exception
-        elif(n_dim1+n_dim2 == 2):
-            raise e13.ShapeError("Pair-wise difference cannot be calculated "
-                                 "between a matrix and a vector!")
-        # If a vector and a scalar or two scalars are provided, return the
-        # difference in scalars
-        else:
+        # Check if both arrays are scalars and act accordingly
+        if(n_dim1 == n_dim2 == 0):
             return(array1-array2)
+        else:
+            array1 = np.atleast_1d(array1)
+            array2 = np.atleast_1d(array2)
+            n_dim1 = array1.ndim
+            n_dim2 = array2.ndim
+
+        # If both arrays have the same number of dimensions
+        if(n_dim1 == n_dim2):
+            # Swap axes in arrays to put the given axis as the first axis
+            try:
+                array1 = np.moveaxis(array1, axis, 0).copy()
+                array2 = np.moveaxis(array2, axis, 0).copy()
+            except Exception as error:
+                raise e13.InputError("Invalid input given for axis (%s)"
+                                     % (error))
+            else:
+                len_axis1 = array1.shape[0]
+
+            # Check if the length of all other axes are the same
+            if(array1.shape[1:n_dim1] != array2.shape[1:n_dim2]):
+                raise e13.ShapeError("Input arrays do not have the same axes "
+                                     "lengths: %s != %s"
+                                     % (array1.shape[1:n_dim1],
+                                        array2.shape[1:n_dim2]))
+
+            diff_shape = list(array2.shape)
+            diff_shape.insert(0, len_axis1)
+            diff_array = np.zeros(diff_shape)
+
+            for i in range(len_axis1):
+                diff_array[i] = array1[i]-array2
+
+            return(diff_array)
+
+        else:
+            # Swap axes in the bigger array to put the given axis as first axis
+            if(n_dim1 > n_dim2):
+                try:
+                    array1 = np.moveaxis(array1, axis, 0).copy()
+                except Exception as error:
+                    raise e13.InputError("Invalid input given for axis (%s)"
+                                         % (error))
+
+                # Check if the length of all other axes are the same
+                if(array1.shape[1:n_dim1] != array2.shape):
+                    raise e13.ShapeError("Input arrays do not have the same "
+                                         "axes lengths: %s != %s"
+                                         % (array1.shape[1:n_dim1],
+                                            array2.shape))
+                else:
+                    return(array1-array2)
+            else:
+                try:
+                    array2 = np.moveaxis(array2, axis, 0).copy()
+                except Exception as error:
+                    raise e13.InputError("Invalid input given for axis (%s)"
+                                         % (error))
+
+                # Check if the length of all other axes are the same
+                if(array1.shape != array2.shape[1:n_dim2]):
+                    raise e13.ShapeError("Input arrays do not have the same "
+                                         "axes lengths: %s != %s"
+                                         % (array1.shape,
+                                            array2.shape[1:n_dim2]))
+                else:
+                    return(array1-array2)
 
 
 def is_PD(matrix):
@@ -478,7 +492,7 @@ def nearest_PD(matrix):
     mat_H = (matrix+transposeC(matrix))/2
 
     # Perform singular value decomposition
-    U, S, VH = np.linalg.svd(mat_H)
+    _, S, VH = np.linalg.svd(mat_H)
 
     # Compute the symmetric polar factor of mat_H
     spf = np.dot(transposeC(VH), np.dot(np.diag(S), VH))
@@ -606,9 +620,3 @@ def transposeC(array):
 
     # Take the transpose of the conjugate or the input array and return it
     return(np.transpose(np.conjugate(array)))
-
-
-# %% DOCTEST
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod()

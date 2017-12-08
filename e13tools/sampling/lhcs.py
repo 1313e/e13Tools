@@ -14,9 +14,9 @@ pyDOE-package (version: 0.3.8). URL: <https://github.com/tisimst/pyDOE>
 # %% IMPORTS
 from __future__ import division, absolute_import, print_function
 
+from collections import Counter
 import e13tools as e13
 import numpy as np
-from collections import Counter
 
 __all__ = ['lhs']
 
@@ -166,7 +166,7 @@ def lhs(n_sam, n_val, val_rng=None, criterion='random', iterations=1000,
     constraints = np.array(constraints)
 
     # Check if valid 'criterion' is given
-    if not criterion.lower() in ('center', 'c', 'maximin', 'm',
+    if criterion.lower() not in ('center', 'c', 'maximin', 'm',
                                  'centermaximin', 'cm', 'correlation', 'corr',
                                  'maximincorr', 'multi', 'random', 'r'):
         raise ValueError("Invalid value for 'criterion': %s" % (criterion))
@@ -175,7 +175,7 @@ def lhs(n_sam, n_val, val_rng=None, criterion='random', iterations=1000,
     if(constraints.shape[-1] == 0):
         # If constraints is empty, there are no constraints
         constraints = None
-    elif not criterion.lower() in ('maximin', 'm', 'centermaximin', 'cm',
+    elif criterion.lower() not in ('maximin', 'm', 'centermaximin', 'cm',
                                    'correlation', 'corr', 'maximincorr',
                                    'multi'):
         # If non-compatible criterion is provided, there are no constraints
@@ -296,7 +296,7 @@ def _lhs_maximin(n_sam, n_val, maximin_type, iterations, constraints):
     d_max = 0
 
     # Maximize the minimum distance between points
-    for i in range(iterations):
+    for _ in range(iterations):
         if(maximin_type == 'maximin'):
             sam_set_try = _lhs_classic(n_sam, n_val)
         else:
@@ -326,7 +326,7 @@ def _lhs_correlation(n_sam, n_val, iterations, constraints):
     c_min = np.infty
 
     # Minimize cross-correlation between samples
-    for i in range(iterations):
+    for _ in range(iterations):
         sam_set_try = _lhs_classic(n_sam, n_val)
 
         # Calculate the correlation between all points
@@ -349,7 +349,7 @@ def _lhs_maximincorr(n_sam, n_val, iterations, constraints):
 
     # Maximize the minimum distance and minimize the cross-correlation between
     # samples
-    for i in range(iterations):
+    for _ in range(iterations):
         sam_set_try = _lhs_classic(n_sam, n_val)
 
         # If constraints is not None, then it needs to be added to sam_set_try
@@ -390,9 +390,6 @@ def _get_p_dist(sam_set):
         Vector containing all pair-wise point distances.
 
     """
-
-    # Obtain number of values in number of samples
-    n_sam, n_val = sam_set.shape
 
     # Calculate pair-wise point distances
     p_dist_vec = np.linalg.norm(e13.math.diff(sam_set, flatten=True), axis=-1)
@@ -452,9 +449,3 @@ def _extract_sam_set(sam_set, val_rng):
 
     # Return sam_set
     return(np.array(ext_sam_set))
-
-
-# %% DOCTEST
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
