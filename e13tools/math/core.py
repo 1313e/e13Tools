@@ -672,31 +672,21 @@ def rot90(array, axes=(0, 1), rot_axis='center', n_rot=1):
     --------
     Using an array with just two dimensions:
 
-        >>> array = np.array([[ 0.75,  0.  ],
-                              [ 0.25,  1.  ],
-                              [ 1.  ,  0.75],
-                              [ 0.5 ,  0.5 ],
-                              [ 0.  ,  0.25]])
+        >>> array = np.array([[0.75, 0], [0.25, 1], [1, 0.75], [0, 0.25]])
         >>> rot90(array)
         array([[ 1.  ,  0.75],
                [ 0.  ,  0.25],
                [ 0.25,  1.  ],
-               [ 0.5 ,  0.5 ],
                [ 0.75,  0.  ]])
 
 
     Using the same array, but rotating it around a different point:
 
-        >>> array = np.array([[ 0.75,  0.  ],
-                              [ 0.25,  1.  ],
-                              [ 1.  ,  0.75],
-                              [ 0.5 ,  0.5 ],
-                              [ 0.  ,  0.25]])
+        >>> array = np.array([[0.75, 0], [0.25, 1], [1, 0.75], [0, 0.25]])
         >>> rot90(array, rot_axis=[0.2, 0.7])
         array([[ 0.9 ,  1.25],
                [-0.1 ,  0.75],
                [ 0.15,  1.5 ],
-               [ 0.4 ,  1.  ],
                [ 0.65,  0.5 ]])
 
     """
