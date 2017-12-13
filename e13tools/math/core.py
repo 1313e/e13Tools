@@ -6,6 +6,40 @@ Math Core
 Provides a collection of functions that are core to Math and are imported
 automatically.
 
+
+Available functions
+-------------------
+diff()
+    Calculates the pair-wise differences between inputs `array1` and `array2`
+    along the given axis.
+
+is_PD()
+    Checks if `matrix` is positive-definite or not, by using the
+    :func:`~np.linalg.cholesky` function. It is required for `matrix` to be
+    Hermitian.
+
+nCr()
+    For a given set S of `n` elements, returns the number of unordered
+    arrangements ("combinations") of length `r` one can make with S.
+    Returns zero if `r` > `n` and `repeat` is *False*.
+
+nearest_PD()
+    Find the nearest positive-definite matrix to the input `matrix`.
+
+nPr()
+    For a given set S of `n` elements, returns the number of ordered
+    arrangements ("permutations") of length `r` one can make with S.
+    Returns zero if `r` > `n` and `repeat` is *False*.
+
+rot90()
+    Rotates the given `array` by 90 degrees around the point `rot_axis` in the
+    given `axes`. This function is different from NumPy's :func:`~numpy.rot90`
+    function in that every column (2nd axis) defines a different dimension
+    instead of every axis.
+
+transposeC()
+    Returns the (conjugate) transpose of the input `array`.
+
 """
 
 
@@ -16,7 +50,7 @@ from math import factorial as _factorialm
 import e13tools as e13
 import numpy as np
 
-__all__ = ['diff', 'is_PD', 'nCr', 'nearest_PD', 'nPr', 'transposeC']
+__all__ = ['diff', 'is_PD', 'nCr', 'nearest_PD', 'nPr', 'rot90', 'transposeC']
 
 
 # %% FUNCTIONS
@@ -50,7 +84,7 @@ def diff(array1, array2=None, axis=0, flatten=True):
 
     Returns
     -------
-    diff_array : array_like
+    diff_array : :obj:`~numpy.ndarray` object
         Depending on the input parameters, an array with n dimensions
         containing the pair-wise differences between `array1` and `array2`
         along the given `axis`.
@@ -101,6 +135,16 @@ def diff(array1, array2=None, axis=0, flatten=True):
                 [ 0.,  0.,  0.]]])
 
 
+    Using a matrix and a vector returns the pair-wise differences in
+    row-vectors:
+
+        >>> mat = np.array([[1, 2, 3], [4, 5, 6]])
+        >>> vec = np.array([7, 8, 9])
+        >>> diff(mat, vec)
+        array([[-6, -6, -6],
+               [-3, -3, -3]])
+
+
     Using two vectors returns the pair-wise differences in scalars:
 
         >>> vec1 = np.array([1, 2, 3])
@@ -127,34 +171,44 @@ def diff(array1, array2=None, axis=0, flatten=True):
         except Exception as error:
             raise e13.InputError("Invalid input given for axis (%s)" % (error))
         else:
+            # Obtain the dimensionality and axis-length
             n_dim = array1.ndim
             len_axis = array1.shape[0]
 
+        # If only unique pair-wise differences are requested
         if flatten is True:
+            # Obtain the shape of the resulting array and initialize it
             n_diff = len_axis*(len_axis-1)//2
-            diff_shape = list(array1.shape[1:n_dim])
-            diff_shape.insert(0, n_diff)
+            diff_shape = np.concatenate([[n_diff], array1.shape[1:n_dim]])
             diff_array = np.zeros(diff_shape)
 
+            # Initialize empty variable holding the distance in index of last i
             dist = 0
+
+            # Fill array
             for i in range(len_axis):
                 diff_array[dist:dist+len_axis-i-1] = array1[i]-array1[i+1:]
                 dist += len_axis-i-1
 
+            # Return it
             return(diff_array)
+
+        # If all difference are requested
         else:
-            diff_shape = list(array1.shape)
-            diff_shape.insert(0, len_axis)
+            # Obtain the shape of the resulting array and initialize it
+            diff_shape = np.concatenate([[len_axis], array1.shape])
             diff_array = np.zeros(diff_shape)
 
+            # Fill array
             for i in range(len_axis):
                 diff_array[i] = array1[i]-array1
 
+            # Return it
             return(diff_array)
 
     # If array2 is provided, both arrays are different
     else:
-        # Make sure that input are numpy arrays
+        # Make sure that inputs are numpy arrays
         array1 = np.array(array1)
         array2 = np.array(array2)
 
@@ -165,11 +219,6 @@ def diff(array1, array2=None, axis=0, flatten=True):
         # Check if both arrays are scalars and act accordingly
         if(n_dim1 == n_dim2 == 0):
             return(array1-array2)
-        else:
-            array1 = np.atleast_1d(array1)
-            array2 = np.atleast_1d(array2)
-            n_dim1 = array1.ndim
-            n_dim2 = array2.ndim
 
         # If both arrays have the same number of dimensions
         if(n_dim1 == n_dim2):
@@ -181,6 +230,7 @@ def diff(array1, array2=None, axis=0, flatten=True):
                 raise e13.InputError("Invalid input given for axis (%s)"
                                      % (error))
             else:
+                # Obtain axis-length
                 len_axis1 = array1.shape[0]
 
             # Check if the length of all other axes are the same
@@ -190,15 +240,18 @@ def diff(array1, array2=None, axis=0, flatten=True):
                                      % (array1.shape[1:n_dim1],
                                         array2.shape[1:n_dim2]))
 
-            diff_shape = list(array2.shape)
-            diff_shape.insert(0, len_axis1)
+            # Obtain the shape of the resulting array and initialize it
+            diff_shape = np.concatenate([[len_axis1], array2.shape])
             diff_array = np.zeros(diff_shape)
 
+            # Fill array
             for i in range(len_axis1):
                 diff_array[i] = array1[i]-array2
 
+            # Return it
             return(diff_array)
 
+        # If the arrays have different number of dimensions
         else:
             # Swap axes in the bigger array to put the given axis as first axis
             if(n_dim1 > n_dim2):
@@ -215,6 +268,7 @@ def diff(array1, array2=None, axis=0, flatten=True):
                                          % (array1.shape[1:n_dim1],
                                             array2.shape))
                 else:
+                    # Return difference array
                     return(array1-array2)
             else:
                 try:
@@ -230,6 +284,7 @@ def diff(array1, array2=None, axis=0, flatten=True):
                                          % (array1.shape,
                                             array2.shape[1:n_dim2]))
                 else:
+                    # Return difference array
                     return(array1-array2)
 
 
@@ -382,7 +437,7 @@ def nearest_PD(matrix):
 
     Returns
     -------
-    mat_PD : 2D array_like
+    mat_PD : 2D :obj:`~numpy.ndarray` object
         The nearest positive-definite matrix to the input `matrix`.
 
     Examples
@@ -578,7 +633,139 @@ def nPr(n, r, repeat=False):
         return(_factorialm(n)//_factorialm(n-r))
 
 
-def transposeC(array):
+def rot90(array, axes=(0, 1), rot_axis='center', n_rot=1):
+    """
+    Rotates the given `array` by 90 degrees around the point `rot_axis` in the
+    given `axes`. This function is different from NumPy's :func:`~numpy.rot90`
+    function in that every column (2nd axis) defines a different dimension
+    instead of every axis.
+
+    Parameters
+    ----------
+    array : 2D array_like
+        Array with shape [`n_pts`, `n_dim`] with `n_pts` the number of points
+        and `n_dim` the number of dimensions. Requires: `n_dim` > 1.
+
+    Optional
+    --------
+    axes : 1D array_like with 2 ints. Default: (0, 1)
+        Array containing the axes defining the rotation plane. Rotation is from
+        the first axis towards the second. Can be omitted if `rot_axis` has
+        length `n_dim`.
+    rot_axis : 1D array_like of length 2/`n_dim` or 'center'. Default: 'center'
+        If 'center', the rotation axis is chosen in the center of the minimum
+        and maximum values found in the given `axes`.
+        If 1D array of length 2, the rotation axis is chosen around the given
+        values in the given `axes`.
+        If 1D array of length `n_dim`, the rotation axis is chosen around the
+        first two non-zero values.
+    n_rot : int. Default: 1
+        Amount of times to rotate `array` by 90 degrees.
+
+    Returns
+    -------
+    array_rot : 2D :obj:`~numpy.ndarray` object
+        Array with shape [`n_pts`, `n_dim`] that has been rotated by 90 degrees
+        `n_rot` times.
+
+    Examples
+    --------
+    Using an array with just two dimensions:
+
+        >>> array = np.array([[ 0.75,  0.  ],
+                              [ 0.25,  1.  ],
+                              [ 1.  ,  0.75],
+                              [ 0.5 ,  0.5 ],
+                              [ 0.  ,  0.25]])
+        >>> rot90(array)
+        array([[ 1.  ,  0.75],
+               [ 0.  ,  0.25],
+               [ 0.25,  1.  ],
+               [ 0.5 ,  0.5 ],
+               [ 0.75,  0.  ]])
+
+
+    Using the same array, but rotating it around a different point:
+
+        >>> array = np.array([[ 0.75,  0.  ],
+                              [ 0.25,  1.  ],
+                              [ 1.  ,  0.75],
+                              [ 0.5 ,  0.5 ],
+                              [ 0.  ,  0.25]])
+        >>> rot90(array, rot_axis=[0.2, 0.7])
+        array([[ 0.9 ,  1.25],
+               [-0.1 ,  0.75],
+               [ 0.15,  1.5 ],
+               [ 0.4 ,  1.  ],
+               [ 0.65,  0.5 ]])
+
+    """
+
+    # Make sure that matrix is a numpy array
+    array = np.array(array)
+
+    # Check if matrix is indeed two-dimensional and obtain the lengths
+    if(array.ndim != 2):
+        raise e13.ShapeError("Input must be two-dimensional!")
+    else:
+        n_pts, n_dim = array.shape
+
+    # Check axes
+    axes = np.array(axes)
+    if(axes.ndim == 1 and axes.shape[0] == 2 and (axes < n_dim).all()):
+        pass
+    else:
+        raise e13.InputError("Input argument 'axes' has invalid shape or "
+                             "values!")
+
+    # Check what rot_axis is and act accordingly
+    if(rot_axis == 'center'):
+        rot_axis = np.zeros(2)
+        rot_axis[0] = abs(max(array[:, axes[0]])-min(array[:, axes[0]]))/2
+        rot_axis[1] = abs(max(array[:, axes[1]])-min(array[:, axes[1]]))/2
+    elif(isinstance(rot_axis, str)):
+        raise ValueError("Input argument 'rot_axis' can only have 'center' as"
+                         " a string value!")
+    else:
+        rot_axis = np.array(rot_axis)
+        if(rot_axis.ndim == 1 and rot_axis.shape[0] == 2):
+            pass
+        elif(rot_axis.ndim == 1 and rot_axis.shape[0] == n_dim):
+            axes = []
+            for i in range(n_dim):
+                if(rot_axis[i] != 0):
+                    axes.append(i)
+                if(len(axes) == 2):
+                    break
+            else:
+                raise ValueError("Input argument 'rot_axis' does not have two "
+                                 "non-zero values!")
+            rot_axis = rot_axis[axes]
+        else:
+            raise e13.ShapeError("Input argument 'rot_axis' has invalid "
+                                 "shape!")
+
+    # Calculate the rotated matrix
+    array_rot = array.copy()
+    if(n_rot % 4 == 0):
+        return(array_rot)
+    elif(n_rot % 4 == 1):
+        array_rot[:, axes[0]] = rot_axis[0]+rot_axis[1]-array[:, axes[1]]
+        array_rot[:, axes[1]] = rot_axis[1]-rot_axis[0]+array[:, axes[0]]
+    elif(n_rot % 4 == 2):
+        array_rot[:, axes[0]] = 2*rot_axis[0]-array[:, axes[0]]
+        array_rot[:, axes[1]] = 2*rot_axis[1]-array[:, axes[1]]
+    elif(n_rot % 4 == 3):
+        array_rot[:, axes[0]] = rot_axis[0]-rot_axis[1]+array[:, axes[1]]
+        array_rot[:, axes[1]] = rot_axis[1]+rot_axis[0]-array[:, axes[0]]
+    else:
+        raise e13.InputError("Input argument 'n_rot' is invalid!")
+
+    # Return it
+    return(array_rot)
+
+
+def transposeC(array, axes=None):
     """
     Returns the (conjugate) transpose of the input `array`.
 
@@ -587,9 +774,15 @@ def transposeC(array):
     array : array_like
         Input array that needs to be transposed.
 
+    Optional
+    --------
+    axes : 1D array_like of ints or None. Default: None
+        If *None*, reverse the dimensions.
+        Else, permute the axes according to the values given.
+
     Returns
     -------
-    mat_t : array_like
+    array_t : :obj:`~numpy.ndarray` object
         Input `array` with its axes transposed.
 
     Examples
@@ -619,4 +812,4 @@ def transposeC(array):
     """
 
     # Take the transpose of the conjugate or the input array and return it
-    return(np.transpose(np.conjugate(array)))
+    return(np.transpose(np.conjugate(array), axes))

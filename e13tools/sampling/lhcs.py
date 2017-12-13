@@ -14,7 +14,6 @@ pyDOE-package (version: 0.3.8). URL: <https://github.com/tisimst/pyDOE>
 # %% IMPORTS
 from __future__ import division, absolute_import, print_function
 
-from collections import Counter
 import e13tools as e13
 import numpy as np
 
@@ -57,7 +56,7 @@ def lhs(n_sam, n_val, val_rng=None, criterion='random', iterations=1000,
 
     Returns
     -------
-    sam_set : 2D array_like
+    sam_set : 2D :obj:`~numpy.ndarray` object
         Sample set array of shape [`n_sam`, `n_val`].
 
     Examples
@@ -386,7 +385,7 @@ def _get_p_dist(sam_set):
 
     Returns
     -------
-    p_dist_vec : 1D array_like
+    p_dist_vec : 1D :obj:`~numpy.ndarray` object
         Vector containing all pair-wise point distances.
 
     """
@@ -406,15 +405,15 @@ def _extract_sam_set(sam_set, val_rng):
 
     Parameters
     ----------
-    sam_set : 2D array_like
+    sam_set : 2D :obj:`~numpy.ndarray` object
         Sample set containing the samples that require extraction.
-    val_rng : 2D array_like or None
+    val_rng : 2D :obj:`~numpy.ndarray` object or None
         Array defining the lower and upper limits of every value in a sample.
         If *None*, output is normalized.
 
     Returns
     -------
-    ext_sam_set : 2D array_like
+    ext_sam_set : 2D :obj:`~numpy.ndarray` object
         Sample set containing the extracted samples.
 
     """

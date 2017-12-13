@@ -6,6 +6,32 @@ PyPlot Core
 Provides a collection of functions that are core to PyPlot and are imported
 automatically.
 
+Available functions
+-------------------
+apu2tex()
+    Transform a :class:`~astropy.units.core.Unit` object into a (La)TeX string
+    for usage in a :mod:`~matplotlib.pyplot.figure`.
+
+center_spines()
+    Centers the axis spines at <`centerx`, `centery`> on the axis `ax` in a
+    :mod:`~matplotlib.pyplot.figure`. Centers the axis spines at the origin by
+    default.
+
+draw_textline()
+    Draws a line on the axis `ax` in a
+    :mod:`~matplotlib.pyplot.figure` instance and prints `text`
+    on top.
+
+f2tex()
+    Transform a value into a (La)TeX string for usage in a
+    :mod:`~matplotlib.pyplot.figure`.
+
+q2tex()
+    Combination of :func:`~e13tools.e13pyplot.f2tex` and
+    :func:`~e13tools.e13pyplot.apu2tex`.
+    Transform a :class:`~astropy.units.quantity.Quantity` object into a (La)TeX
+    string for usage in a :mod:`~matplotlib.pyplot.figure`.
+
 """
 
 
@@ -24,8 +50,8 @@ __all__ = ['apu2tex', 'center_spines', 'draw_textline', 'f2tex', 'q2tex']
 # %% FUNCTIONS
 def apu2tex(unit, unitfrac=False):
     """
-    Transform an :class:`~astropy.units.core.Unit` object into a (La)TeX string
-    for usage in :mod:`~matplotlib.pyplot.figure`.
+    Transform a :class:`~astropy.units.core.Unit` object into a (La)TeX string
+    for usage in a :mod:`~matplotlib.pyplot.figure`.
 
     Parameters
     ----------
@@ -255,7 +281,7 @@ def draw_textline(text, x=None, y=None, pos='start', linestyle='k:', ax=None):
 
 def f2tex(value, sdigits=4, power=3, nobase1=True):
     """
-    Transform a value into a (La)TeX string for usage in
+    Transform a value into a (La)TeX string for usage in a
     :mod:`~matplotlib.pyplot.figure`.
 
     Parameters
@@ -319,8 +345,8 @@ def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
     Combination of :func:`~e13tools.e13pyplot.f2tex` and
     :func:`~e13tools.e13pyplot.apu2tex`.
 
-    Transform a quantity into a (La)TeX string for usage in
-    :mod:`~matplotlib.pyplot.figure`.
+    Transform a :class:`~astropy.units.quantity.Quantity` object into a (La)TeX
+    string for usage in a :mod:`~matplotlib.pyplot.figure`.
 
     Parameters
     ----------
