@@ -19,6 +19,8 @@ lhcs
 # %% IMPORTS
 from __future__ import division, absolute_import, print_function
 
-from .lhcs import lhs
+from . import lhcs
+from .lhcs import *
 
-__all__ = ['lhs']
+__all__ = []
+__all__.extend(lhcs.__all__)

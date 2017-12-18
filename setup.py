@@ -2,14 +2,11 @@
 
 from setuptools import setup, find_packages
 from codecs import open
+from e13tools.version import version as __version__
 
 # Get the long description from the README file
 with open('README.rst', 'r') as f:
     long_description = f.read()
-
-# Get the version
-with open('e13tools/VERSION', 'r') as version_file:
-    __version__ = version_file.read().strip()
 
 setup(name="e13tools",
       version=__version__,
@@ -32,7 +29,7 @@ setup(name="e13tools",
           ],
       keywords='e13tools utilities sampling',
       python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, <4',
-      packages=find_packages(exclude=['tests']),
+      packages=find_packages(exclude=['tests', 'trash']),
       package_dir={'e13tools': "e13tools"},
       include_package_data=True,
       install_requires=['numpy>=1.8', 'matplotlib>=1.4.3', 'astropy>=1.3'],

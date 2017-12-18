@@ -38,7 +38,7 @@ q2tex()
 # %% IMPORTS
 from __future__ import division, absolute_import, print_function
 
-import e13tools as e13
+from e13tools import InputError
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -276,7 +276,7 @@ def draw_textline(text, x=None, y=None, pos='start', linestyle='k:', ax=None):
         elif(ax.set_xlim()[1] >= x and ax.set_xlim()[1] <= x-0.1*ax_xsize):
             ax.set_xlim(ax.set_xlim()[0], x-0.1*ax_xsize)
     else:
-        raise e13.InputError('ERROR: No single line axis was given!')
+        raise InputError('ERROR: No single line axis was given!')
 
 
 def f2tex(value, sdigits=4, power=3, nobase1=True):

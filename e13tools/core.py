@@ -20,10 +20,13 @@ ShapeError
 # %% IMPORTS
 from __future__ import division, absolute_import, print_function
 
+import six
+import distutils
+
 __all__ = ['InputError', 'ShapeError']
 
 
-# %% FUNCTIONS
+# %% CLASSES
 # Define Error class for wrong inputs
 class InputError(Exception):
     """
@@ -46,3 +49,19 @@ class ShapeError(Exception):
     """
 
     pass
+
+
+# %% FUNCTIONS
+def _compare_versions(a, b):
+    "Return True if `a` is greater than or equal to `b`."
+    if a:
+        if six.PY3:
+            if isinstance(a, bytes):
+                a = a.decode('ascii')
+            if isinstance(b, bytes):
+                b = b.decode('ascii')
+        a = distutils.version.LooseVersion(a)
+        b = distutils.version.LooseVersion(b)
+        return(a >= b)
+    else:
+        return(False)

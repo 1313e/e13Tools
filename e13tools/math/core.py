@@ -46,9 +46,10 @@ transposeC()
 # %% IMPORTS
 from __future__ import division, absolute_import, print_function
 
-from math import factorial as _factorialm
-import e13tools as e13
+from e13tools import InputError, ShapeError
+from math import factorial
 import numpy as np
+from numpy.linalg import cholesky, eigvals, LinAlgError, norm, svd
 
 __all__ = ['diff', 'is_PD', 'nCr', 'nearest_PD', 'nPr', 'rot90', 'transposeC']
 
@@ -66,7 +67,7 @@ def diff(array1, array2=None, axis=0, flatten=True):
 
     Optional
     --------
-    array2 : array_like. Default: None
+    array2 : array_like or None. Default: None
         The other input used to calculate the pair-wise differences.
         If *None*, `array2` is equal to `array1`.
         If not *None*, the length of all axes except `axis` must be equal for
@@ -169,7 +170,7 @@ def diff(array1, array2=None, axis=0, flatten=True):
         try:
             array1 = np.moveaxis(array1, axis, 0).copy()
         except Exception as error:
-            raise e13.InputError("Invalid input given for axis (%s)" % (error))
+            raise InputError("Input argument 'axis' is invalid (%s)" % (error))
         else:
             # Obtain the dimensionality and axis-length
             n_dim = array1.ndim
@@ -179,7 +180,10 @@ def diff(array1, array2=None, axis=0, flatten=True):
         if flatten is True:
             # Obtain the shape of the resulting array and initialize it
             n_diff = len_axis*(len_axis-1)//2
-            diff_shape = np.concatenate([[n_diff], array1.shape[1:n_dim]])
+            if(n_dim == 1):
+                diff_shape = [n_diff]
+            else:
+                diff_shape = np.concatenate([[n_diff], array1.shape[1:n_dim]])
             diff_array = np.zeros(diff_shape)
 
             # Initialize empty variable holding the distance in index of last i
@@ -227,18 +231,18 @@ def diff(array1, array2=None, axis=0, flatten=True):
                 array1 = np.moveaxis(array1, axis, 0).copy()
                 array2 = np.moveaxis(array2, axis, 0).copy()
             except Exception as error:
-                raise e13.InputError("Invalid input given for axis (%s)"
-                                     % (error))
+                raise InputError("Input argument 'axis' is invalid (%s)"
+                                 % (error))
             else:
                 # Obtain axis-length
                 len_axis1 = array1.shape[0]
 
             # Check if the length of all other axes are the same
             if(array1.shape[1:n_dim1] != array2.shape[1:n_dim2]):
-                raise e13.ShapeError("Input arrays do not have the same axes "
-                                     "lengths: %s != %s"
-                                     % (array1.shape[1:n_dim1],
-                                        array2.shape[1:n_dim2]))
+                raise ShapeError("Input arguments 'array1' and 'array2' do not"
+                                 " have the same axes lengths: %s != %s"
+                                 % (array1.shape[1:n_dim1],
+                                    array2.shape[1:n_dim2]))
 
             # Obtain the shape of the resulting array and initialize it
             diff_shape = np.concatenate([[len_axis1], array2.shape])
@@ -258,15 +262,15 @@ def diff(array1, array2=None, axis=0, flatten=True):
                 try:
                     array1 = np.moveaxis(array1, axis, 0).copy()
                 except Exception as error:
-                    raise e13.InputError("Invalid input given for axis (%s)"
-                                         % (error))
+                    raise InputError("Input argument 'axis' is invalid (%s)"
+                                     % (error))
 
                 # Check if the length of all other axes are the same
                 if(array1.shape[1:n_dim1] != array2.shape):
-                    raise e13.ShapeError("Input arrays do not have the same "
-                                         "axes lengths: %s != %s"
-                                         % (array1.shape[1:n_dim1],
-                                            array2.shape))
+                    raise ShapeError("Input arguments 'array1' and 'array2' do"
+                                     " not have the same axes lengths: %s != "
+                                     "%s"
+                                     % (array1.shape[1:n_dim1], array2.shape))
                 else:
                     # Return difference array
                     return(array1-array2)
@@ -274,15 +278,15 @@ def diff(array1, array2=None, axis=0, flatten=True):
                 try:
                     array2 = np.moveaxis(array2, axis, 0).copy()
                 except Exception as error:
-                    raise e13.InputError("Invalid input given for axis (%s)"
-                                         % (error))
+                    raise InputError("Input argument 'axis' is invalid (%s)"
+                                     % (error))
 
                 # Check if the length of all other axes are the same
                 if(array1.shape != array2.shape[1:n_dim2]):
-                    raise e13.ShapeError("Input arrays do not have the same "
-                                         "axes lengths: %s != %s"
-                                         % (array1.shape,
-                                            array2.shape[1:n_dim2]))
+                    raise ShapeError("Input arguments 'array1' and 'array2' do"
+                                     " not have the same axes lengths: %s != "
+                                     "%s"
+                                     % (array1.shape, array2.shape[1:n_dim2]))
                 else:
                     # Return difference array
                     return(array1-array2)
@@ -326,7 +330,7 @@ def is_PD(matrix):
         >>> is_PD(matrix)
         Traceback (most recent call last):
             ...
-        ValueError: Input matrix must be Hermitian!
+        ValueError: Input argument 'matrix' must be Hermitian!
 
 
     Using a complex matrix that is positive-definite:
@@ -345,23 +349,23 @@ def is_PD(matrix):
 
     # Check if input is a matrix
     if(matrix.ndim != 2):
-        raise e13.ShapeError("Input must be two-dimensional!")
+        raise ShapeError("Input argument 'matrix' must be two-dimensional!")
     else:
         rows, columns = matrix.shape
 
     # Check if matrix is a square
     if(rows != columns):
-        raise e13.ShapeError("Input matrix has shape [%s, %s]. Input matrix "
-                             "must be a square matrix!" % (rows, columns))
+        raise ShapeError("Input argument 'matrix' has shape [%s, %s]. 'matrix'"
+                         " must be a square matrix!" % (rows, columns))
 
     # Check if matrix is Hermitian
     if not((transposeC(matrix) == matrix).all()):
-        raise ValueError("Input matrix must be Hermitian!")
+        raise ValueError("Input argument 'matrix' must be Hermitian!")
 
     # Try to use Cholesky on matrix. If it fails,
     try:
-        np.linalg.cholesky(matrix)
-    except np.linalg.LinAlgError:
+        cholesky(matrix)
+    except LinAlgError:
         return(False)
     else:
         return(True)
@@ -410,20 +414,19 @@ def nCr(n, r, repeat=False):
 
     See also
     --------
-    - :func:`~e13tools.math.factorial`
     - :func:`~e13tools.math.nPr`: Returns the number of ordered arrangements.
 
     """
 
     # Check if repeat is True or not and act accordingly
     if repeat is True:
-        return(_factorialm(n+r-1)//(_factorialm(r)*_factorialm(n-1)))
+        return(factorial(n+r-1)//(factorial(r)*factorial(n-1)))
     elif r in (0, n):
         return(1)
     elif(r > n):
         return(0)
     else:
-        return(_factorialm(n)//(_factorialm(r)*_factorialm(n-r)))
+        return(factorial(n)//(factorial(r)*factorial(n-r)))
 
 
 def nearest_PD(matrix):
@@ -439,6 +442,33 @@ def nearest_PD(matrix):
     -------
     mat_PD : 2D :obj:`~numpy.ndarray` object
         The nearest positive-definite matrix to the input `matrix`.
+
+    Notes
+    -----
+    This is a Python port of John D'Errico's *nearestSPD* code [1]_, which is a
+    MATLAB implementation of Higham (1988) [2]_.
+
+    According to Higham (1988), the nearest positive semi-definite matrix in
+    the Frobenius norm to an arbitrary real matrix :math:`A` is shown to be
+
+        .. math:: \\frac{B+H}{2},
+
+    with :math:`H` being the symmetric polar factor of
+
+        .. math:: B=\\frac{A+A^T}{2}.
+
+    On page 2, the author mentions that all matrices :math:`A` are assumed to
+    be real, but that the method can be very easily extended to the complex
+    case. This can indeed be done easily by taking the conjugate transpose
+    instead of the normal transpose in the formula on the above.
+
+    References
+    ----------
+    .. [1] \
+        https://www.mathworks.com/matlabcentral/fileexchange/42885-nearestspd
+
+    .. [2] N.J. Higham, "Computing a Nearest Symmetric Positive Semidefinite
+           Matrix" (1988): https://doi.org/10.1016/0024-3795(88)90223-6
 
     Examples
     --------
@@ -468,7 +498,7 @@ def nearest_PD(matrix):
         >>> is_PD(matrix)
         Traceback (most recent call last):
             ...
-        ValueError: Input matrix must be Hermitian!
+        ValueError: Input argument 'matrix' must be Hermitian!
         >>> mat_PD = nearest_PD(matrix)
         >>> mat_PD
         array([[ 1.31461828,  2.32186616],
@@ -491,33 +521,6 @@ def nearest_PD(matrix):
         >>> is_PD(mat_PD)
         True
 
-    Notes
-    -----
-    This is a Python port of John D'Errico's *nearestSPD* code [1]_, which is a
-    MATLAB implementation of Higham (1988) [2]_.
-
-    According to Higham (1988), the nearest positive semi-definite matrix in
-    the Frobenius norm to an arbitrary real matrix :math:`A` is shown to be
-
-        .. math:: \\frac{B+H}{2},
-
-    with :math:`H` being the symmetric polar factor of
-
-        .. math:: B=\\frac{A+A^T}{2}.
-
-    On page 2, the author mentions that all matrices :math:`A` are assumed to
-    be real, but that the method can be very easily extended to the complex
-    case. This can indeed be done easily by taking the conjugate transpose
-    instead of the normal transpose in the formula on the above.
-
-    References
-    ----------
-    .. [1] \
-        https://www.mathworks.com/matlabcentral/fileexchange/42885-nearestspd
-
-    .. [2] N.J. Higham, "Computing a Nearest Symmetric Positive Semidefinite
-           Matrix" (1988): https://doi.org/10.1016/0024-3795(88)90223-6
-
     """
 
     # Make sure that matrix is a numpy array
@@ -525,14 +528,14 @@ def nearest_PD(matrix):
 
     # Check if input is a matrix
     if(matrix.ndim != 2):
-        raise e13.ShapeError("Input must be two-dimensional!")
+        raise ShapeError("Input argument 'matrix' must be two-dimensional!")
     else:
         rows, columns = matrix.shape
 
     # Check if matrix is a square
     if(rows != columns):
-        raise e13.ShapeError("Input matrix has shape [%s, %s]. Input matrix "
-                             "must be a square matrix!" % (rows, columns))
+        raise ShapeError("Input argument 'matrix' has shape [%s, %s]. 'matrix'"
+                         " must be a square matrix!" % (rows, columns))
 
     # Check if matrix is not already positive-definite
     try:
@@ -547,7 +550,7 @@ def nearest_PD(matrix):
     mat_H = (matrix+transposeC(matrix))/2
 
     # Perform singular value decomposition
-    _, S, VH = np.linalg.svd(mat_H)
+    _, S, VH = svd(mat_H)
 
     # Compute the symmetric polar factor of mat_H
     spf = np.dot(transposeC(VH), np.dot(np.diag(S), VH))
@@ -565,9 +568,9 @@ def nearest_PD(matrix):
     # If it is not, change it very slightly to make it positive-definite
     In = np.eye(rows)
     k = 1
-    spacing = np.spacing(np.linalg.norm(matrix))
+    spacing = np.spacing(norm(matrix))
     while is_PD(mat_PD) is not True:
-        min_eig_val = np.min(np.real(np.linalg.eigvals(mat_PD)))
+        min_eig_val = np.min(np.real(eigvals(mat_PD)))
         mat_PD += In*(-1*min_eig_val*pow(k, 2)+spacing)
         k += 1
     else:
@@ -617,7 +620,6 @@ def nPr(n, r, repeat=False):
 
     See also
     --------
-    - :func:`~e13tools.math.factorial`
     - :func:`~e13tools.math.nCr`: Returns the number of unordered arrangements.
 
     """
@@ -630,7 +632,7 @@ def nPr(n, r, repeat=False):
     elif(r > n):
         return(0)
     else:
-        return(_factorialm(n)//_factorialm(n-r))
+        return(factorial(n)//factorial(n-r))
 
 
 def rot90(array, axes=(0, 1), rot_axis='center', n_rot=1):
@@ -696,7 +698,7 @@ def rot90(array, axes=(0, 1), rot_axis='center', n_rot=1):
 
     # Check if matrix is indeed two-dimensional and obtain the lengths
     if(array.ndim != 2):
-        raise e13.ShapeError("Input must be two-dimensional!")
+        raise ShapeError("Input argument 'array' must be two-dimensional!")
     else:
         n_pts, n_dim = array.shape
 
@@ -705,14 +707,15 @@ def rot90(array, axes=(0, 1), rot_axis='center', n_rot=1):
     if(axes.ndim == 1 and axes.shape[0] == 2 and (axes < n_dim).all()):
         pass
     else:
-        raise e13.InputError("Input argument 'axes' has invalid shape or "
-                             "values!")
+        raise InputError("Input argument 'axes' has invalid shape or values!")
 
     # Check what rot_axis is and act accordingly
     if(rot_axis == 'center'):
         rot_axis = np.zeros(2)
-        rot_axis[0] = abs(max(array[:, axes[0]])-min(array[:, axes[0]]))/2
-        rot_axis[1] = abs(max(array[:, axes[1]])-min(array[:, axes[1]]))/2
+        rot_axis[0] =\
+            abs(np.max(array[:, axes[0]])+np.min(array[:, axes[0]]))/2
+        rot_axis[1] =\
+            abs(np.max(array[:, axes[1]])+np.min(array[:, axes[1]]))/2
     elif(isinstance(rot_axis, str)):
         raise ValueError("Input argument 'rot_axis' can only have 'center' as"
                          " a string value!")
@@ -732,8 +735,7 @@ def rot90(array, axes=(0, 1), rot_axis='center', n_rot=1):
                                  "non-zero values!")
             rot_axis = rot_axis[axes]
         else:
-            raise e13.ShapeError("Input argument 'rot_axis' has invalid "
-                                 "shape!")
+            raise ShapeError("Input argument 'rot_axis' has invalid shape!")
 
     # Calculate the rotated matrix
     array_rot = array.copy()
@@ -749,7 +751,7 @@ def rot90(array, axes=(0, 1), rot_axis='center', n_rot=1):
         array_rot[:, axes[0]] = rot_axis[0]-rot_axis[1]+array[:, axes[1]]
         array_rot[:, axes[1]] = rot_axis[1]+rot_axis[0]-array[:, axes[0]]
     else:
-        raise e13.InputError("Input argument 'n_rot' is invalid!")
+        raise InputError("Input argument 'n_rot' is invalid!")
 
     # Return it
     return(array_rot)
