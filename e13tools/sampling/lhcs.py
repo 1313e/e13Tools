@@ -5,6 +5,13 @@ LHCS
 ====
 Provides a Latin Hypercube Sampling method.
 
+Available functions
+-------------------
+lhd()
+    Generates a Latin Hypercube Design of `n_sam` samples, each with `n_val`
+    values. Method for choosing the 'best' Latin Hypercube Design depends on
+    the `method` and `criterion` that are used.
+
 """
 
 
@@ -20,6 +27,7 @@ __all__ = ['lhd']
 
 
 # %% FUNCTIONS
+# TODO: Check if MPI is possible
 def lhd(n_sam, n_val, val_rng=None, method='random', criterion=None,
         iterations=1000, get_score=False, quickscan=True, constraints=[[]]):
     """
@@ -52,7 +60,7 @@ def lhd(n_sam, n_val, val_rng=None, method='random', criterion=None,
         If `n_sam` == 1 or `n_val == 1`, `criterion` is set to the closest
         corresponding criterion if necessary.
     iterations : int. Default: 1000
-        Number of iterations for the maximin and correlation algorithms.
+        Number of iterations used for the criterion algorithm.
     get_score : bool. Default: False
         If *True*, the normalized maximin, correlation and multi scores are
         also returned if a criterion is used.
@@ -60,9 +68,8 @@ def lhd(n_sam, n_val, val_rng=None, method='random', criterion=None,
         If *True*, a faster but less precise algorithm will be used for the
         criterions.
     constraints : 2D array_like. Default: [[]]
-        If `constraints` is not empty and `criterion` is set to any maximin or
-        correlation criterion, `sam_set` + `constraints` will satisfy the given
-        criterion instead of `sam_set`.
+        If `constraints` is not empty and `criterion` is not *None*, `sam_set`
+        + `constraints` will satisfy the given criterion instead of `sam_set`.
 
     Returns
     -------
@@ -343,6 +350,7 @@ class Multi_LHD(object):
         p_dist = abs(diff(self.sam_set, axis=0, flatten=True))
         self.dist_avg = np.average(np.sum(p_dist, axis=-1))
 
+        # TODO: Look at calculation of mm_lower once more
         self.mm_lower = pow(nCr(self.n_sam, 2), 1/self.p)/self.dist_avg
         self.mm_upper = pow(np.sum(pow(np.sum(np.sort(p_dist, axis=0),
                                               axis=-1), -self.p)), 1/self.p)
@@ -484,6 +492,7 @@ class Multi_LHD(object):
         return(corr_val)
 
     def _get_mm_val_init(self, sam_set):
+        # TODO: Check if masked arrays are really faster than lots of indexing
         # Calculate the pair-wise point distances
         masked_idx = np.diag_indices(self.n_sam, ndim=2)
         p_dist = np.sum(abs(diff(sam_set, axis=0, flatten=False)), axis=-1)
@@ -501,14 +510,14 @@ class Multi_LHD(object):
         return(p_dist, mm_val)
 
     def _get_mm_val(self, sam_set, p_dist_old, mm_val_old, r1, r2):
-        p_dist = p_dist_old
+        p_dist = p_dist_old.copy()
         mm_val = np.zeros(self.n_sam)
 
         p_dist_r1 = np.sum(abs(diff(sam_set[r1], sam_set)), axis=-1)
         p_dist_r2 = np.sum(abs(diff(sam_set[r2], sam_set)), axis=-1)
 
-        p_dist[r1] = p_dist_r1
-        p_dist[r2] = p_dist_r2
+        p_dist[r1] = p_dist[:, r1] = p_dist_r1
+        p_dist[r2] = p_dist[:, r2] = p_dist_r2
         mm_val[r1] = pow(np.sum(pow(p_dist_r1[np.arange(self.n_sam) != r1],
                                     -self.p)), 1/self.p)
         mm_val[r2] = pow(np.sum(pow(p_dist_r2[np.arange(self.n_sam) != r2],

@@ -3,7 +3,7 @@
 Description
 ===========
 
-This repository contains a collection of functions that were created by 1313e.
+This package contains a collection of functions that were created by 1313e.
 Most functions were created for personal use, but have been changed and optimized to work for others as well.
 
 How to install

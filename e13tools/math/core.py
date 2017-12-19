@@ -342,6 +342,11 @@ def is_PD(matrix):
         >>> is_PD(matrix)
         True
 
+    See also
+    --------
+    - :func:`~e13tools.math.nearest_PD`: Find the nearest positive-definite \
+        matrix to the input `matrix`.
+
     """
 
     # Make sure that matrix is a numpy array
@@ -521,6 +526,10 @@ def nearest_PD(matrix):
         >>> is_PD(mat_PD)
         True
 
+    See also
+    --------
+    - :func:`~e13tools.math.is_PD`: Checks if `matrix` is positive-definite \
+        or not.
     """
 
     # Make sure that matrix is a numpy array
@@ -640,7 +649,7 @@ def rot90(array, axes=(0, 1), rot_axis='center', n_rot=1):
     Rotates the given `array` by 90 degrees around the point `rot_axis` in the
     given `axes`. This function is different from NumPy's :func:`~numpy.rot90`
     function in that every column (2nd axis) defines a different dimension
-    instead of every axis.
+    instead of every individual axis.
 
     Parameters
     ----------
