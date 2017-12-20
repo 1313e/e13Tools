@@ -2,7 +2,7 @@
 
 """
 Sampling
-======
+========
 Provides a collection of functions and techniques useful in sampling problems.
 Recommended usage::
 
@@ -10,7 +10,7 @@ Recommended usage::
 
 Available submodules
 --------------------
-lhcs
+lhs
     Provides a Latin Hypercube Sampling method.
 
 """
@@ -19,8 +19,8 @@ lhcs
 # %% IMPORTS
 from __future__ import division, absolute_import, print_function
 
-from . import lhcs
-from .lhcs import *
+from . import lhs
+from .lhs import *
 
 __all__ = []
-__all__.extend(lhcs.__all__)
+__all__.extend(lhs.__all__)

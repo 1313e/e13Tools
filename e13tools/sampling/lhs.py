@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """
-LHCS
-====
+LHS
+===
 Provides a Latin Hypercube Sampling method.
 
 Available functions
