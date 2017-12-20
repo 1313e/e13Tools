@@ -66,7 +66,7 @@ def lhd(n_sam, n_val, val_rng=None, method='random', criterion=None,
         also returned if a criterion is used.
     quickscan : bool. Default: True
         If *True*, a faster but less precise algorithm will be used for the
-        criterions.
+        criteria.
     constraints : 2D array_like. Default: [[]]
         If `constraints` is not empty and `criterion` is not *None*, `sam_set`
         + `constraints` will satisfy the given criterion instead of `sam_set`.
@@ -103,7 +103,7 @@ def lhd(n_sam, n_val, val_rng=None, method='random', criterion=None,
     samples. Strings specify basic priority cases, while a value between 0 and
     1 specifies a custom case.
 
-    The following criterions can be used (last column shows the equivalent
+    The following criteria can be used (last column shows the equivalent
     float value):
 
     ============= ==================================================== ======
