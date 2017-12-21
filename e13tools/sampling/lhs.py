@@ -542,7 +542,7 @@ class Multi_LHD(object):
         return(((mm_tot-self.mm_lower)/(self.mm_upper-self.mm_lower)))
 
     def _get_corr_tot(self, corr_val):
-        return(np.sum(corr_val)/(self.n_val*(self.n_val-1)))
+        return(np.sum(corr_val)/(self.n_val))
 
     def _get_multi_val(self, corr_tot, mm_tot):
         return(self.importance*corr_tot+(1-self.importance)*mm_tot)
