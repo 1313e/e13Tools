@@ -250,9 +250,7 @@ def lhd(n_sam, n_val, val_rng=None, method='random', criterion=None,
         sam_set = _lhd_center(n_sam, n_val)
 
     # Pick correct criterion
-    if criterion is None:
-        corr_val = mm_val = multi_val = 0
-    else:
+    if criterion is not None:
         multi_obj = Multi_LHD(sam_set, criterion, iterations, quickscan,
                               constraints)
         sam_set, mm_val, corr_val, multi_val = multi_obj()
@@ -262,7 +260,7 @@ def lhd(n_sam, n_val, val_rng=None, method='random', criterion=None,
         # Scale sam_set according to val_rng
         sam_set = val_rng[:, 0]+sam_set*(val_rng[:, 1]-val_rng[:, 0])
 
-    if get_score is True:
+    if get_score is True and criterion is not None:
         return(sam_set, np.array([mm_val, corr_val, multi_val]))
     else:
         return(sam_set)
@@ -355,6 +353,9 @@ class Multi_LHD(object):
         self.mm_upper = pow(np.sum(pow(np.sum(np.sort(p_dist, axis=0),
                                               axis=-1), -self.p)), 1/self.p)
 
+    # TODO: If method is 'random', maybe randomly generate a new value in the
+    # interval the values belong to after swapping. This way, the LHD will
+    # actually be random
     def _lhd_multi(self):
         # Calculate the rank of this design
         sam_set = self.sam_set
