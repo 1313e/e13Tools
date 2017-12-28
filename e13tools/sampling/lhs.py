@@ -110,8 +110,8 @@ def lhd(n_sam, n_val, val_rng=None, method='random', criterion=None,
     criterion     effect/priority                                      equiv
     ============= ==================================================== ======
     None          No priority                                          --
-    'maximin'     Maximum priority for maximizing the minimum distance 0
-    'correlation' Maximum priority for minimizing the correlation      1
+    'maximin'     Maximum priority for maximizing the minimum distance 0.0
+    'correlation' Maximum priority for minimizing the correlation      1.0
     'multi'       Equal priority for both                              0.5
     [0, 1]        Priority is given according to value provided        --
     ============= ==================================================== ======

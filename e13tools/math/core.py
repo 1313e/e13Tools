@@ -35,7 +35,7 @@ rot90()
     Rotates the given `array` by 90 degrees around the point `rot_axis` in the
     given `axes`. This function is different from NumPy's :func:`~numpy.rot90`
     function in that every column (2nd axis) defines a different dimension
-    instead of every axis.
+    instead of every individual axis.
 
 transposeC()
     Returns the (conjugate) transpose of the input `array`.
@@ -671,7 +671,7 @@ def rot90(array, axes=(0, 1), rot_axis='center', n_rot=1):
         If 1D array of length `n_dim`, the rotation axis is chosen around the
         first two non-zero values.
     n_rot : int. Default: 1
-        Amount of times to rotate `array` by 90 degrees.
+        Number of times to rotate `array` by 90 degrees.
 
     Returns
     -------

@@ -9,28 +9,27 @@ automatically.
 Available functions
 -------------------
 apu2tex()
-    Transform a :class:`~astropy.units.core.Unit` object into a (La)TeX string
-    for usage in a :mod:`~matplotlib.pyplot.figure`.
+    Transform a :obj:`~astropy.units.core.Unit` object into a (La)TeX string
+    for usage in a :obj:`~matplotlib.figure.Figure` instance.
 
 center_spines()
     Centers the axis spines at <`centerx`, `centery`> on the axis `ax` in a
-    :mod:`~matplotlib.pyplot.figure`. Centers the axis spines at the origin by
-    default.
+    :obj:`~matplotlib.figure.Figure` instance. Centers the axis spines at the
+    origin by default.
 
 draw_textline()
-    Draws a line on the axis `ax` in a
-    :mod:`~matplotlib.pyplot.figure` instance and prints `text`
-    on top.
+    Draws a line on the axis `ax` in a :obj:`~matplotlib.figure.Figure`
+    instance instance and prints `text` on top.
 
 f2tex()
     Transform a value into a (La)TeX string for usage in a
-    :mod:`~matplotlib.pyplot.figure`.
+    :obj:`~matplotlib.figure.Figure` instance.
 
 q2tex()
     Combination of :func:`~e13tools.e13pyplot.f2tex` and
     :func:`~e13tools.e13pyplot.apu2tex`.
-    Transform a :class:`~astropy.units.quantity.Quantity` object into a (La)TeX
-    string for usage in a :mod:`~matplotlib.pyplot.figure`.
+    Transform a :obj:`~astropy.units.quantity.Quantity` object into a (La)TeX
+    string for usage in a :obj:`~matplotlib.figure.Figure` instance.
 
 """
 
@@ -50,12 +49,12 @@ __all__ = ['apu2tex', 'center_spines', 'draw_textline', 'f2tex', 'q2tex']
 # %% FUNCTIONS
 def apu2tex(unit, unitfrac=False):
     """
-    Transform a :class:`~astropy.units.core.Unit` object into a (La)TeX string
-    for usage in a :mod:`~matplotlib.pyplot.figure`.
+    Transform a :obj:`~astropy.units.core.Unit` object into a (La)TeX string
+    for usage in a :obj:`~matplotlib.figure.Figure` instance.
 
     Parameters
     ----------
-    unit : :class:`~astropy.units.core.Unit` object
+    unit : :obj:`~astropy.units.core.Unit` object
         Unit to be transformed.
 
     Optional
@@ -93,12 +92,12 @@ def apu2tex(unit, unitfrac=False):
     return(str(string.replace("$", "")))
 
 
-def center_spines(centerx=0, centery=0, set_xticker=False,
-                  set_yticker=False, ax=None):
+def center_spines(centerx=0, centery=0, set_xticker=False, set_yticker=False,
+                  ax=None):
     """
     Centers the axis spines at <`centerx`, `centery`> on the axis `ax` in a
-    :mod:`~matplotlib.pyplot.figure`. Centers the axis spines at the origin by
-    default.
+    :obj:`~matplotlib.figure.Figure` instance. Centers the axis spines at the
+    origin by default.
 
     Optional
     --------
@@ -108,19 +107,15 @@ def center_spines(centerx=0, centery=0, set_xticker=False,
         Centers y-axis at value `centery`.
     set_xticker : int, float or False. Default: False
         If int or float, sets the x-axis ticker to `set_xticker`.
-
-        If *False*, let :mod:`~matplotlib.pyplot.figure` instance decide.
+        If *False*, let :obj:`~matplotlib.figure.Figure` instance decide.
     set_yticker : int, float or False. Default: False
         If int or float, sets the y-axis ticker to `set_yticker`.
-
-        If *False*, let :mod:`~matplotlib.pyplot.figure` instance decide.
-    ax : :class:`~matplotlib.axes._subplots.AxesSubplot` object or None.\
-        Default: None
-        If :class:`~matplotlib.axes._subplots.AxesSubplot` object, centers the
-        axis spines of specified :mod:`~matplotlib.pyplot.figure`.
-
+        If *False*, let :obj:`~matplotlib.figure.Figure` instance decide.
+    ax : :obj:`~matplotlib.axes._axes.Axes` object or None. Default: None
+        If :obj:`~matplotlib.axes._axes.Axes` object, centers the axis spines
+        of specified :obj:`~matplotlib.figure.Figure` instance.
         If *None*, centers the axis spines of current
-        :mod:`~matplotlib.pyplot.figure`.
+        :obj:`~matplotlib.figure.Figure` instance.
 
     """
 
@@ -141,7 +136,7 @@ def center_spines(centerx=0, centery=0, set_xticker=False,
 
     # On both the x and y axes...
     for axis, center in zip([ax.xaxis, ax.yaxis], [centerx, centery]):
-        # STILL HAVE TO FIX THAT THE TICKLABELS ARE ALWAYS HIDDEN
+        # TODO: STILL HAVE TO FIX THAT THE TICKLABELS ARE ALWAYS HIDDEN
         # Hide the ticklabels at <centerx, centery>
         formatter = CenteredFormatter()
         formatter.center = center
@@ -178,11 +173,11 @@ class CenteredFormatter(mpl.ticker.ScalarFormatter):
             return(mpl.ticker.ScalarFormatter.__call__(self, value, pos))
 
 
+# TODO: Allow all mpl kwargs to be used
 def draw_textline(text, x=None, y=None, pos='start', linestyle='k:', ax=None):
     """
-    Draws a line on the axis `ax` in a
-    :mod:`~matplotlib.pyplot.figure` instance and prints `text`
-    on top.
+    Draws a line on the axis `ax` in a :obj:`~matplotlib.figure.Figure`
+    instance and prints `text` on top.
 
     Parameters
     ----------
@@ -190,28 +185,26 @@ def draw_textline(text, x=None, y=None, pos='start', linestyle='k:', ax=None):
         Text to be printed on the line.
     x : scalar or None
         If scalar, text/line x-coordinate.
-
         If *None*, line covers complete x-axis.
+        Either `x` or `y` needs to be *None*.
     y : scalar or None
         If scalar, text/line y-coordinate.
-
         If *None*, line covers complete y-axis.
+        Either `x` or `y` needs to be *None*.
 
     Optional
     --------
-    pos : 'start' or 'end'. Default: 'start'
+    pos : {'start', 'end'}. Default: 'start'
         If 'start', prints the text at the start of the drawn line.
-
         If 'end', prints the text at the end of the drawn line.
     linestyle : string. Default: 'k:'
         Format string characters for controlling the line style. Default is a
         dotted black line.
-    ax : :class:`~matplotlib.axes._subplots.AxesSubplot` object or None.\
-        Default: None
-        If :class:`~matplotlib.axes._subplots.AxesSubplot` object, draws line
-        in specified :mod:`~matplotlib.pyplot.figure`.
-
-        If *None*, draws line in current :mod:`~matplotlib.pyplot.figure`.
+    ax : :obj:`~matplotlib.axes._axes.Axes` object or None. Default: None
+        If :obj:`~matplotlib.axes._axes.Axes` object, draws line in specified
+        :obj:`~matplotlib.figure.Figure` instance.
+        If *None*, draws line in current :obj:`~matplotlib.figure.Figure`
+        instance.
 
     """
 
@@ -223,14 +216,14 @@ def draw_textline(text, x=None, y=None, pos='start', linestyle='k:', ax=None):
         # Draw a line
         ax.plot(ax.set_xlim(), [y, y], linestyle)
 
-        if(pos == 'start'):
+        if pos.lower() in ('start'):
             ax.text(ax.set_xlim()[0], y, text, fontsize=14, color='k',
                     horizontalalignment='left', verticalalignment='bottom')
-        elif(pos == 'end'):
+        elif pos.lower() in ('end'):
             ax.text(ax.set_xlim()[1], y, text, fontsize=14, color='k',
                     horizontalalignment='right', verticalalignment='bottom')
         else:
-            raise ValueError('ERROR: Unknown text positioning!')
+            raise ValueError("Input argument 'pos' is invalid!")
 
         # Adjust axes to include text in plot
         ax_ysize = abs(ax.set_ylim()[1]-ax.set_ylim()[0])
@@ -250,16 +243,16 @@ def draw_textline(text, x=None, y=None, pos='start', linestyle='k:', ax=None):
     elif y is None and x is not None:
         ax.plot([x, x], ax.set_ylim(), linestyle)
 
-        if(pos == 'start'):
+        if pos.lower() in ('start'):
             ax.text(x, ax.set_ylim()[0], text, fontsize=14, color='k',
                     rotation=90, horizontalalignment='right',
                     verticalalignment='bottom')
-        elif(pos == 'end'):
+        elif pos.lower() in ('end'):
             ax.text(x, ax.set_ylim()[1], text, fontsize=14, color='k',
                     rotation=90, horizontalalignment='right',
                     verticalalignment='top')
         else:
-            raise ValueError('ERROR: Unknown text positioning!')
+            raise ValueError("Input argument 'pos' is invalid!")
 
         # Adjust axes to include text in plot
         ax_xsize = abs(ax.set_xlim()[1]-ax.set_xlim()[0])
@@ -276,13 +269,14 @@ def draw_textline(text, x=None, y=None, pos='start', linestyle='k:', ax=None):
         elif(ax.set_xlim()[1] >= x and ax.set_xlim()[1] <= x-0.1*ax_xsize):
             ax.set_xlim(ax.set_xlim()[0], x-0.1*ax_xsize)
     else:
-        raise InputError('ERROR: No single line axis was given!')
+        raise InputError("Either of input arguments 'x' and 'y' needs to be "
+                         "*None*!")
 
 
 def f2tex(value, sdigits=4, power=3, nobase1=True):
     """
     Transform a value into a (La)TeX string for usage in a
-    :mod:`~matplotlib.pyplot.figure`.
+    :obj:`~matplotlib.figure.Figure` instance.
 
     Parameters
     ----------
@@ -309,14 +303,18 @@ def f2tex(value, sdigits=4, power=3, nobase1=True):
     >>> f2tex(20.2935826592)
     '20.29'
 
+
     >>> f2tex(20.2935826592, sdigits=6)
     '20.2936'
+
 
     >>> f2tex(20.2935826592, power=1)
     '2.029\\\\cdot 10^{1}'
 
+
     >>> f2tex(1e6, nobase1=True)
     '10^{6}'
+
 
     >>> f2tex(1e6, nobase1=False)
     '1\\\\cdot 10^{6}'
@@ -327,7 +325,7 @@ def f2tex(value, sdigits=4, power=3, nobase1=True):
     if(value == 0):
         return('0')
     else:
-        n = int(np.floor(np.log10(value)))
+        n = int(np.floor(np.log10(abs(value))))
 
     if(abs(n) < power):
         string = r"%.{}g".format(sdigits) % (value)
@@ -345,12 +343,12 @@ def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
     Combination of :func:`~e13tools.e13pyplot.f2tex` and
     :func:`~e13tools.e13pyplot.apu2tex`.
 
-    Transform a :class:`~astropy.units.quantity.Quantity` object into a (La)TeX
-    string for usage in a :mod:`~matplotlib.pyplot.figure`.
+    Transform a :obj:`~astropy.units.quantity.Quantity` object into a (La)TeX
+    string for usage in a :obj:`~matplotlib.figure.Figure` instance.
 
     Parameters
     ----------
-    quantity : int, float or :class:`~astropy.units.quantity.Quantity` object
+    quantity : int, float or :obj:`~astropy.units.quantity.Quantity` object
         Quantity to be transformed.
 
     Optional
@@ -373,6 +371,11 @@ def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
     Examples
     --------
     >>> import astropy.units as apu
+    >>> q2tex(20.2935826592)
+    '20.29'
+
+
+    >>> import astropy.units as apu
     >>> q2tex(20.2935826592*apu.solMass/apu.yr)
     '20.29\\\\ \\\\mathrm{M_{\\\\odot}\\\\,yr^{-1}}'
 
@@ -380,21 +383,26 @@ def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
     >>> q2tex(20.2935826592*apu.solMass/apu.yr, sdigits=6)
     '20.2936\\\\ \\\\mathrm{M_{\\\\odot}\\\\,yr^{-1}}'
 
+
     >>> import astropy.units as apu
     >>> q2tex(20.2935826592*apu.solMass/apu.yr, power=1)
     '2.029\\\\cdot 10^{1}\\\\ \\\\mathrm{M_{\\\\odot}\\\\,yr^{-1}}'
+
 
     >>> import astropy.units as apu
     >>> q2tex(1e6*apu.solMass/apu.yr, nobase1=True)
     '10^{6}\\\\ \\\\mathrm{M_{\\\\odot}\\\\,yr^{-1}}'
 
+
     >>> import astropy.units as apu
     >>> q2tex(1e6*apu.solMass/apu.yr, nobase1=False)
     '1\\\\cdot 10^{6}\\\\ \\\\mathrm{M_{\\\\odot}\\\\,yr^{-1}}'
 
+
     >>> import astropy.units as apu
     >>> q2tex(20.2935826592*apu.solMass/apu.yr, unitfrac=False)
     '20.29\\\\ \\\\mathrm{M_{\\\\odot}\\\\,yr^{-1}}'
+
 
     >>> import astropy.units as apu
     >>> q2tex(20.2935826592*apu.solMass/apu.yr, unitfrac=True)
@@ -403,7 +411,7 @@ def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
     """
 
     # Check if quantity has a unit
-    if type(quantity) is apu.quantity.Quantity:
+    if isinstance(quantity, apu.quantity.Quantity):
         value = quantity.value
         unit = quantity.unit
     else:
@@ -414,7 +422,7 @@ def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
     string = f2tex(value, sdigits, power, nobase1)
 
     # Unit handling
-    if(unit):
+    if unit:
         unit_string = apu2tex(unit, unitfrac)
         string = ''.join([string, '\ ', unit_string])
 
