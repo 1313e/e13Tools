@@ -3,15 +3,15 @@
 """
 Core
 ====
-Provides a collection of functions that are core to e13Tools and are imported
-automatically.
+Provides a collection of functions that are core to **e13Tools** and are
+imported automatically.
 
 Available classes
 -----------------
-InputError
+:class:`~InputError`
     Generic exception raised for errors in the function input arguments.
 
-ShapeError
+:class:`~ShapeError`
     Inappropriate argument shape (of correct type).
 
 """

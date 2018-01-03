@@ -10,9 +10,9 @@ Recommended usage::
 
 Available submodules
 --------------------
-core
-    Provides a collection of functions that are core to PyPlot and are imported
-    automatically.
+:mod:`~core`
+    Provides a collection of functions that are core to **PyPlot** and are
+    imported automatically.
 
 """
 

@@ -3,41 +3,54 @@
 """
 Math Core
 =========
-Provides a collection of functions that are core to Math and are imported
+Provides a collection of functions that are core to **Math** and are imported
 automatically.
 
 
 Available functions
 -------------------
-diff()
+:func:`~diff`
     Calculates the pair-wise differences between inputs `array1` and `array2`
     along the given axis.
 
-is_PD()
+:func:`~gcd`
+    Returns the greatest common divisor of the provided sequence of integers.
+
+:func:`~is_PD`
     Checks if `matrix` is positive-definite or not, by using the
     :func:`~np.linalg.cholesky` function. It is required for `matrix` to be
     Hermitian.
 
-nCr()
+:func:`~lcm`
+    Returns the least common multiple of the provided sequence of integers.
+    If at least one integer is zero, the output will also be zero.
+
+:func:`~nCr`
     For a given set S of `n` elements, returns the number of unordered
     arrangements ("combinations") of length `r` one can make with S.
     Returns zero if `r` > `n` and `repeat` is *False*.
 
-nearest_PD()
+:func:`~nearest_PD`
     Find the nearest positive-definite matrix to the input `matrix`.
 
-nPr()
+:func:`~nPr`
     For a given set S of `n` elements, returns the number of ordered
     arrangements ("permutations") of length `r` one can make with S.
     Returns zero if `r` > `n` and `repeat` is *False*.
 
-rot90()
+:func:`~rot90`
     Rotates the given `array` by 90 degrees around the point `rot_axis` in the
     given `axes`. This function is different from NumPy's :func:`~numpy.rot90`
     function in that every column (2nd axis) defines a different dimension
     instead of every individual axis.
 
-transposeC()
+:func:`~sort_2D`
+    Sorts a 2D `array` in a given `axis` in the specified `order`. This
+    function is different from NumPy's :func:`~sort` function in that it sorts
+    in a given axis rather than along it, and the order can be given as
+    integers rather than field strings.
+
+:func:`~transposeC`
     Returns the (conjugate) transpose of the input `array`.
 
 """
@@ -48,10 +61,12 @@ from __future__ import division, absolute_import, print_function
 
 from e13tools import InputError, ShapeError
 from math import factorial
+from functools import reduce
 import numpy as np
 from numpy.linalg import cholesky, eigvals, LinAlgError, norm, svd
 
-__all__ = ['diff', 'is_PD', 'nCr', 'nearest_PD', 'nPr', 'rot90', 'transposeC']
+__all__ = ['diff', 'gcd', 'is_PD', 'lcm', 'nCr', 'nearest_PD', 'nPr', 'rot90',
+           'sort_2D', 'transposeC']
 
 
 # %% FUNCTIONS
@@ -73,8 +88,9 @@ def diff(array1, array2=None, axis=0, flatten=True):
         If not *None*, the length of all axes except `axis` must be equal for
         both arrays.
     axis : int. Default: 0
-        Along which axis to calculate the pair-wise differences. A negative
-        value counts from the last to the first axis.
+        Along which axis to calculate the pair-wise differences. Default is
+        along the first axis. A negative value counts from the last to the
+        first axis.
     flatten : bool. Default: True
         If `array2` is *None*, whether or not to calculate all pair-wise
         differences.
@@ -292,6 +308,84 @@ def diff(array1, array2=None, axis=0, flatten=True):
                     return(array1-array2)
 
 
+def gcd(seq):
+    """
+    Returns the greatest common divisor of the provided sequence of integers.
+
+    Parameters
+    ----------
+    seq : 1D array_like of int
+        Integers to calculate the greatest common divisor for.
+
+    Returns
+    -------
+    gcd : int
+        Greatest common divisor of input integers.
+
+    Example
+    -------
+    >>> gcd([18, 60, 72, 138])
+    6
+
+    See also
+    --------
+    - :func:`~e13tools.math.core.gcd_single`: Greatest common divisor for two \
+        integers.
+    - :func:`~e13tools.math.lcm`: Least common multiple for sequence of \
+        integers.
+    - :func:`~e13tools.math.core.lcm_single`: Least common multiple for two \
+        integers.
+
+    """
+
+    return(reduce(lambda a, b: gcd_single(a, b), seq))
+
+
+def gcd_single(a, b):
+    """
+    Returns the greatest common divisor of the integers `a` and `b` using
+    Euclid's Algorithm [1]_.
+
+    Parameters
+    ----------
+    a, b : int
+        The two integers to calculate the greatest common divisor for.
+
+    Returns
+    -------
+    gcd : int
+        Greatest common divisor of `a` and `b`.
+
+    Notes
+    -----
+    The calculation of the greatest common divisor uses Euclid's Algorithm [1]_
+    with Lamé's improvements.
+
+    References
+    ----------
+    .. [1] https://en.wikipedia.org/wiki/Euclidean_algorithm
+
+    Example
+    -------
+    >>> gcd_single(42, 56)
+    14
+
+    See also
+    --------
+    - :func:`~e13tools.math.gcd`: Greatest common divisor for sequence of \
+        integers.
+    - :func:`~e13tools.math.lcm`: Least common multiple for sequence of \
+        integers.
+    - :func:`~e13tools.math.core.lcm_single`: Least common multiple for two \
+        integers.
+
+    """
+
+    while(b):
+        a, b = b, a % b
+    return(a)
+
+
 def is_PD(matrix):
     """
     Checks if `matrix` is positive-definite or not, by using the
@@ -374,6 +468,88 @@ def is_PD(matrix):
         return(False)
     else:
         return(True)
+
+
+def lcm(seq):
+    """
+    Returns the least common multiple of the provided sequence of integers.
+    If at least one integer is zero, the output will also be zero.
+
+    Parameters
+    ----------
+    seq : 1D array_like of int
+        Integers to calculate the least common multiple for.
+
+    Returns
+    -------
+    lcm : int
+        Least common multiple of input integers.
+
+    Example
+    -------
+    >>> lcm([8, 9, 21])
+    504
+
+    See also
+    --------
+    - :func:`~e13tools.math.gcd`: Greatest common divisor for sequence of \
+        integers.
+    - :func:`~e13tools.math.core.gcd_single`: Greatest common divisor for two \
+        integers.
+    - :func:`~e13tools.math.core.lcm_single`: Least common multiple for two \
+        integers.
+
+    """
+
+    return(reduce(lcm_single, seq))
+
+
+def lcm_single(a, b):
+    """
+    Returns the least common multiple of the integers `a` and `b`.
+    If at least one integer is zero, the output will also be zero.
+
+    Parameters
+    ----------
+    a, b : int
+        The two integers to calculate the least common multiple for.
+
+    Returns
+    -------
+    lcm : int
+        Least common multiple of `a` and `b`.
+
+    Notes
+    -----
+    The least common multiple of two given integers :math:`a` and :math:`b` is
+    given by
+
+        .. math:: \\mathrm{lcm}(a, b)=\\frac{|a\\cdot b|}{\\mathrm{gcd}(a, b)},
+
+    which can also be written as
+
+        .. math:: \\mathrm{lcm}(a, b)=\\frac{|a|}{\\mathrm{gcd}(a, b)}\\cdot \
+            |b|,
+
+    with :math:`\mathrm{gcd}` being the greatest common divisor.
+
+    Example
+    -------
+    >>> lcm_single(6, 21)
+    42
+
+    See also
+    --------
+    - :func:`~e13tools.math.gcd`: Greatest common divisor for sequence of \
+        integers.
+    - :func:`~e13tools.math.core.gcd_single`: Greatest common divisor for two \
+        integers.
+    - :func:`~e13tools.math.lcm`: Least common multiple for sequence of \
+        integers.
+
+    """
+
+    return(0 if(a == 0 or b == 0) else (abs(a)//gcd_single(a, b))*abs(b))
 
 
 def nCr(n, r, repeat=False):
@@ -766,6 +942,112 @@ def rot90(array, axes=(0, 1), rot_axis='center', n_rot=1):
     return(array_rot)
 
 
+def sort_2D(array, axis=-1, order=None):
+    """
+    Sorts a 2D `array` in a given `axis` in the specified `order`. This
+    function is different from NumPy's :func:`~sort` function in that it sorts
+    in a given axis rather than along it, and the order can be given as
+    integers rather than field strings.
+
+    Parameters
+    ----------
+    array : 2D array_like
+        Input array that requires sorting.
+
+    Optional
+    --------
+    axis : int. Default: -1
+        Axis in which to sort the elements. Default is to sort all elements in
+        the last axis. A negative value counts from the last to the first axis.
+    order : int, 1D array_like of int or None. Default: None
+        The order in which the vectors in the given `axis` need to be sorted.
+        Negative values count from the last to the first vector.
+        If *None*, all vectors in the given `axis` are sorted individually.
+
+    Returns
+    -------
+    array_sort : 2D :obj:`~numpy.ndarray` object
+        Input `array` with its `axis` sorted in the specified `order`.
+
+    Examples
+    --------
+    Sorting the column elements of a given 2D array with no order specified:
+
+        >>> array = np.array([[0, 5, 1], [7, 4, 9], [3, 13, 6], [0, 1, 8]])
+        >>> array
+        array([[ 0,  5,  1],
+               [ 7,  4,  9],
+               [ 3, 13,  6],
+               [ 0,  1,  8]])
+        >>> sort_2D(array)
+        array([[ 0,  1,  1],
+               [ 0,  4,  6],
+               [ 3,  5,  8],
+               [ 7, 13,  9]])
+
+
+    Sorting the same array in only the first column:
+
+        >>> sort_2D(array, order=(0))
+        array([[ 0,  5,  1],
+               [ 0,  1,  8],
+               [ 3, 13,  6],
+               [ 7,  4,  9]])
+
+
+    Sorting all three columns in order:
+
+        >>> sort_2D(array, order=(0, 1, 2))
+        array([[ 0,  1,  8],
+               [ 0,  5,  1],
+               [ 3, 13,  6],
+               [ 7,  4,  9]])
+
+
+    Sorting all three columns in a different order:
+
+        >>> sort_2D(array, order=(0, 2, 1))
+        array([[ 0,  5,  1],
+               [ 0,  1,  8],
+               [ 3, 13,  6],
+               [ 7,  4,  9]])
+
+    """
+
+    # Make sure that input array is a numpy array
+    array = np.array(array)
+
+    # Check if array is indeed 2D
+    if(array.ndim != 2):
+        raise ShapeError("Input argument 'array' must be two-dimensional!")
+    else:
+        # Obtain the number of vectors along the given axis
+        n_vec = array.shape[axis]
+
+    # Move the given axis to be the first axis
+    try:
+        array = np.moveaxis(array, axis, 0)
+    except Exception as error:
+            raise InputError("Input argument 'axis' is invalid (%s)" % (error))
+
+    # If order is given, transform it into an array
+    if order is not None:
+        order = np.array(order, ndmin=1)
+
+    # Check what order is given and act accordingly
+    if order is None:
+        array.sort(axis=-1)
+    elif not(((-n_vec <= order)*(order < n_vec)).any()):
+        raise ValueError("Input argument 'order' contains values that are "
+                         "out of bounds!")
+    else:
+        for i in reversed(order):
+            array = array[:, np.argsort(array[i], kind='mergesort')]
+
+    # Return the resulting array back after transforming its axes back
+    return(np.moveaxis(array, 0, axis))
+
+
 def transposeC(array, axes=None):
     """
     Returns the (conjugate) transpose of the input `array`.
@@ -777,7 +1059,7 @@ def transposeC(array, axes=None):
 
     Optional
     --------
-    axes : 1D array_like of ints or None. Default: None
+    axes : 1D array_like of int or None. Default: None
         If *None*, reverse the dimensions.
         Else, permute the axes according to the values given.
 

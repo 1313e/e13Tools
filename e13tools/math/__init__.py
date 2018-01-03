@@ -3,16 +3,17 @@
 """
 Math
 ====
-Provides a collection of functions useful in various mathematical calculations.
+Provides a collection of functions useful in various mathematical calculations
+and data array manipulations.
 Recommended usage::
 
     import e13tools.math as e13m
 
 Available submodules
 --------------------
-core
-    Provides a collection of functions that are core to Math and are imported
-    automatically.
+:mod:`~core`
+    Provides a collection of functions that are core to **Math** and are
+    imported automatically.
 
 """
 

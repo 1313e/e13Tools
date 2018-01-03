@@ -10,7 +10,7 @@ Recommended usage::
 
 Available submodules
 --------------------
-lhs
+:func:`~lhs`
     Provides a Latin Hypercube Sampling method.
 
 """

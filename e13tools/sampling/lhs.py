@@ -7,7 +7,7 @@ Provides a Latin Hypercube Sampling method.
 
 Available functions
 -------------------
-lhd()
+:func:`~lhd`
     Generates a Latin Hypercube Design of `n_sam` samples, each with `n_val`
     values. Method for choosing the 'best' Latin Hypercube Design depends on
     the `method` and `criterion` that are used.
@@ -29,7 +29,7 @@ __all__ = ['lhd']
 # %% FUNCTIONS
 # TODO: Check if MPI is possible
 def lhd(n_sam, n_val, val_rng=None, method='random', criterion=None,
-        iterations=1000, get_score=False, quickscan=True, constraints=[[]]):
+        iterations=1000, get_score=False, quickscan=True, constraints=None):
     """
     Generates a Latin Hypercube Design of `n_sam` samples, each with `n_val`
     values. Method for choosing the 'best' Latin Hypercube Design depends on
@@ -51,13 +51,13 @@ def lhd(n_sam, n_val, val_rng=None, method='random', criterion=None,
     method : {'random', 'fixed', 'center'}. Default: 'random'
         String specifying the method used to construct the Latin Hypercube
         Design. See ``Notes`` for more details.
-        If `n_sam` == 1 or `n_val == 1`, `method` is set to the closest
+        If `n_sam` == 1 or `n_val` == 1, `method` is set to the closest
         corresponding method if necessary.
     criterion : float, {'maximin', 'correlation', 'multi'} or None. \
         Default: None
         Float or string specifying the criterion the Latin Hypercube Design has
         to satisfy or *None* for no criterion. See ``Notes`` for more details.
-        If `n_sam` == 1 or `n_val == 1`, `criterion` is set to the closest
+        If `n_sam` == 1 or `n_val` == 1, `criterion` is set to the closest
         corresponding criterion if necessary.
     iterations : int. Default: 1000
         Number of iterations used for the criterion algorithm.
@@ -67,9 +67,12 @@ def lhd(n_sam, n_val, val_rng=None, method='random', criterion=None,
     quickscan : bool. Default: True
         If *True*, a faster but less precise algorithm will be used for the
         criteria.
-    constraints : 2D array_like. Default: [[]]
+    constraints : 2D array_like or None. Default: None
         If `constraints` is not empty and `criterion` is not *None*, `sam_set`
         + `constraints` will satisfy the given criterion instead of `sam_set`.
+        Providing this argument when `criterion` is *None* will discard it.
+        **WARNING**: If `constraints` is not a 'fixed' or 'center' lay-out LHD,
+        the output might contain errors.
 
     Returns
     -------
@@ -177,7 +180,7 @@ def lhd(n_sam, n_val, val_rng=None, method='random', criterion=None,
     # Make sure that if val_rng is given, that it is valid
     if val_rng is not None:
         # If val_rng is 1D, convert it to 2D (expected for 'n_val' = 1)
-        val_rng = np.atleast_2d(val_rng)
+        val_rng = np.array(val_rng, ndmin=2)
 
         # Check if the given val_rng is in the correct shape
         if not(val_rng.shape == (n_val, 2)):
@@ -186,38 +189,30 @@ def lhd(n_sam, n_val, val_rng=None, method='random', criterion=None,
                              % (val_rng.shape[0], val_rng.shape[1], n_val, 2))
 
 # TODO: Implement constraints method again!
-#    # Make sure that constraints is a numpy array
-#    constraints = np.array(constraints)
-#
-#    # Check if valid 'criterion' is given
-#    if criterion.lower() not in ('fixed', 'f', 'center', 'c', 'maximin', 'm',
-#                                 'centermaximin', 'cm', 'correlation', 'corr',
-#                                 'maximincorr', 'multi', 'random', 'r'):
-#        raise ValueError("Invalid value for 'criterion': %s" % (criterion))
-#
-#    # Check the shape of 'constraints' and act accordingly
-#    if(constraints.shape[-1] == 0):
-#        # If constraints is empty, there are no constraints
-#        constraints = None
-#    elif criterion.lower() not in ('maximin', 'm', 'centermaximin', 'cm',
-#                                   'correlation', 'corr', 'maximincorr',
-#                                   'multi'):
-#        # If non-compatible criterion is provided, there are no constraints
-#        constraints = None
-#    elif(constraints.ndim != 2):
-#        # If constraints is not two-dimensional, it is invalid
-#        raise ShapeError("Constraints must be two-dimensional!")
-#    elif(constraints.shape[-1] == n_val):
-#        # If constraints has the same number of values, it is valid
-#        constraints = _extract_sam_set(constraints, val_rng)
-#
-#        # If constraints is empty after extraction, there are no constraints
-#        if(constraints.shape[-1] == 0):
-#            constraints = None
-#    else:
-#        # If not empty and not right shape, it is invalid
-#        raise ShapeError("Constraints has incompatible number of values: "
-#                         "%s =! %s" % (np.shape(constraints)[1], n_val))
+    # Make sure that constraints is a numpy array
+    if constraints is not None:
+        constraints = np.array(constraints, ndmin=2)
+
+    # Check the shape of 'constraints' and act accordingly
+    if constraints is None:
+        pass
+    elif(constraints.shape[-1] == 0):
+        # If constraints is empty, there are no constraints
+        constraints = None
+    elif(constraints.ndim != 2):
+        # If constraints is not two-dimensional, it is invalid
+        raise ShapeError("Constraints must be two-dimensional!")
+    elif(constraints.shape[-1] == n_val):
+        # If constraints has the same number of values, it is valid
+        constraints = _extract_sam_set(constraints, val_rng)
+
+        # If constraints is empty after extraction, there are no constraints
+        if(constraints.shape[-1] == 0):
+            constraints = None
+    else:
+        # If not empty and not right shape, it is invalid
+        raise ShapeError("Constraints has incompatible number of values: "
+                         "%s =! %s" % (np.shape(constraints)[1], n_val))
 
     # Check for cases in which some methods make no sense
     if(n_sam == 1 and method.lower() in ('fixed', 'f')):
@@ -230,9 +225,11 @@ def lhd(n_sam, n_val, val_rng=None, method='random', criterion=None,
     elif(n_sam == 1):
         criterion = None
     elif(n_val == 1 or n_sam == 2):
-        criterion = None
-        if(method.lower() in ('random', 'r')):
+        if(criterion is not None and method.lower() in ('random', 'r')):
             method = 'fixed'
+        criterion = None
+    elif(criterion is not None and method.lower() in ('random', 'r')):
+        method = 'fixed'
     elif isinstance(criterion, (int, float)):
         if not(0 <= criterion <= 1):
             raise ValueError("Input argument 'criterion' can only have a "
@@ -318,14 +315,23 @@ def _lhd_center(n_sam, n_val):
 
 class Multi_LHD(object):
     def __init__(self, sam_set, criterion, iterations, quickscan, constraints):
+        # Save all arguments as class attributes
         self.sam_set = sam_set
         self.iterations = iterations
         self.quickscan = quickscan
-        self.constraints = constraints
         self.n_sam, self.n_val = self.sam_set.shape
+
+        # Combine constraints with sam_set
+        if constraints is not None:
+            self.n_sam_c, _ = constraints.shape
+            self.sam_set = np.concatenate([self.sam_set, constraints], axis=0)
+        else:
+            self.n_sam_c = 0
+
         self.sam_set = self.sam_set*(self.n_sam-1)
         self.p = 15
 
+        # Check criterion type and act accordingly
         if isinstance(criterion, (int, float)):
             self.importance = criterion
         elif criterion.lower() in ('maximin'):
@@ -335,23 +341,40 @@ class Multi_LHD(object):
         elif criterion.lower() in ('multi'):
             self.importance = 0.5
 
+        # Obtain maximin-rank boundaries
         self._get_mm_bounds()
 
     def __call__(self):
         self._lhd_multi()
-        return(self.sam_set_best/(self.n_sam-1), self.mm_tot_best,
+        return(self.sam_set_best[:self.n_sam]/(self.n_sam-1), self.mm_tot_best,
                np.sqrt(self.corr_tot_best), self.multi_val_best)
 #        return(self.sam_set_best, self.mm_tot_best,
 #               np.sqrt(self.corr_tot_best), self.multi_val_best)
 
     def _get_mm_bounds(self):
-        p_dist = abs(diff(self.sam_set, axis=0, flatten=True))
+        # Calculate the p_dist of the provided sam_set
+        p_dist_slice = self.n_sam_c*self.n_sam+nCr(self.n_sam, 2)
+        p_dist = abs(diff(self.sam_set, axis=0, flatten=True))[:p_dist_slice]
+
+        # Calculate the average distance between randomly chosen samples
         self.dist_avg = np.average(np.sum(p_dist, axis=-1))
 
         # TODO: Look at calculation of mm_lower once more
+        # Calculate lower and upper boundaries of the maximin-rank
         self.mm_lower = pow(nCr(self.n_sam, 2), 1/self.p)/self.dist_avg
-        self.mm_upper = pow(np.sum(pow(np.sum(np.sort(p_dist, axis=0),
-                                              axis=-1), -self.p)), 1/self.p)
+        p_dist_sort = np.sum(np.sort(p_dist, axis=0), axis=-1)
+
+        # TODO: This has many exception cases, so maybe make an extra method?
+        # If (due to constraints) any value in p_dist is zero, change p_dist in
+        # such a way that it resembles the worst p_dist possible with no zeros
+        if((p_dist_sort == 0).any()):
+            values, counts = np.unique(p_dist_sort, return_counts=True)
+#            p_dist_sort[:counts[0]] += values[1]/self.n_val
+#            p_dist_sort[counts[0]:counts[1]] -= values[1]/self.n_val
+            p_dist_sort[:counts[0]] += np.min(p_dist[p_dist != 0])
+            p_dist_sort[counts[0]:counts[1]] -= np.min(p_dist[p_dist != 0])
+
+        self.mm_upper = pow(np.sum(pow(p_dist_sort, -self.p)), 1/self.p)
 
     # TODO: If method is 'random', maybe randomly generate a new value in the
     # interval the values belong to after swapping. This way, the LHD will
@@ -405,6 +428,7 @@ class Multi_LHD(object):
                 corr_tot_try = self._get_corr_tot(corr_val_try)
                 multi_val_try = self._get_multi_val(corr_tot_try, mm_tot_try)
 
+                # If this rank is lower than current best rank, save sam_set
                 if(multi_val_try < multi_val_best):
                     multi_val_best = multi_val_try
                     corr_tot_best = corr_tot_try
@@ -465,6 +489,7 @@ class Multi_LHD(object):
                         multi_val = multi_val_try
                         sam_set = sam_set_try.copy()
                         flag = 1
+                    # If this rank is lower than the current best rank, save it
                     if(multi_val_try < multi_val_best):
                         multi_val_best = multi_val_try
                         corr_tot_best = corr_tot_try
@@ -473,6 +498,8 @@ class Multi_LHD(object):
                         It = 0
                     else:
                         It += 1
+
+                # Decrease temperature by 10%
                 t *= 0.9
 
         # Return sam_set
@@ -499,35 +526,47 @@ class Multi_LHD(object):
         p_dist = np.sum(abs(diff(sam_set, axis=0, flatten=False)), axis=-1)
         p_dist = np.ma.array(p_dist, mask=False, hard_mask=True)
         p_dist.mask[masked_idx] = True
+        p_dist.mask[self.n_sam:, self.n_sam:] = True
 
         # Create empty array containing the maximin values of all rows
         mm_val = np.zeros(self.n_sam)
 
         # Calculate maximin values
-        for i, row_dist in enumerate(p_dist):
+        for i, row_dist in enumerate(p_dist[:self.n_sam]):
             mm_val[i] = pow(np.sum(pow(row_dist, -self.p)), 1/self.p)
 
         # Return it
         return(p_dist, mm_val)
 
     def _get_mm_val(self, sam_set, p_dist_old, mm_val_old, r1, r2):
+        # Create arrays containing new p_dist and mm_val
         p_dist = p_dist_old.copy()
         mm_val = np.zeros(self.n_sam)
 
+        # Calculate new p_dist of row r1 and r2
         p_dist_r1 = np.sum(abs(diff(sam_set[r1], sam_set)), axis=-1)
         p_dist_r2 = np.sum(abs(diff(sam_set[r2], sam_set)), axis=-1)
 
+        # Update p_dist and mm_val with newly calculated values
         p_dist[r1] = p_dist[:, r1] = p_dist_r1
         p_dist[r2] = p_dist[:, r2] = p_dist_r2
-        mm_val[r1] = pow(np.sum(pow(p_dist_r1[np.arange(self.n_sam) != r1],
-                                    -self.p)), 1/self.p)
-        mm_val[r2] = pow(np.sum(pow(p_dist_r2[np.arange(self.n_sam) != r2],
-                                    -self.p)), 1/self.p)
+        iets1 = p_dist_r1[np.arange(self.n_sam+self.n_sam_c) != r1]
+        iets2 = p_dist_r2[np.arange(self.n_sam+self.n_sam_c) != r2]
+        if((iets1 == 0).any()):
+            mm_val[r1] = np.infty
+        else:
+            mm_val[r1] = pow(np.sum(pow(iets1, -self.p)), 1/self.p)
+        if((iets2 == 0).any()):
+            mm_val[r2] = np.infty
+        else:
+            mm_val[r2] = pow(np.sum(pow(iets2, -self.p)), 1/self.p)
 
+        # Create list containing only indices of unchanged rows
         idx = list(range(self.n_sam))
         idx.remove(r1)
         idx.remove(r2)
 
+        # Update the mm_val of all unchanged rows
         mm_val[idx] = pow(pow(mm_val_old[idx], self.p) -
                           pow(p_dist_old[r1, idx], -self.p) -
                           pow(p_dist_old[r2, idx], -self.p) +
@@ -539,17 +578,20 @@ class Multi_LHD(object):
         return(p_dist, mm_val)
 
     def _get_mm_tot(self, mm_val):
+        # Calculate the total mm_val
         mm_tot = pow(0.5*np.sum(pow(mm_val, self.p)), 1/self.p)
         return(((mm_tot-self.mm_lower)/(self.mm_upper-self.mm_lower)))
 
     def _get_corr_tot(self, corr_val):
+        # Calculate the total corr_val
         return(np.sum(corr_val)/(self.n_val))
 
     def _get_multi_val(self, corr_tot, mm_tot):
+        # Combine corr_tot and mm_tot to the multi_val
         return(self.importance*corr_tot+(1-self.importance)*mm_tot)
 
 
-def _extract_sam_set(self, sam_set, val_rng):
+def _extract_sam_set(sam_set, val_rng):
     """
     Extracts the samples from `sam_set` that are within the given value
     ranges `val_rng`. Also extracts the two samples that are the closest to the
@@ -577,9 +619,6 @@ def _extract_sam_set(self, sam_set, val_rng):
     if val_rng is None:
         val_rng = np.zeros([n_val, 2])
         val_rng[:, 1] = 1
-    else:
-        # If val_rng is 1D, convert it to 2D (expected for 'n_val' = 1)
-        val_rng = np.atleast_2d(val_rng)
 
     # Scale all samples to the value range [0, 1]
     sam_set = ((sam_set-val_rng[:, 0])/(val_rng[:, 1]-val_rng[:, 0]))

@@ -3,31 +3,31 @@
 """
 PyPlot Core
 ===========
-Provides a collection of functions that are core to PyPlot and are imported
+Provides a collection of functions that are core to **PyPlot** and are imported
 automatically.
 
 Available functions
 -------------------
-apu2tex()
+:func:`~apu2tex`
     Transform a :obj:`~astropy.units.core.Unit` object into a (La)TeX string
     for usage in a :obj:`~matplotlib.figure.Figure` instance.
 
-center_spines()
+:func:`~center_spines`
     Centers the axis spines at <`centerx`, `centery`> on the axis `ax` in a
     :obj:`~matplotlib.figure.Figure` instance. Centers the axis spines at the
     origin by default.
 
-draw_textline()
+:func:`~draw_textline`
     Draws a line on the axis `ax` in a :obj:`~matplotlib.figure.Figure`
     instance instance and prints `text` on top.
 
-f2tex()
+:func:`~f2tex`
     Transform a value into a (La)TeX string for usage in a
     :obj:`~matplotlib.figure.Figure` instance.
 
-q2tex()
-    Combination of :func:`~e13tools.e13pyplot.f2tex` and
-    :func:`~e13tools.e13pyplot.apu2tex`.
+:func:`~q2tex`
+    Combination of :func:`~e13tools.pyplot.f2tex` and
+    :func:`~e13tools.pyplot.apu2tex`.
     Transform a :obj:`~astropy.units.quantity.Quantity` object into a (La)TeX
     string for usage in a :obj:`~matplotlib.figure.Figure` instance.
 
@@ -340,8 +340,8 @@ def f2tex(value, sdigits=4, power=3, nobase1=True):
 
 def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
     """
-    Combination of :func:`~e13tools.e13pyplot.f2tex` and
-    :func:`~e13tools.e13pyplot.apu2tex`.
+    Combination of :func:`~e13tools.pyplot.f2tex` and
+    :func:`~e13tools.pyplot.apu2tex`.
 
     Transform a :obj:`~astropy.units.quantity.Quantity` object into a (La)TeX
     string for usage in a :obj:`~matplotlib.figure.Figure` instance.

@@ -3,22 +3,22 @@
 """
 e13Tools
 ========
-Provides a collection of functions that were created by `1313e`.
+Provides a collection of functions that were created by **1313e**.
 Recommended usage::
 
     import e13tools as e13
 
 Available modules
 -----------------
-core
-    Provides a collection of functions that are core to e13Tools and are
+:mod:`~core`
+    Provides a collection of functions that are core to **e13Tools** and are
     imported automatically.
-math
+:mod:`~math`
     Provides a collection of functions useful in various mathematical
-    calculations.
-pyplot
+    calculations and data array manipulations.
+:mod:`~pyplot`
     Provides a collection of functions useful in various plotting routines.
-sampling
+:mod:`~sampling`
     Provides a collection of functions and techniques useful in sampling
     problems.
 
