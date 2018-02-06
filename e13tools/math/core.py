@@ -57,7 +57,7 @@ Available functions
 
 
 # %% IMPORTS
-from __future__ import division, absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 from e13tools import InputError, ShapeError
 from math import factorial
@@ -878,10 +878,10 @@ def rot90(array, axes=(0, 1), rot_axis='center', n_rot=1):
 
     """
 
-    # Make sure that matrix is a numpy array
+    # Make sure that array is a numpy array
     array = np.array(array)
 
-    # Check if matrix is indeed two-dimensional and obtain the lengths
+    # Check if array is indeed two-dimensional and obtain the lengths
     if(array.ndim != 2):
         raise ShapeError("Input argument 'array' must be two-dimensional!")
     else:

@@ -26,7 +26,7 @@ Available modules
 
 
 # %% IMPORTS AND DECLARATIONS
-from __future__ import division, absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 # Import package modules
 from .version import version as __version__

@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from setuptools import setup, find_packages
+"""
+Setup file for the e13Tools package.
+
+"""
+
+from setuptools import find_packages, setup
 from codecs import open
 from e13tools.version import version as __version__
 

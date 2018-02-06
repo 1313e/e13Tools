@@ -35,7 +35,7 @@ Available functions
 
 
 # %% IMPORTS
-from __future__ import division, absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 from e13tools import InputError
 import numpy as np
