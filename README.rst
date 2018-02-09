@@ -26,7 +26,7 @@ e13Tools requires:
 .. |Python| image:: https://img.shields.io/pypi/pyversions/e13Tools.svg
    :target: https://pypi.python.org/pypi/e13Tools
    :alt: Python Versions
-.. |License| image:: https://img.shields.io/badge/license-BSD--3-blue.svg
+.. |License| image:: https://img.shields.io/pypi/l/e13Tools.svg
    :target: https://raw.githubusercontent.com/1313e/e13Tools/master/LICENSE
    :alt: BSD-3 License
 .. |Travis| image:: https://api.travis-ci.org/1313e/e13Tools.svg?branch=master
