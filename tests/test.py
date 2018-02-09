@@ -22,7 +22,8 @@ for name in mod_list:
     if name in skip_cases:
         tests.addTests(doctest.DocTestSuite(name, optionflags=doctest.SKIP))
     else:
-        tests.addTests(doctest.DocTestSuite(name))
+        tests.addTests(doctest.DocTestSuite(
+            name, optionflags=doctest.NORMALIZE_WHITESPACE))
 
 # Perform the unittest debug
 tests.debug()
