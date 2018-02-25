@@ -14,7 +14,10 @@ from codecs import open
 from setuptools import find_packages, setup
 
 # e13Tools imports
-from e13tools import __version__
+try:
+    from e13tools.__version__ import version
+except ImportError:
+    from e13tools.__version__ import version
 
 
 # %% SETUP DEFINITION
@@ -28,7 +31,7 @@ with open('requirements.txt', 'r') as f:
 
 # Setup function declaration
 setup(name="e13tools",
-      version=__version__,
+      version=version,
       author="Ellert van der Velden",
       author_email='ellert_vandervelden@outlook.com',
       description=("Provides a collection of functions that were created by "
