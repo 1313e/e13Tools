@@ -5,14 +5,28 @@ Setup file for the e13Tools package.
 
 """
 
-from setuptools import find_packages, setup
-from codecs import open
-from e13tools.version import version as __version__
 
+# %% IMPORTS
+# Built-in imports
+from codecs import open
+
+# Package imports
+from setuptools import find_packages, setup
+
+# e13Tools imports
+from e13tools import __version__
+
+
+# %% SETUP DEFINITION
 # Get the long description from the README file
 with open('README.rst', 'r') as f:
     long_description = f.read()
 
+# Get the requirements list
+with open('requirements.txt', 'r') as f:
+    requirements = f.read().splitlines()
+
+# Setup function declaration
 setup(name="e13tools",
       version=__version__,
       author="Ellert van der Velden",
@@ -43,6 +57,6 @@ setup(name="e13tools",
       packages=find_packages(exclude=['tests']),
       package_dir={'e13tools': "e13tools"},
       include_package_data=True,
-      install_requires=['numpy>=1.8', 'matplotlib>=1.4.3', 'astropy>=1.3'],
+      install_requires=requirements,
       zip_safe=False,
       )
