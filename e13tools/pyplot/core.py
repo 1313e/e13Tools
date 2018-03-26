@@ -174,7 +174,8 @@ class CenteredFormatter(mpl.ticker.ScalarFormatter):
 
 
 # TODO: Allow all mpl kwargs to be used
-def draw_textline(text, x=None, y=None, pos='start', linestyle='k:', ax=None):
+def draw_textline(text, x=None, y=None, pos='start top', ax=None,
+                  line_kwargs={}, text_kwargs={}):
     """
     Draws a line on the axis `ax` in a :obj:`~matplotlib.figure.Figure`
     instance and prints `text` on top.
@@ -194,17 +195,20 @@ def draw_textline(text, x=None, y=None, pos='start', linestyle='k:', ax=None):
 
     Optional
     --------
-    pos : {'start', 'end'}. Default: 'start'
+    pos : {'start', 'end'}{'top', 'bottom'}. Default: 'start top'
         If 'start', prints the text at the start of the drawn line.
         If 'end', prints the text at the end of the drawn line.
-    linestyle : string. Default: 'k:'
-        Format string characters for controlling the line style. Default is a
-        dotted black line.
+        If 'top', prints the text above the drawn line.
+        If 'bottom', prints the text below the drawn line.
+        Arguments must be given as a single string.
     ax : :obj:`~matplotlib.axes._axes.Axes` object or None. Default: None
         If :obj:`~matplotlib.axes._axes.Axes` object, draws line in specified
         :obj:`~matplotlib.figure.Figure` instance.
         If *None*, draws line in current :obj:`~matplotlib.figure.Figure`
         instance.
+    line_kwargs : dict of :func:`~matplotlib.lines.Line2D` properties.\
+        Default: {}
+    text_kwargs : dict of :func:`~matplotlib.text.Text` properties. Default: {}
 
     """
 
@@ -212,16 +216,40 @@ def draw_textline(text, x=None, y=None, pos='start', linestyle='k:', ax=None):
     if ax is None:
         ax = plt.gca()
 
+    # Check if certain keyword arguments are present in text_fmt
+    for key, val in text_kwargs:
+        if key in ('va', 'ha', 'verticalalignment', 'horizontalalignment',
+                   'rotation'):
+            text_kwargs.pop(key)
+
+    # Set default line_kwargs and text_kwargs
+    default_line_kwargs = {'linestyle': '-',
+                           'color': 'k'}
+    default_text_kwargs = {'color': 'k',
+                           'fontsize': 14}
+
+    # Combine given kwargs with default ones
+    full_line_kwargs = dict(default_line_kwargs)
+    full_text_kwargs = dict(default_text_kwargs)
+    full_line_kwargs.update(line_kwargs)
+    full_text_kwargs.update(text_kwargs)
+
     if x is None and y is not None:
         # Draw a line
-        ax.plot(ax.set_xlim(), [y, y], linestyle)
+        ax.plot(ax.set_xlim(), [y, y], **full_line_kwargs)
 
-        if pos.lower() in ('start'):
-            ax.text(ax.set_xlim()[0], y, text, fontsize=14, color='k',
-                    horizontalalignment='left', verticalalignment='bottom')
-        elif pos.lower() in ('end'):
-            ax.text(ax.set_xlim()[1], y, text, fontsize=14, color='k',
-                    horizontalalignment='right', verticalalignment='bottom')
+        if ('start') in pos.lower() and ('top') in pos.lower():
+            ax.text(ax.set_xlim()[0], y, text, horizontalalignment='left',
+                    verticalalignment='bottom', **full_text_kwargs)
+        elif ('start') in pos.lower() and ('bottom') in pos.lower():
+            ax.text(ax.set_xlim()[0], y, text, horizontalalignment='left',
+                    verticalalignment='top', **full_text_kwargs)
+        elif ('end') in pos.lower() and ('top') in pos.lower():
+            ax.text(ax.set_xlim()[0], y, text, horizontalalignment='right',
+                    verticalalignment='bottom', **full_text_kwargs)
+        elif ('end') in pos.lower() and ('bottom') in pos.lower():
+            ax.text(ax.set_xlim()[0], y, text, horizontalalignment='right',
+                    verticalalignment='top', **full_text_kwargs)
         else:
             raise ValueError("Input argument 'pos' is invalid!")
 
@@ -241,16 +269,24 @@ def draw_textline(text, x=None, y=None, pos='start', linestyle='k:', ax=None):
             ax.set_ylim(ax.set_ylim()[0], y-0.1*ax_ysize)
 
     elif y is None and x is not None:
-        ax.plot([x, x], ax.set_ylim(), linestyle)
+        ax.plot([x, x], ax.set_ylim(), **full_line_kwargs)
 
-        if pos.lower() in ('start'):
-            ax.text(x, ax.set_ylim()[0], text, fontsize=14, color='k',
-                    rotation=90, horizontalalignment='right',
-                    verticalalignment='bottom')
-        elif pos.lower() in ('end'):
-            ax.text(x, ax.set_ylim()[1], text, fontsize=14, color='k',
-                    rotation=90, horizontalalignment='right',
-                    verticalalignment='top')
+        if ('start') in pos.lower() and ('top') in pos.lower():
+            ax.text(x, ax.set_ylim()[0], text, rotation=90,
+                    horizontalalignment='right', verticalalignment='bottom',
+                    **full_text_kwargs)
+        elif ('start') in pos.lower() and ('bottom') in pos.lower():
+            ax.text(x, ax.set_ylim()[0], text, rotation=90,
+                    horizontalalignment='left', verticalalignment='bottom',
+                    **full_text_kwargs)
+        elif ('end') in pos.lower() and ('top') in pos.lower():
+            ax.text(x, ax.set_ylim()[0], text, rotation=90,
+                    horizontalalignment='right', verticalalignment='top',
+                    **full_text_kwargs)
+        elif ('end') in pos.lower() and ('bottom') in pos.lower():
+            ax.text(x, ax.set_ylim()[0], text, rotation=90,
+                    horizontalalignment='left', verticalalignment='top',
+                    **full_text_kwargs)
         else:
             raise ValueError("Input argument 'pos' is invalid!")
 
