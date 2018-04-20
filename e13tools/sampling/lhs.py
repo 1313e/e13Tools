@@ -188,7 +188,7 @@ def lhd(n_sam, n_val, val_rng=None, method='random', criterion=None,
                              "!= (%s, %s)"
                              % (val_rng.shape[0], val_rng.shape[1], n_val, 2))
 
-# TODO: Implement constraints method again!
+    # TODO: Implement constraints method again!
     # Make sure that constraints is a numpy array
     if constraints is not None:
         constraints = np.array(constraints, ndmin=2)

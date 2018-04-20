@@ -173,7 +173,6 @@ class CenteredFormatter(mpl.ticker.ScalarFormatter):
             return(mpl.ticker.ScalarFormatter.__call__(self, value, pos))
 
 
-# TODO: Allow all mpl kwargs to be used
 def draw_textline(text, x=None, y=None, pos='start top', ax=None,
                   line_kwargs={}, text_kwargs={}):
     """
@@ -235,24 +234,6 @@ def draw_textline(text, x=None, y=None, pos='start top', ax=None,
     full_text_kwargs.update(text_kwargs)
 
     if x is None and y is not None:
-        # Draw a line
-        ax.plot(ax.set_xlim(), [y, y], **full_line_kwargs)
-
-        if ('start') in pos.lower() and ('top') in pos.lower():
-            ax.text(ax.set_xlim()[0], y, text, horizontalalignment='left',
-                    verticalalignment='bottom', **full_text_kwargs)
-        elif ('start') in pos.lower() and ('bottom') in pos.lower():
-            ax.text(ax.set_xlim()[0], y, text, horizontalalignment='left',
-                    verticalalignment='top', **full_text_kwargs)
-        elif ('end') in pos.lower() and ('top') in pos.lower():
-            ax.text(ax.set_xlim()[0], y, text, horizontalalignment='right',
-                    verticalalignment='bottom', **full_text_kwargs)
-        elif ('end') in pos.lower() and ('bottom') in pos.lower():
-            ax.text(ax.set_xlim()[0], y, text, horizontalalignment='right',
-                    verticalalignment='top', **full_text_kwargs)
-        else:
-            raise ValueError("Input argument 'pos' is invalid!")
-
         # Adjust axes to include text in plot
         ax_ysize = abs(ax.set_ylim()[1]-ax.set_ylim()[0])
 
@@ -268,9 +249,46 @@ def draw_textline(text, x=None, y=None, pos='start top', ax=None,
         elif(ax.set_ylim()[1] >= y and ax.set_ylim()[1] <= y-0.1*ax_ysize):
             ax.set_ylim(ax.set_ylim()[0], y-0.1*ax_ysize)
 
+        # Draw line
+        ax.plot(ax.set_xlim(), [y, y], **full_line_kwargs)
+
+        # Print text
+        if ('start') in pos.lower() and ('top') in pos.lower():
+            ax.text(ax.set_xlim()[0], y, text, horizontalalignment='left',
+                    verticalalignment='bottom', **full_text_kwargs)
+        elif ('start') in pos.lower() and ('bottom') in pos.lower():
+            ax.text(ax.set_xlim()[0], y, text, horizontalalignment='left',
+                    verticalalignment='top', **full_text_kwargs)
+        elif ('end') in pos.lower() and ('top') in pos.lower():
+            ax.text(ax.set_xlim()[0], y, text, horizontalalignment='right',
+                    verticalalignment='bottom', **full_text_kwargs)
+        elif ('end') in pos.lower() and ('bottom') in pos.lower():
+            ax.text(ax.set_xlim()[0], y, text, horizontalalignment='right',
+                    verticalalignment='top', **full_text_kwargs)
+        else:
+            raise ValueError("Input argument 'pos' is invalid!")
+
     elif y is None and x is not None:
+        # Adjust axes to include text in plot
+        ax_xsize = abs(ax.set_xlim()[1]-ax.set_xlim()[0])
+
+        # Adjust axes if line is located on the left
+        if(ax.set_xlim()[0] <= x and ax.set_xlim()[0] >= x-0.1*ax_xsize):
+            ax.set_xlim(x-0.1*ax_xsize, ax.set_xlim()[1])
+        elif(ax.set_xlim()[0] <= x and ax.set_xlim()[0] >= x+0.1*ax_xsize):
+            ax.set_xlim(x+0.1*ax_xsize, ax.set_xlim()[1])
+
+        # Adjust axes if line is located on the right
+        if(ax.set_xlim()[1] >= x and ax.set_xlim()[1] <= x+0.1*ax_xsize):
+            ax.set_xlim(ax.set_xlim()[0], x+0.1*ax_xsize)
+
+        elif(ax.set_xlim()[1] >= x and ax.set_xlim()[1] <= x-0.1*ax_xsize):
+            ax.set_xlim(ax.set_xlim()[0], x-0.1*ax_xsize)
+
+        # Draw line
         ax.plot([x, x], ax.set_ylim(), **full_line_kwargs)
 
+        # Print text
         if ('start') in pos.lower() and ('top') in pos.lower():
             ax.text(x, ax.set_ylim()[0], text, rotation=90,
                     horizontalalignment='right', verticalalignment='bottom',
@@ -290,20 +308,6 @@ def draw_textline(text, x=None, y=None, pos='start top', ax=None,
         else:
             raise ValueError("Input argument 'pos' is invalid!")
 
-        # Adjust axes to include text in plot
-        ax_xsize = abs(ax.set_xlim()[1]-ax.set_xlim()[0])
-
-        # Adjust axes if line is located on the left
-        if(ax.set_xlim()[0] <= x and ax.set_xlim()[0] >= x-0.1*ax_xsize):
-            ax.set_xlim(x-0.1*ax_xsize, ax.set_xlim()[1])
-        elif(ax.set_xlim()[0] <= x and ax.set_xlim()[0] >= x+0.1*ax_xsize):
-            ax.set_xlim(x+0.1*ax_xsize, ax.set_xlim()[1])
-
-        # Adjust axes for if line is located on the right
-        if(ax.set_xlim()[1] >= x and ax.set_xlim()[1] <= x+0.1*ax_xsize):
-            ax.set_xlim(ax.set_xlim()[0], x+0.1*ax_xsize)
-        elif(ax.set_xlim()[1] >= x and ax.set_xlim()[1] <= x-0.1*ax_xsize):
-            ax.set_xlim(ax.set_xlim()[0], x-0.1*ax_xsize)
     else:
         raise InputError("Either of input arguments 'x' and 'y' needs to be "
                          "*None*!")

@@ -600,9 +600,13 @@ def nCr(n, r, repeat=False):
     """
 
     # Check if repeat is True or not and act accordingly
-    if repeat is True:
+    if(r == 0):
+        return(1)
+    elif(r == 1):
+        return(n)
+    elif repeat is True:
         return(factorial(n+r-1)//(factorial(r)*factorial(n-1)))
-    elif r in (0, n):
+    elif(r == n):
         return(1)
     elif(r > n):
         return(0)
