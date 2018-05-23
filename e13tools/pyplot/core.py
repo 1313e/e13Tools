@@ -207,7 +207,9 @@ def draw_textline(text, x=None, y=None, pos='start top', ax=None,
         instance.
     line_kwargs : dict of :func:`~matplotlib.lines.Line2D` properties.\
         Default: {}
+        The keyword arguments used for drawing the line.
     text_kwargs : dict of :func:`~matplotlib.text.Text` properties. Default: {}
+        The keyword arguments used for drawing the text.
 
     """
 
@@ -238,12 +240,16 @@ def draw_textline(text, x=None, y=None, pos='start top', ax=None,
         ax_ysize = abs(ax.set_ylim()[1]-ax.set_ylim()[0])
 
         # Adjust axes if line is located on the bottom
+        if(ax.set_ylim()[0] > y):
+            ax.set_ylim(y, ax.set_ylim()[1])
         if(ax.set_ylim()[0] <= y and ax.set_ylim()[0] >= y-0.1*ax_ysize):
             ax.set_ylim(y-0.1*ax_ysize, ax.set_ylim()[1])
         elif(ax.set_ylim()[0] <= y and ax.set_ylim()[0] >= y+0.1*ax_ysize):
             ax.set_ylim(y+0.1*ax_ysize, ax.set_ylim()[1])
 
         # Adjust axes if line is located on the top
+        if(ax.set_ylim()[1] < y):
+            ax.set_ylim(ax.set_ylim()[0], y)
         if(ax.set_ylim()[1] >= y and ax.set_ylim()[1] <= y+0.1*ax_ysize):
             ax.set_ylim(ax.set_ylim()[0], y+0.1*ax_ysize)
         elif(ax.set_ylim()[1] >= y and ax.set_ylim()[1] <= y-0.1*ax_ysize):
@@ -273,15 +279,18 @@ def draw_textline(text, x=None, y=None, pos='start top', ax=None,
         ax_xsize = abs(ax.set_xlim()[1]-ax.set_xlim()[0])
 
         # Adjust axes if line is located on the left
+        if(ax.set_xlim()[0] > x):
+            ax.set_xlim(x, ax.set_xlim()[1])
         if(ax.set_xlim()[0] <= x and ax.set_xlim()[0] >= x-0.1*ax_xsize):
             ax.set_xlim(x-0.1*ax_xsize, ax.set_xlim()[1])
         elif(ax.set_xlim()[0] <= x and ax.set_xlim()[0] >= x+0.1*ax_xsize):
             ax.set_xlim(x+0.1*ax_xsize, ax.set_xlim()[1])
 
         # Adjust axes if line is located on the right
+        if(ax.set_xlim()[1] < x):
+            ax.set_xlim(ax.set_xlim()[0], x)
         if(ax.set_xlim()[1] >= x and ax.set_xlim()[1] <= x+0.1*ax_xsize):
             ax.set_xlim(ax.set_xlim()[0], x+0.1*ax_xsize)
-
         elif(ax.set_xlim()[1] >= x and ax.set_xlim()[1] <= x-0.1*ax_xsize):
             ax.set_xlim(ax.set_xlim()[0], x-0.1*ax_xsize)
 
