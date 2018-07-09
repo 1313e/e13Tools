@@ -193,7 +193,7 @@ def diff(array1, array2=None, axis=0, flatten=True):
             len_axis = array1.shape[0]
 
         # If only unique pair-wise differences are requested
-        if flatten is True:
+        if flatten:
             # Obtain the shape of the resulting array and initialize it
             n_diff = len_axis*(len_axis-1)//2
             if(n_dim == 1):
@@ -604,7 +604,7 @@ def nCr(n, r, repeat=False):
         return(1)
     elif(r == 1):
         return(n)
-    elif repeat is True:
+    elif repeat:
         return(factorial(n+r-1)//(factorial(r)*factorial(n-1)))
     elif(r == n):
         return(1)
@@ -732,7 +732,7 @@ def nearest_PD(matrix):
     except ValueError:
         pass
     else:
-        if is_PD(matrix) is True:
+        if is_PD(matrix):
             return(matrix)
 
     # Make sure that the matrix is Hermitian
@@ -751,14 +751,14 @@ def nearest_PD(matrix):
     mat_PD = (mat_PD+transposeC(mat_PD))/2
 
     # Check if mat_PD is in fact positive-definite
-    if is_PD(mat_PD) is True:
+    if is_PD(mat_PD):
         return(mat_PD)
 
     # If it is not, change it very slightly to make it positive-definite
     In = np.eye(rows)
     k = 1
     spacing = np.spacing(norm(matrix))
-    while is_PD(mat_PD) is not True:
+    while not is_PD(mat_PD):
         min_eig_val = np.min(np.real(eigvals(mat_PD)))
         mat_PD += In*(-1*min_eig_val*pow(k, 2)+spacing)
         k += 1
@@ -814,7 +814,7 @@ def nPr(n, r, repeat=False):
     """
 
     # Check if repeat is True or not and act accordingly
-    if repeat is True:
+    if repeat:
         return(pow(n, r))
     elif(r == 0):
         return(1)

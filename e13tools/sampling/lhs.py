@@ -257,7 +257,7 @@ def lhd(n_sam, n_val, val_rng=None, method='random', criterion=None,
         # Scale sam_set according to val_rng
         sam_set = val_rng[:, 0]+sam_set*(val_rng[:, 1]-val_rng[:, 0])
 
-    if get_score is True and criterion is not None:
+    if get_score and criterion is not None:
         return(sam_set, np.array([mm_val, corr_val, multi_val]))
     else:
         return(sam_set)
@@ -395,7 +395,7 @@ class Multi_LHD(object):
         multi_val_best = multi_val
 
         # Maximize the minimum distance between points
-        if self.quickscan is True:
+        if self.quickscan:
             It = 0
             corr_val_try = corr_val
             corr_tot_try = corr_tot

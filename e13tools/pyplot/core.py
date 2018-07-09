@@ -83,7 +83,7 @@ def apu2tex(unit, unitfrac=False):
 
     """
 
-    if unitfrac is False:
+    if not unitfrac:
         string = unit.to_string('latex_inline')
     else:
         string = unit.to_string('latex')
@@ -149,11 +149,11 @@ def center_spines(centerx=0, centery=0, set_xticker=False, set_yticker=False,
                     textcoords='offset points', ha='right', va='top')
 
     # Set x-axis ticker
-    if set_xticker is not False:
+    if not set_xticker:
         ax.xaxis.set_major_locator(mpl.ticker.MultipleLocator(set_xticker))
 
     # Set y-axis ticker
-    if set_yticker is not False:
+    if not set_yticker:
         ax.yaxis.set_major_locator(mpl.ticker.MultipleLocator(set_yticker))
 
 
@@ -377,13 +377,13 @@ def f2tex(value, sdigits=4, power=3, nobase1=True):
         n = int(np.floor(np.log10(abs(value))))
 
     if(abs(n) < power):
-        string = r"%.{}g".format(sdigits) % (value)
+        string = r"{0:.{1}g}".format(value, sdigits)
     else:
         base = value/pow(10, n)
-        if(base == 1 and nobase1 is True):
-            string = r"10^{%i}" % (n)
+        if(base == 1 and nobase1):
+            string = r"10^{{{0}}}".format(n)
         else:
-            string = r"%.{}g\cdot 10^{{%i}}".format(sdigits) % (base, n)
+            string = r"{0:.{1}g}\cdot 10^{{{2}}}".format(base, sdigits, n)
     return(string)
 
 
