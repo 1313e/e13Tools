@@ -334,11 +334,11 @@ class Multi_LHD(object):
         # Check criterion type and act accordingly
         if isinstance(criterion, (int, float)):
             self.importance = criterion
-        elif criterion.lower() in ('maximin'):
+        elif(criterion.lower() == 'maximin'):
             self.importance = 0
-        elif criterion.lower() in ('correlation'):
+        elif(criterion.lower() == 'correlation'):
             self.importance = 1
-        elif criterion.lower() in ('multi'):
+        elif(criterion.lower() == 'multi'):
             self.importance = 0.5
 
         # Obtain maximin-rank boundaries
