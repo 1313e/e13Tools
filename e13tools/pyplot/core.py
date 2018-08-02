@@ -43,7 +43,8 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import astropy.units as apu
 
-__all__ = ['apu2tex', 'center_spines', 'draw_textline', 'f2tex', 'q2tex']
+__all__ = ['apu2tex', 'center_spines', 'draw_textline', 'f2tex', 'q2tex',
+           'suplabel']
 
 
 # %% FUNCTIONS
@@ -181,7 +182,7 @@ def draw_textline(text, x=None, y=None, pos='start top', ax=None,
 
     Parameters
     ----------
-    text : string
+    text : str
         Text to be printed on the line.
     x : scalar or None
         If scalar, text/line x-coordinate.
@@ -258,19 +259,24 @@ def draw_textline(text, x=None, y=None, pos='start top', ax=None,
         # Draw line
         ax.plot(ax.set_xlim(), [y, y], **full_line_kwargs)
 
-        # Print text
+        # Gather axis specific text properties
+        x = ax.set_xlim()[0]
+        y = y
+        rotation = 0
+
+        # Gather case specific text properties
         if ('start') in pos.lower() and ('top') in pos.lower():
-            ax.text(ax.set_xlim()[0], y, text, horizontalalignment='left',
-                    verticalalignment='bottom', **full_text_kwargs)
+            ha = 'left'
+            va = 'bottom'
         elif ('start') in pos.lower() and ('bottom') in pos.lower():
-            ax.text(ax.set_xlim()[0], y, text, horizontalalignment='left',
-                    verticalalignment='top', **full_text_kwargs)
+            ha = 'left'
+            va = 'top'
         elif ('end') in pos.lower() and ('top') in pos.lower():
-            ax.text(ax.set_xlim()[0], y, text, horizontalalignment='right',
-                    verticalalignment='bottom', **full_text_kwargs)
+            ha = 'right'
+            va = 'bottom'
         elif ('end') in pos.lower() and ('bottom') in pos.lower():
-            ax.text(ax.set_xlim()[0], y, text, horizontalalignment='right',
-                    verticalalignment='top', **full_text_kwargs)
+            ha = 'right'
+            va = 'top'
         else:
             raise ValueError("Input argument 'pos' is invalid!")
 
@@ -297,29 +303,33 @@ def draw_textline(text, x=None, y=None, pos='start top', ax=None,
         # Draw line
         ax.plot([x, x], ax.set_ylim(), **full_line_kwargs)
 
-        # Print text
+        # Gather axis specific text properties
+        x = x
+        y = ax.set_ylim()[0]
+        rotation = 90
+
+        # Gather case specific text properties
         if ('start') in pos.lower() and ('top') in pos.lower():
-            ax.text(x, ax.set_ylim()[0], text, rotation=90,
-                    horizontalalignment='right', verticalalignment='bottom',
-                    **full_text_kwargs)
+            ha = 'right'
+            va = 'bottom'
         elif ('start') in pos.lower() and ('bottom') in pos.lower():
-            ax.text(x, ax.set_ylim()[0], text, rotation=90,
-                    horizontalalignment='left', verticalalignment='bottom',
-                    **full_text_kwargs)
+            ha = 'left'
+            va = 'bottom'
         elif ('end') in pos.lower() and ('top') in pos.lower():
-            ax.text(x, ax.set_ylim()[0], text, rotation=90,
-                    horizontalalignment='right', verticalalignment='top',
-                    **full_text_kwargs)
+            ha = 'right'
+            va = 'top'
         elif ('end') in pos.lower() and ('bottom') in pos.lower():
-            ax.text(x, ax.set_ylim()[0], text, rotation=90,
-                    horizontalalignment='left', verticalalignment='top',
-                    **full_text_kwargs)
+            ha = 'left'
+            va = 'top'
         else:
             raise ValueError("Input argument 'pos' is invalid!")
 
     else:
         raise InputError("Either of input arguments 'x' and 'y' needs to be "
                          "*None*!")
+
+    # Draw text
+    ax.text(x, y, text, rotation=rotation, ha=ha, va=va, **full_text_kwargs)
 
 
 def f2tex(value, sdigits=4, power=3, nobase1=True):
@@ -476,3 +486,107 @@ def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
         string = ''.join([string, '\ ', unit_string])
 
     return(string)
+
+
+def suplabel(label, axis, pos='min', labelpad=9, fig=None, **kwargs):
+    """
+    Adds a super label in the provided figure `fig` for the specified `axis`.
+    Works similarly to :meth:`~matplotlib.pyplot.Figure.suptitle`, but for axes
+    labels instead of figure titles.
+
+    This algorithm is based on a Stack Overflow answer by KYC [1]_.
+
+    Parameters
+    ----------
+    label : str
+        The text to be used as the axis label.
+    axis : {'x', 'y'}
+        String indicating which axis will receive the created label.
+
+    Optional
+    --------
+    pos : {'min', 'max'}. Default: 'min'
+        String indicating whether to position the axis label at the minimum or
+        maximum of the opposing axis. If 'min', the axis label will be
+        positioned on the left (if `axis` = 'y') or below (if `axis` = 'x') the
+        figure. If 'max', the axis label will be positioned on the right (if
+        `axis` = 'y') or above (if `axis` = 'x') the figure.
+    labelpad : float. Default: 7
+        Distance/padding between the `axis` and the label.
+    fig : :obj:`~matplotlib.figure.Figure` object or None. Default: None
+        In which :obj:`~matplotlib.figure.Figure` object the axis label needs
+        to be drawn. If *None*, the current :obj:`~matplotlib.figure.Figure`
+        object will be used.
+    kwargs : dict of :func:`~matplotlib.text.Text` properties. Default: {}
+        The keyword arguments used for drawing the text.
+
+    References
+    ----------
+    .. [1] https://stackoverflow.com/a/29107972
+
+    """
+
+    # Obtain a reference to the current figure if not provided
+    if fig is None:
+        fig = plt.gcf()
+
+    # Create empty lists of x and y extrema
+    xmin = []
+    xmax = []
+    ymin = []
+    ymax = []
+
+    # Obtain x and y extrema
+    for ax in fig.axes:
+        xmin.append(ax.get_position().xmin)
+        xmax.append(ax.get_position().xmax)
+        ymin.append(ax.get_position().ymin)
+        ymax.append(ax.get_position().ymax)
+
+    # Get positions of all corners of the figure
+    xmin = min(xmin)
+    xmax = max(xmax)
+    ymin = min(ymin)
+    ymax = max(ymax)
+
+    # Check if any value for horizontalalignment or verticalalignment is given
+    try:
+        kwargs['ha']
+    except KeyError:
+        try:
+            kwargs['horizontalalignment']
+        except KeyError:
+            kwargs['ha'] = 'center'
+
+    try:
+        kwargs['va']
+    except KeyError:
+        try:
+            kwargs['verticalalignment']
+        except KeyError:
+            kwargs['va'] = 'center'
+
+    # Get all properties for axis label
+    if(axis.lower() == 'x'):
+        x = 0.5
+        rotation = 0
+        if(pos.lower() == 'min'):
+            y = ymin-float(labelpad)/fig.dpi
+        elif(pos.lower() == 'max'):
+            y = ymax+float(labelpad)/fig.dpi
+        else:
+            raise InputError("Input argument 'pos' is invalid!")
+    elif(axis.lower() == 'y'):
+        y = 0.5
+        rotation = 90
+        if(pos.lower() == 'min'):
+            x = xmin-float(labelpad)/fig.dpi
+        elif(pos.lower() == 'max'):
+            x = xmax+float(labelpad)/fig.dpi
+        else:
+            raise InputError("Input argument 'pos' is invalid!")
+    else:
+        raise InputError("Input argument 'axis' is invalid!")
+
+    # Draw axis label
+    fig.text(x, y, label, rotation=rotation, **kwargs)

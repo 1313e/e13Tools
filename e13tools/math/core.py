@@ -186,7 +186,8 @@ def diff(array1, array2=None, axis=0, flatten=True):
         try:
             array1 = np.moveaxis(array1, axis, 0).copy()
         except Exception as error:
-            raise InputError("Input argument 'axis' is invalid (%s)" % (error))
+            raise InputError("Input argument 'axis' is invalid (%s)!"
+                             % (error))
         else:
             # Obtain the dimensionality and axis-length
             n_dim = array1.ndim
@@ -247,7 +248,7 @@ def diff(array1, array2=None, axis=0, flatten=True):
                 array1 = np.moveaxis(array1, axis, 0).copy()
                 array2 = np.moveaxis(array2, axis, 0).copy()
             except Exception as error:
-                raise InputError("Input argument 'axis' is invalid (%s)"
+                raise InputError("Input argument 'axis' is invalid (%s)!"
                                  % (error))
             else:
                 # Obtain axis-length
@@ -278,7 +279,7 @@ def diff(array1, array2=None, axis=0, flatten=True):
                 try:
                     array1 = np.moveaxis(array1, axis, 0).copy()
                 except Exception as error:
-                    raise InputError("Input argument 'axis' is invalid (%s)"
+                    raise InputError("Input argument 'axis' is invalid (%s)!"
                                      % (error))
 
                 # Check if the length of all other axes are the same
@@ -294,7 +295,7 @@ def diff(array1, array2=None, axis=0, flatten=True):
                 try:
                     array2 = np.moveaxis(array2, axis, 0).copy()
                 except Exception as error:
-                    raise InputError("Input argument 'axis' is invalid (%s)"
+                    raise InputError("Input argument 'axis' is invalid (%s)!"
                                      % (error))
 
                 # Check if the length of all other axes are the same
@@ -1032,7 +1033,8 @@ def sort_2D(array, axis=-1, order=None):
     try:
         array = np.moveaxis(array, axis, 0)
     except Exception as error:
-            raise InputError("Input argument 'axis' is invalid (%s)" % (error))
+            raise InputError("Input argument 'axis' is invalid (%s)!"
+                             % (error))
 
     # If order is given, transform it into an array
     if order is not None:
