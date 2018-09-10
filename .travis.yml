@@ -17,7 +17,7 @@ script:
   - check-manifest --ignore .appveyor.yml,.coveragerc,tests*
   - python setup.py check -m -r -s
   - python setup.py install
-  - python tests/test.py --coverage
+  - python tests/test.py --cov=e13tools
 after_success:
   - coveralls
 notifications:
