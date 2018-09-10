@@ -17,7 +17,7 @@ script:
   - check-manifest --ignore .appveyor.yml,.coveragerc,tests*
   - python setup.py check -m -r -s
   - python setup.py install
-  - python tests/test.py --doctest-modules --pep8 coveralls -v --cov coveralls --cov-report term-missing
+  - coverage run tests/test.py
 after_success:
   - coveralls
 notifications:
