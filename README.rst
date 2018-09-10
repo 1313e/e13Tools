@@ -1,4 +1,4 @@
-|PyPI| |Python| |License| |Travis| |AppVeyor|
+|PyPI| |Python| |License| |Travis| |AppVeyor| |Coverage|
 
 Description
 ===========
@@ -35,6 +35,6 @@ e13Tools requires:
 .. |AppVeyor| image:: https://img.shields.io/appveyor/ci/1313e/e13Tools/master.svg?logo=appveyor&label=AppVeyor
    :target: https://ci.appveyor.com/project/1313e/e13Tools
    :alt: AppVeyor - Build Status
-.. image:: https://coveralls.io/repos/github/1313e/e13Tools/badge.svg?branch=master
+.. |Coverage| image:: https://coveralls.io/repos/github/1313e/e13Tools/badge.svg?branch=master
    :target: https://coveralls.io/github/1313e/e13Tools?branch=master
    :alt: Coverage Status
