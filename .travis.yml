@@ -14,7 +14,7 @@ matrix:
 install:
   - pip install -r requirements_dev.txt
 script:
-  - check-manifest --ignore .appveyor.yml,tests*
+  - check-manifest --ignore .appveyor.yml,.coveragerc,tests*
   - python setup.py check -m -r -s
   - python setup.py install
   - python tests/test.py
