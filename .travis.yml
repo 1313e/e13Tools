@@ -12,11 +12,13 @@ matrix:
       dist: xenial
       sudo: true
 install:
-  - pip install -r requirements.txt
+  - pip install -r requirements_dev.txt
 script:
   - check-manifest --ignore .appveyor.yml,tests*
   - python setup.py check -m -r -s
   - python setup.py install
   - python tests/test.py
+after_success:
+  - coveralls
 notifications:
   email: false

@@ -1,0 +1,6 @@
+-r requirements.txt
+check-manifest
+readme_renderer
+coverage
+coveralls
+code-cov
