@@ -37,4 +37,4 @@ e13Tools requires:
    :alt: AppVeyor - Build Status
 .. |Coverage| image:: https://coveralls.io/repos/github/1313e/e13Tools/badge.svg?branch=master
    :target: https://coveralls.io/github/1313e/e13Tools?branch=master
-   :alt: Coverage Status
+   :alt: Coveralls - Coverage Status
