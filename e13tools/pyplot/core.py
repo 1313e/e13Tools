@@ -218,12 +218,6 @@ def draw_textline(text, x=None, y=None, pos='start top', ax=None,
     if ax is None:
         ax = plt.gca()
 
-    # Check if certain keyword arguments are present in text_fmt
-    for key, val in text_kwargs:
-        if key in ('va', 'ha', 'verticalalignment', 'horizontalalignment',
-                   'rotation'):
-            text_kwargs.pop(key)
-
     # Set default line_kwargs and text_kwargs
     default_line_kwargs = {'linestyle': '-',
                            'color': 'k'}
@@ -231,10 +225,16 @@ def draw_textline(text, x=None, y=None, pos='start top', ax=None,
                            'fontsize': 14}
 
     # Combine given kwargs with default ones
-    full_line_kwargs = dict(default_line_kwargs)
-    full_text_kwargs = dict(default_text_kwargs)
-    full_line_kwargs.update(line_kwargs)
-    full_text_kwargs.update(text_kwargs)
+    default_line_kwargs.update(line_kwargs)
+    default_text_kwargs.update(text_kwargs)
+    line_kwargs = default_line_kwargs
+    text_kwargs = default_text_kwargs
+
+    # Check if certain keyword arguments are present in text_fmt
+    for key, val in text_kwargs:
+        if key in ('va', 'ha', 'verticalalignment', 'horizontalalignment',
+                   'rotation'):
+            text_kwargs.pop(key)
 
     if x is None and y is not None:
         # Adjust axes to include text in plot
@@ -257,7 +257,7 @@ def draw_textline(text, x=None, y=None, pos='start top', ax=None,
             ax.set_ylim(ax.set_ylim()[0], y-0.1*ax_ysize)
 
         # Draw line
-        ax.plot(ax.set_xlim(), [y, y], **full_line_kwargs)
+        ax.plot(ax.set_xlim(), [y, y], **line_kwargs)
 
         # Gather axis specific text properties
         x = ax.set_xlim()[0]
@@ -301,7 +301,7 @@ def draw_textline(text, x=None, y=None, pos='start top', ax=None,
             ax.set_xlim(ax.set_xlim()[0], x-0.1*ax_xsize)
 
         # Draw line
-        ax.plot([x, x], ax.set_ylim(), **full_line_kwargs)
+        ax.plot([x, x], ax.set_ylim(), **line_kwargs)
 
         # Gather axis specific text properties
         x = x
@@ -329,7 +329,7 @@ def draw_textline(text, x=None, y=None, pos='start top', ax=None,
                          "*None*!")
 
     # Draw text
-    ax.text(x, y, text, rotation=rotation, ha=ha, va=va, **full_text_kwargs)
+    ax.text(x, y, text, rotation=rotation, ha=ha, va=va, **text_kwargs)
 
 
 def f2tex(value, sdigits=4, power=3, nobase1=True):
@@ -511,7 +511,7 @@ def suplabel(label, axis, pos='min', labelpad=9, fig=None, **kwargs):
         positioned on the left (if `axis` = 'y') or below (if `axis` = 'x') the
         figure. If 'max', the axis label will be positioned on the right (if
         `axis` = 'y') or above (if `axis` = 'x') the figure.
-    labelpad : float. Default: 7
+    labelpad : float. Default: 9
         Distance/padding between the `axis` and the label.
     fig : :obj:`~matplotlib.figure.Figure` object or None. Default: None
         In which :obj:`~matplotlib.figure.Figure` object the axis label needs

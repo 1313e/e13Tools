@@ -1,16 +1,22 @@
 language: python
 python:
-    - "2.7"
-    - "3.4"
-    - "3.5"
-    - "3.6"
-    - "3.7"
+  - "2.7"
+  - "3.4"
+  - "3.5"
+  - "3.5-dev"
+  - "3.6"
+  - "3.6-dev"
+matrix:
+  include:
+    - python: 3.7
+      dist: xenial
+      sudo: true
 install:
-    - pip install -r requirements.txt
+  - pip install -r requirements.txt
 script:
-    - check-manifest --ignore .appveyor.yml,tests*
-    - python setup.py check -m -r -s
-    - python setup.py install
-    - python tests/test.py
+  - check-manifest --ignore .appveyor.yml,tests*
+  - python setup.py check -m -r -s
+  - python setup.py install
+  - python tests/test.py
 notifications:
-    email: false
+  email: false
