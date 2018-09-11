@@ -35,6 +35,6 @@ e13Tools requires:
 .. |AppVeyor| image:: https://img.shields.io/appveyor/ci/1313e/e13Tools/master.svg?logo=appveyor&label=AppVeyor
    :target: https://ci.appveyor.com/project/1313e/e13Tools
    :alt: AppVeyor - Build Status
-.. |Coverage| image:: https://coveralls.io/repos/github/1313e/e13Tools/badge.svg?branch=master
+.. |Coverage| image:: https://img.shields.io/coveralls/github/1313e/e13Tools/master.svg
    :target: https://coveralls.io/github/1313e/e13Tools?branch=master
    :alt: Coveralls - Coverage Status
