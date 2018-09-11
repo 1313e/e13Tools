@@ -14,10 +14,10 @@ matrix:
 install:
   - pip install -r requirements_dev.txt
 script:
-  - check-manifest --ignore .appveyor.yml,.coveragerc,tests*
+  - check-manifest --ignore .appveyor.yml,.coveragerc
   - python setup.py check -m -r -s
   - python setup.py install
-  - coverage run tests/test.py
+  - py.test e13tools -v --cov coveralls
 after_success:
   - coveralls
 notifications:

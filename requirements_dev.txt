@@ -1,7 +1,8 @@
 -r requirements.txt
 check-manifest
 readme_renderer
-coverage
 coveralls
-codecov
+pytest
+pytest-cov
+pytest-pep8
 python-coveralls
