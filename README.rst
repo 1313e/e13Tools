@@ -28,7 +28,7 @@ e13Tools requires:
    :alt: PyPI - Python Versions
 .. |License| image:: https://img.shields.io/pypi/l/e13Tools.svg?colorB=blue
    :target: https://github.com/1313e/e13Tools/raw/master/LICENSE
-   :alt: PyPi - License
+   :alt: PyPI - License
 .. |Travis| image:: https://img.shields.io/travis/1313e/e13Tools/master.svg?logo=travis&label=Travis%20CI
    :target: https://travis-ci.org/1313e/e13Tools
    :alt: Travis CI - Build Status

@@ -41,7 +41,11 @@ from e13tools import InputError
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-import astropy.units as apu
+try:
+    import astropy.units as apu
+    import_astropy = 1
+except ImportError:
+    import_astropy = 0
 
 __all__ = ['apu2tex', 'center_spines', 'draw_textline', 'f2tex', 'q2tex',
            'suplabel']
@@ -84,13 +88,16 @@ def apu2tex(unit, unitfrac=False):
 
     """
 
-    if not unitfrac:
-        string = unit.to_string('latex_inline')
-    else:
-        string = unit.to_string('latex')
+    if import_astropy:
+        if not unitfrac:
+            string = unit.to_string('latex_inline')
+        else:
+            string = unit.to_string('latex')
 
-    # Remove '$' from the string and make sure the output is a string (py2.7)
-    return(str(string.replace("$", "")))
+        # Remove '$' from the string and make output a string (py2.7)
+        return(str(string.replace("$", "")))
+    else:
+        raise ImportError("This function requires AstroPy!")
 
 
 def center_spines(centerx=0, centery=0, set_xticker=False, set_yticker=False,
@@ -470,22 +477,25 @@ def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
     """
 
     # Check if quantity has a unit
-    if isinstance(quantity, apu.quantity.Quantity):
-        value = quantity.value
-        unit = quantity.unit
+    if import_astropy:
+        if isinstance(quantity, apu.quantity.Quantity):
+            value = quantity.value
+            unit = quantity.unit
+        else:
+            value = quantity
+            unit = 0
+
+        # Value handling
+        string = f2tex(value, sdigits, power, nobase1)
+
+        # Unit handling
+        if unit:
+            unit_string = apu2tex(unit, unitfrac)
+            string = ''.join([string, '\ ', unit_string])
+
+        return(string)
     else:
-        value = quantity
-        unit = 0
-
-    # Value handling
-    string = f2tex(value, sdigits, power, nobase1)
-
-    # Unit handling
-    if unit:
-        unit_string = apu2tex(unit, unitfrac)
-        string = ''.join([string, '\ ', unit_string])
-
-    return(string)
+        f2tex(quantity, sdigits, power, nobase1)
 
 
 def suplabel(label, axis, pos='min', labelpad=9, fig=None, **kwargs):
