@@ -33,3 +33,5 @@ def test_compare_version():
     assert e13c._compare_versions('0.1.0a0', '0.1.0')
     assert not e13c._compare_versions('0.0.9', '0.1.0')
     assert e13c._compare_versions('1.0.0', '0.1.0')
+    assert e13c._compare_versions(b'0.1.1', b'0.1.0')
+    assert not e13c._compare_versions(None, '0.1.0')
