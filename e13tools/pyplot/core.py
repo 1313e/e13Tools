@@ -238,7 +238,7 @@ def draw_textline(text, x=None, y=None, pos='start top', ax=None,
     text_kwargs = default_text_kwargs
 
     # Check if certain keyword arguments are present in text_fmt
-    for key, val in text_kwargs:
+    for key, val in text_kwargs.items():
         if key in ('va', 'ha', 'verticalalignment', 'horizontalalignment',
                    'rotation'):
             text_kwargs.pop(key)
