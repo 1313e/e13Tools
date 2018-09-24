@@ -1,23 +1,22 @@
 language: python
-python:
-  - "2.7"
-  - "3.4"
-  - "3.5"
-  - "3.5-dev"
-  - "3.6"
-  - "3.6-dev"
+dist: xenial
+sudo: true
 matrix:
   include:
+    - python: 2.7
+    - python: 3.5
+    - python: 3.5-dev
+    - python: 3.6
+    - python: 3.6-dev
     - python: 3.7
-      dist: xenial
-      sudo: true
+    - python: 3.7-dev
 install:
   - pip install -r requirements_dev.txt
 script:
-  - check-manifest --ignore appveyor.cmd,.appveyor.yml,.coveragerc
+  - check-manifest --ignore appveyor.cmd,.appveyor.yml
   - python setup.py check -m -r -s
   - python setup.py install
-  - py.test e13tools --pep8 e13tools -v --cov e13tools --cov-report term-missing
+  - py.test e13tools
 after_success:
   - coveralls
 notifications:

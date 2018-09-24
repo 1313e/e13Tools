@@ -10,14 +10,6 @@ environment:
     - PYTHON: "C:\\Python27-x64"
       PYTHON_VERSION: "2.7.x"
       PYTHON_ARCH: "64"
-
-    - PYTHON: "C:\\Python34"
-      PYTHON_VERSION: "3.4.x"
-      PYTHON_ARCH: "32"
-
-    - PYTHON: "C:\\Python34-x64"
-      PYTHON_VERSION: "3.4.x"
-      PYTHON_ARCH: "64"
     
     - PYTHON: "C:\\Python35"
       PYTHON_VERSION: "3.5.x"
@@ -67,7 +59,7 @@ build: false
 
 test_script:
   # Run the project tests
-  - "%CMD_IN_ENV% check-manifest --ignore .travis.yml,appveyor.cmd,.appveyor.yml,.coveragerc"
+  - "%CMD_IN_ENV% check-manifest --ignore .travis.yml,appveyor.cmd,.appveyor.yml"
   - "%CMD_IN_ENV% python setup.py check -m -r -s"
   - "%CMD_IN_ENV% python setup.py install"
-  - "%CMD_IN_ENV% py.test e13tools --pep8 e13tools"
+  - "%CMD_IN_ENV% py.test e13tools"

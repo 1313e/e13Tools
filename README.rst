@@ -2,22 +2,23 @@
 
 Description
 ===========
-
 This package contains a collection of functions that were created by 1313e.
 Most functions were created for personal use, but have been changed and optimized to work for others as well.
 
 How to install
 ==============
-
 e13Tools can be found in the PyPI system, so ``pip install e13tools`` should suffice.
 
 Dependencies
 ------------
 e13Tools requires:
 
-- ``python == 2.7`` or ``python >= 3.4``,
+- ``python == 2.7`` or ``python >= 3.5``,
 - ``numpy >= 1.8``,
-- ``matplotlib >= 1.4.3``,
+- ``matplotlib >= 1.4.3``.
+
+The following packages are used by a few functions and therefore optional:
+
 - ``astropy >= 1.3``.
 
 .. |PyPI| image:: https://img.shields.io/pypi/v/e13Tools.svg
