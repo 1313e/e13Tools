@@ -20,10 +20,9 @@ Available classes
 # %% IMPORTS
 from __future__ import absolute_import, division, print_function
 
-import six
-import distutils
+from pkg_resources import parse_version
 
-__all__ = ['InputError', 'ShapeError']
+__all__ = ['InputError', 'ShapeError', 'compare_versions']
 
 
 # %% CLASSES
@@ -52,16 +51,15 @@ class ShapeError(Exception):
 
 
 # %% FUNCTIONS
-def _compare_versions(a, b):
-    "Return True if `a` is greater than or equal to `b`."
+# Function that compares two versions with each other
+def compare_versions(a, b):
+    """
+    Compares provided versions `a` and `b` with each other, and returns *True*
+    if version `a` is later than or equal to version `b`.
+
+    """
+
     if a:
-        if six.PY3:
-            if isinstance(a, bytes):
-                a = a.decode('ascii')
-            if isinstance(b, bytes):
-                b = b.decode('ascii')
-        a = distutils.version.LooseVersion(a)
-        b = distutils.version.LooseVersion(b)
-        return(a >= b)
+        return(parse_version(a) >= parse_version(b))
     else:
         return(False)
