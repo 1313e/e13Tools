@@ -309,7 +309,7 @@ def diff(array1, array2=None, axis=0, flatten=True):
                     return(array1-array2)
 
 
-def gcd(seq):
+def gcd(*seq):
     """
     Returns the greatest common divisor of the provided sequence of integers.
 
@@ -325,17 +325,14 @@ def gcd(seq):
 
     Example
     -------
-    >>> gcd([18, 60, 72, 138])
+    >>> gcd(18, 60, 72, 138)
     6
 
     See also
     --------
-    - :func:`~e13tools.math.core.gcd_single`: Greatest common divisor for two \
-        integers.
-    - :func:`~e13tools.math.lcm`: Least common multiple for sequence of \
-        integers.
-    - :func:`~e13tools.math.core.lcm_single`: Least common multiple for two \
-        integers.
+    - :func:`~core.gcd_single`: Greatest common divisor for two integers.
+    - :func:`~lcm`: Least common multiple for sequence of integers.
+    - :func:`~core.lcm_single`: Least common multiple for two integers.
 
     """
 
@@ -373,12 +370,9 @@ def gcd_single(a, b):
 
     See also
     --------
-    - :func:`~e13tools.math.gcd`: Greatest common divisor for sequence of \
-        integers.
-    - :func:`~e13tools.math.lcm`: Least common multiple for sequence of \
-        integers.
-    - :func:`~e13tools.math.core.lcm_single`: Least common multiple for two \
-        integers.
+    - :func:`~gcd`: Greatest common divisor for sequence of integers.
+    - :func:`~lcm`: Least common multiple for sequence of integers.
+    - :func:`~core.lcm_single`: Least common multiple for two integers.
 
     """
 
@@ -439,8 +433,8 @@ def is_PD(matrix):
 
     See also
     --------
-    - :func:`~e13tools.math.nearest_PD`: Find the nearest positive-definite \
-        matrix to the input `matrix`.
+    - :func:`~nearest_PD`: Find the nearest positive-definite matrix to the \
+        input `matrix`.
 
     """
 
@@ -471,7 +465,7 @@ def is_PD(matrix):
         return(True)
 
 
-def lcm(seq):
+def lcm(*seq):
     """
     Returns the least common multiple of the provided sequence of integers.
     If at least one integer is zero, the output will also be zero.
@@ -493,12 +487,9 @@ def lcm(seq):
 
     See also
     --------
-    - :func:`~e13tools.math.gcd`: Greatest common divisor for sequence of \
-        integers.
-    - :func:`~e13tools.math.core.gcd_single`: Greatest common divisor for two \
-        integers.
-    - :func:`~e13tools.math.core.lcm_single`: Least common multiple for two \
-        integers.
+    - :func:`~gcd`: Greatest common divisor for sequence of integers.
+    - :func:`~core.gcd_single`: Greatest common divisor for two integers.
+    - :func:`~core.lcm_single`: Least common multiple for two integers.
 
     """
 
@@ -532,7 +523,7 @@ def lcm_single(a, b):
         .. math:: \\mathrm{lcm}(a, b)=\\frac{|a|}{\\mathrm{gcd}(a, b)}\\cdot \
             |b|,
 
-    with :math:`\mathrm{gcd}` being the greatest common divisor.
+    with :math:`\\mathrm{gcd}` being the greatest common divisor.
 
     Example
     -------
@@ -541,12 +532,9 @@ def lcm_single(a, b):
 
     See also
     --------
-    - :func:`~e13tools.math.gcd`: Greatest common divisor for sequence of \
-        integers.
-    - :func:`~e13tools.math.core.gcd_single`: Greatest common divisor for two \
-        integers.
-    - :func:`~e13tools.math.lcm`: Least common multiple for sequence of \
-        integers.
+    - :func:`~gcd`: Greatest common divisor for sequence of integers.
+    - :func:`~core.gcd_single`: Greatest common divisor for two integers.
+    - :func:`~lcm`: Least common multiple for sequence of integers.
 
     """
 
@@ -596,7 +584,7 @@ def nCr(n, r, repeat=False):
 
     See also
     --------
-    - :func:`~e13tools.math.nPr`: Returns the number of ordered arrangements.
+    - :func:`~nPr`: Returns the number of ordered arrangements.
 
     """
 
@@ -709,8 +697,8 @@ def nearest_PD(matrix):
 
     See also
     --------
-    - :func:`~e13tools.math.is_PD`: Checks if `matrix` is positive-definite \
-        or not.
+    - :func:`~is_PD`: Checks if `matrix` is positive-definite or not.
+
     """
 
     # Make sure that matrix is a numpy array
@@ -810,7 +798,7 @@ def nPr(n, r, repeat=False):
 
     See also
     --------
-    - :func:`~e13tools.math.nCr`: Returns the number of unordered arrangements.
+    - :func:`~nCr`: Returns the number of unordered arrangements.
 
     """
 

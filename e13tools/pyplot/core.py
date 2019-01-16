@@ -498,7 +498,7 @@ def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
         f2tex(quantity, sdigits, power, nobase1)
 
 
-def suplabel(label, axis, pos='min', labelpad=9, fig=None, **kwargs):
+def suplabel(label, axis, fig=None, **kwargs):
     """
     Adds a super label in the provided figure `fig` for the specified `axis`.
     Works similarly to :meth:`~matplotlib.pyplot.Figure.suptitle`, but for axes
@@ -515,14 +515,6 @@ def suplabel(label, axis, pos='min', labelpad=9, fig=None, **kwargs):
 
     Optional
     --------
-    pos : {'min', 'max'}. Default: 'min'
-        String indicating whether to position the axis label at the minimum or
-        maximum of the opposing axis. If 'min', the axis label will be
-        positioned on the left (if `axis` = 'y') or below (if `axis` = 'x') the
-        figure. If 'max', the axis label will be positioned on the right (if
-        `axis` = 'y') or above (if `axis` = 'x') the figure.
-    labelpad : float. Default: 9
-        Distance/padding between the `axis` and the label.
     fig : :obj:`~matplotlib.figure.Figure` object or None. Default: None
         In which :obj:`~matplotlib.figure.Figure` object the axis label needs
         to be drawn. If *None*, the current :obj:`~matplotlib.figure.Figure`
@@ -532,7 +524,7 @@ def suplabel(label, axis, pos='min', labelpad=9, fig=None, **kwargs):
 
     References
     ----------
-    .. [1] https://stackoverflow.com/a/29107972
+    .. [1] https://stackoverflow.com/a/44020303
 
     """
 
@@ -540,63 +532,17 @@ def suplabel(label, axis, pos='min', labelpad=9, fig=None, **kwargs):
     if fig is None:
         fig = plt.gcf()
 
-    # Create empty lists of x and y extrema
-    xmin = []
-    xmax = []
-    ymin = []
-    ymax = []
-
-    # Obtain x and y extrema
-    for ax in fig.axes:
-        xmin.append(ax.get_position().xmin)
-        xmax.append(ax.get_position().xmax)
-        ymin.append(ax.get_position().ymin)
-        ymax.append(ax.get_position().ymax)
-
-    # Get positions of all corners of the figure
-    xmin = min(xmin)
-    xmax = max(xmax)
-    ymin = min(ymin)
-    ymax = max(ymax)
-
-    # Check if any value for horizontalalignment or verticalalignment is given
-    try:
-        kwargs['ha']
-    except KeyError:
-        try:
-            kwargs['horizontalalignment']
-        except KeyError:
-            kwargs['ha'] = 'center'
-
-    try:
-        kwargs['va']
-    except KeyError:
-        try:
-            kwargs['verticalalignment']
-        except KeyError:
-            kwargs['va'] = 'center'
-
     # Get all properties for axis label
     if(axis.lower() == 'x'):
-        x = 0.5
-        rotation = 0
-        if(pos.lower() == 'min'):
-            y = ymin-float(labelpad)/fig.dpi
-        elif(pos.lower() == 'max'):
-            y = ymax+float(labelpad)/fig.dpi
-        else:
-            raise InputError("Input argument 'pos' is invalid!")
+        fig.axes[0].xaxis.label.set_transform(
+            mpl.transforms.blended_transform_factory(
+                fig.transFigure, mpl.transforms.IdentityTransform()))
+        fig.axes[0].set_xlabel(label, **kwargs)
     elif(axis.lower() == 'y'):
-        y = 0.5
-        rotation = 90
-        if(pos.lower() == 'min'):
-            x = xmin-float(labelpad)/fig.dpi
-        elif(pos.lower() == 'max'):
-            x = xmax+float(labelpad)/fig.dpi
-        else:
-            raise InputError("Input argument 'pos' is invalid!")
+        fig.axes[0].yaxis.label.set_transform(
+            mpl.transforms.blended_transform_factory(
+                mpl.transforms.IdentityTransform(), fig.transFigure))
+        fig.axes[0].set_ylabel(label, **kwargs)
+
     else:
         raise InputError("Input argument 'axis' is invalid!")
-
-    # Draw axis label
-    fig.text(x, y, label, rotation=rotation, **kwargs)
