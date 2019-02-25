@@ -23,7 +23,7 @@ from matplotlib.cm import register_cmap
 from matplotlib.colors import LinearSegmentedColormap as LSC
 import numpy as np
 
-# PRISM imports
+# e13Tools imports
 try:
     from mpi4py import MPI
 except ImportError:
