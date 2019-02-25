@@ -1,57 +1,10 @@
 # -*- coding: utf-8 -*-
 
 """
-Math Core
-=========
-Provides a collection of functions that are core to **Math** and are imported
-automatically.
-
-
-Available functions
--------------------
-:func:`~diff`
-    Calculates the pair-wise differences between inputs `array1` and `array2`
-    along the given axis.
-
-:func:`~gcd`
-    Returns the greatest common divisor of the provided sequence of integers.
-
-:func:`~is_PD`
-    Checks if `matrix` is positive-definite or not, by using the
-    :func:`~np.linalg.cholesky` function. It is required for `matrix` to be
-    Hermitian.
-
-:func:`~lcm`
-    Returns the least common multiple of the provided sequence of integers.
-    If at least one integer is zero, the output will also be zero.
-
-:func:`~nCr`
-    For a given set S of `n` elements, returns the number of unordered
-    arrangements ("combinations") of length `r` one can make with S.
-    Returns zero if `r` > `n` and `repeat` is *False*.
-
-:func:`~nearest_PD`
-    Find the nearest positive-definite matrix to the input `matrix`.
-
-:func:`~nPr`
-    For a given set S of `n` elements, returns the number of ordered
-    arrangements ("permutations") of length `r` one can make with S.
-    Returns zero if `r` > `n` and `repeat` is *False*.
-
-:func:`~rot90`
-    Rotates the given `array` by 90 degrees around the point `rot_axis` in the
-    given `axes`. This function is different from NumPy's :func:`~numpy.rot90`
-    function in that every column (2nd axis) defines a different dimension
-    instead of every individual axis.
-
-:func:`~sort_2D`
-    Sorts a 2D `array` in a given `axis` in the specified `order`. This
-    function is different from NumPy's :func:`~sort` function in that it sorts
-    in a given axis rather than along it, and the order can be given as
-    integers rather than field strings.
-
-:func:`~transposeC`
-    Returns the (conjugate) transpose of the input `array`.
+Math
+====
+Provides a collection of functions useful in various mathematical
+calculations and data array manipulations.
 
 """
 

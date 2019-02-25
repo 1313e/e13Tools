@@ -1,35 +1,9 @@
 # -*- coding: utf-8 -*-
 
 """
-PyPlot Core
-===========
-Provides a collection of functions that are core to **PyPlot** and are imported
-automatically.
-
-Available functions
--------------------
-:func:`~apu2tex`
-    Transform a :obj:`~astropy.units.core.Unit` object into a (La)TeX string
-    for usage in a :obj:`~matplotlib.figure.Figure` instance.
-
-:func:`~center_spines`
-    Centers the axis spines at <`centerx`, `centery`> on the axis `ax` in a
-    :obj:`~matplotlib.figure.Figure` instance. Centers the axis spines at the
-    origin by default.
-
-:func:`~draw_textline`
-    Draws a line on the axis `ax` in a :obj:`~matplotlib.figure.Figure`
-    instance instance and prints `text` on top.
-
-:func:`~f2tex`
-    Transform a value into a (La)TeX string for usage in a
-    :obj:`~matplotlib.figure.Figure` instance.
-
-:func:`~q2tex`
-    Combination of :func:`~e13tools.pyplot.f2tex` and
-    :func:`~e13tools.pyplot.apu2tex`.
-    Transform a :obj:`~astropy.units.quantity.Quantity` object into a (La)TeX
-    string for usage in a :obj:`~matplotlib.figure.Figure` instance.
+PyPlot
+======
+Provides a collection of functions useful in various plotting routines.
 
 """
 

@@ -24,7 +24,9 @@ with open('requirements.txt', 'r') as f:
     requirements = f.read().splitlines()
 
 # Get the version
-exec(open('e13tools/__version__.py', 'r').read())
+version = None
+with open('e13tools/__version__.py', 'r') as f:
+    exec(f.read())
 
 # Setup function declaration
 setup(name="e13tools",
