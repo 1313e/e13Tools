@@ -9,6 +9,9 @@ Provides several useful utility functions.
 
 
 # %% IMPORTS
+# Future imports
+from __future__ import absolute_import, division, print_function
+
 # Built-in imports
 from inspect import isclass
 import logging
