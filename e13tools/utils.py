@@ -13,7 +13,7 @@ Provides several useful utility functions.
 from __future__ import absolute_import, division, print_function
 
 # Built-in imports
-from inspect import isclass
+from inspect import currentframe, getouterframes, isclass, isfunction, ismethod
 import logging
 import logging.config
 import os
@@ -25,6 +25,7 @@ from e13tools import InputError
 from matplotlib.cm import register_cmap
 from matplotlib.colors import LinearSegmentedColormap as LSC
 import numpy as np
+from six import string_types
 
 # e13Tools imports
 try:
@@ -35,7 +36,8 @@ except ImportError:
 # All declaration
 __all__ = ['aux_char_list', 'check_instance', 'convert_str_seq', 'delist',
            'docstring_append', 'docstring_copy', 'docstring_substitute',
-           'import_cmaps', 'raise_error', 'raise_warning', 'rprint']
+           'get_outer_frame', 'import_cmaps', 'raise_error', 'raise_warning',
+           'rprint']
 
 # Determine MPI size and ranks
 size = MPI.COMM_WORLD.Get_size()
@@ -137,9 +139,7 @@ def check_instance(instance, cls):
 
     # Check if all cls attributes can be called in instance
     for attr in class_attrs:
-        try:
-            getattr(instance, attr)
-        except AttributeError:
+        if not hasattr(instance, attr):
             return(0)
     else:
         return(1)
@@ -203,7 +203,7 @@ def convert_str_seq(seq):
 # List of auxiliary characters to be used in convert_str_seq()
 aux_char_list = ['(', ')', '[', ']', ',', "'", '"', '|', '/', '{', '}', '<',
                  '>', '´', '¨', '`', '\\', '?', '!', '%', ';', '=', '$', '~',
-                 '#', '@', '^', '&', '*']
+                 '#', '@', '^', '&', '*', '“', '’', '”', '‘']
 
 
 # Function that returns a copy of a list with all empty lists/tuples removed
@@ -243,6 +243,47 @@ def delist(list_obj):
 
     # Return the copy
     return(delisted_copy)
+
+
+# This function retrieves a specified outer frame of a function
+def get_outer_frame(name):
+    """
+    Checks whether or not the calling function contains an outer frame called
+    `name` and returns it if so. If this frame cannot be found, returns *None*
+    instead.
+
+    Parameters
+    ----------
+    name : str or function
+        If str, the name of the function whose frame must be located in the
+        outer frames of the calling function.
+        If function, its frame must be located in the outer frames instead.
+
+    Returns
+    -------
+    outer_frame : frame or None
+        The requested outer frame if it was found, or *None* if it was not.
+
+    """
+
+    # If name is a function or method, obtain its name
+    if isfunction(name) or ismethod(name):
+        name = name.__name__
+
+    # Else, if name is not a string, raise an error
+    elif not isinstance(name, string_types):
+        raise InputError("Input argument 'name' must be a callable function or"
+                         " method, or be of type 'str'!")
+
+    # Obtain the caller's frame
+    caller_frame = currentframe().f_back
+
+    # Loop over all outer frames and check if name is in there
+    for frame_info in getouterframes(caller_frame):
+        if(frame_info[3] == name):
+            return(frame_info[0])
+    else:
+        return(None)
 
 
 # Function to import all custom colormaps in a directory

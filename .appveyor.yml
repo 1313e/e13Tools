@@ -61,5 +61,5 @@ test_script:
   # Run the project tests
   - "%CMD_IN_ENV% check-manifest --ignore .travis.yml,appveyor.cmd,.appveyor.yml"
   - "%CMD_IN_ENV% python setup.py check -m -r -s"
-  - "%CMD_IN_ENV% python setup.py install"
-  - "%CMD_IN_ENV% py.test e13tools"
+  - "%CMD_IN_ENV% pip install ."
+  - "%CMD_IN_ENV% pytest"

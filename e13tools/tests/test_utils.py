@@ -5,6 +5,7 @@
 import logging
 from os import path
 from sys import platform
+from inspect import currentframe, getframeinfo
 
 # Package imports
 from e13tools.core import InputError
@@ -14,8 +15,8 @@ import pytest
 # PRISM imports
 from e13tools.utils import (docstring_append, docstring_copy,
                             docstring_substitute, check_instance,
-                            convert_str_seq, delist, import_cmaps, raise_error,
-                            raise_warning, rprint)
+                            convert_str_seq, delist, get_outer_frame,
+                            import_cmaps, raise_error, raise_warning, rprint)
 
 # Save the path to this directory
 dirpath = path.dirname(__file__)
@@ -118,6 +119,23 @@ def test_delist():
 
     # Check if provided list is delisted correctly
     assert delist([[], (), [np.array(1)], [7], 8]) == [[np.array(1)], [7], 8]
+
+
+# Pytest for the get_outer_frame function
+def test_get_outer_frame():
+    # Check if providing a wrong argument raises an error
+    with pytest.raises(InputError):
+        get_outer_frame(np.array([]))
+
+    # Check if providing a non-valid frame function returns None
+    assert get_outer_frame(get_outer_frame) is None
+
+    # Check if providing a non-valid frame name returns None
+    assert get_outer_frame('test') is None
+
+    # Check if providing a valid frame returns that frame
+    caller_frame = currentframe().f_back
+    assert get_outer_frame(getframeinfo(caller_frame)[2]) == caller_frame
 
 
 # Pytest for the import_cmaps function

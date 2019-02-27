@@ -15,8 +15,8 @@ install:
 script:
   - check-manifest --ignore appveyor.cmd,.appveyor.yml
   - python setup.py check -m -r -s
-  - python setup.py install
-  - py.test e13tools
+  - pip install .
+  - pytest
 after_success:
   - coveralls
 notifications:
