@@ -21,13 +21,13 @@ from os import path
 import warnings
 
 # Package imports
-from e13tools import InputError
 from matplotlib.cm import register_cmap
 from matplotlib.colors import LinearSegmentedColormap as LSC
 import numpy as np
 from six import string_types
 
 # e13Tools imports
+from e13tools import InputError
 try:
     from mpi4py import MPI
 except ImportError:

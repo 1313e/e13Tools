@@ -8,11 +8,11 @@ from sys import platform
 from inspect import currentframe, getframeinfo
 
 # Package imports
-from e13tools.core import InputError
 import numpy as np
 import pytest
 
-# PRISM imports
+# e13Tools imports
+from e13tools.core import InputError
 from e13tools.utils import (docstring_append, docstring_copy,
                             docstring_substitute, check_instance,
                             convert_str_seq, delist, get_outer_frame,

@@ -6,22 +6,17 @@ Core
 Provides a collection of functions that are core to **e13Tools** and are
 imported automatically.
 
-Available classes
------------------
-:class:`~InputError`
-    Generic exception raised for errors in the function input arguments.
-
-:class:`~ShapeError`
-    Inappropriate argument shape (of correct type).
-
 """
 
 
 # %% IMPORTS
+# Future imports
 from __future__ import absolute_import, division, print_function
 
+# Built-in imports
 from pkg_resources import parse_version
 
+# All declaration
 __all__ = ['InputError', 'ShapeError', 'compare_versions']
 
 

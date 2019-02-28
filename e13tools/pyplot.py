@@ -9,23 +9,29 @@ Provides a collection of functions useful in various plotting routines.
 
 
 # %% IMPORTS
+# Future imports
 from __future__ import absolute_import, division, print_function
 
-from e13tools import InputError
-import numpy as np
-import matplotlib as mpl
-import matplotlib.pyplot as plt
+# Package imports
 try:
     import astropy.units as apu
     import_astropy = 1
 except ImportError:
     import_astropy = 0
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import numpy as np
 
+# e13Tools imports
+from e13tools import InputError
+
+# All declaration
 __all__ = ['apu2tex', 'center_spines', 'draw_textline', 'f2tex', 'q2tex',
            'suplabel']
 
 
 # %% FUNCTIONS
+# This function converts an astropy unit into a TeX string
 def apu2tex(unit, unitfrac=False):
     """
     Transform a :obj:`~astropy.units.core.Unit` object into a (La)TeX string
@@ -74,6 +80,7 @@ def apu2tex(unit, unitfrac=False):
         raise ImportError("This function requires AstroPy!")
 
 
+# This function centers the axes of the provided axes
 def center_spines(centerx=0, centery=0, set_xticker=False, set_yticker=False,
                   ax=None):
     """
@@ -139,6 +146,7 @@ def center_spines(centerx=0, centery=0, set_xticker=False, set_yticker=False,
         ax.yaxis.set_major_locator(mpl.ticker.MultipleLocator(set_yticker))
 
 
+# This class is used by the center_spines function
 class CenteredFormatter(mpl.ticker.ScalarFormatter):
     """
     Acts exactly like the default Scalar Formatter, but yields an empty
@@ -155,6 +163,7 @@ class CenteredFormatter(mpl.ticker.ScalarFormatter):
             return(mpl.ticker.ScalarFormatter.__call__(self, value, pos))
 
 
+# This function draws a line with text in the provided figure
 def draw_textline(text, x=None, y=None, pos='start top', ax=None,
                   line_kwargs={}, text_kwargs={}):
     """
@@ -313,6 +322,7 @@ def draw_textline(text, x=None, y=None, pos='start top', ax=None,
     ax.text(x, y, text, rotation=rotation, ha=ha, va=va, **text_kwargs)
 
 
+# This function converts a float into a TeX string
 def f2tex(value, sdigits=4, power=3, nobase1=True):
     """
     Transform a value into a (La)TeX string for usage in a
@@ -378,6 +388,7 @@ def f2tex(value, sdigits=4, power=3, nobase1=True):
     return(string)
 
 
+# This function converts an astropy quantity into a TeX string
 def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
     """
     Combination of :func:`~e13tools.pyplot.f2tex` and
@@ -472,6 +483,7 @@ def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
         f2tex(quantity, sdigits, power, nobase1)
 
 
+# This function adds a superlabel to a provided figure
 def suplabel(label, axis, fig=None, **kwargs):
     """
     Adds a super label in the provided figure `fig` for the specified `axis`.

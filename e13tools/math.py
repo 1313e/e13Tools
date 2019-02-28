@@ -10,19 +10,27 @@ calculations and data array manipulations.
 
 
 # %% IMPORTS
+# Future imports
 from __future__ import absolute_import, division, print_function
 
-from e13tools import InputError, ShapeError
-from math import factorial
+# Built-in imports
 from functools import reduce
+from math import factorial
+
+# Package imports
 import numpy as np
 from numpy.linalg import cholesky, eigvals, LinAlgError, norm, svd
 
+# e13Tools imports
+from e13tools import InputError, ShapeError
+
+# All declaration
 __all__ = ['diff', 'gcd', 'is_PD', 'lcm', 'nCr', 'nearest_PD', 'nPr', 'rot90',
            'sort_2D', 'transposeC']
 
 
 # %% FUNCTIONS
+# This function calculates the pair-wise differences between two inputs
 def diff(array1, array2=None, axis=0, flatten=True):
     """
     Calculates the pair-wise differences between inputs `array1` and `array2`
@@ -262,6 +270,7 @@ def diff(array1, array2=None, axis=0, flatten=True):
                     return(array1-array2)
 
 
+# This function calculates the greatest common divisor of a sequence
 def gcd(*seq):
     """
     Returns the greatest common divisor of the provided sequence of integers.
@@ -283,15 +292,21 @@ def gcd(*seq):
 
     See also
     --------
-    - :func:`~core.gcd_single`: Greatest common divisor for two integers.
-    - :func:`~lcm`: Least common multiple for sequence of integers.
-    - :func:`~core.lcm_single`: Least common multiple for two integers.
+    :func:`~core.gcd_single`
+        Greatest common divisor for two integers.
+    
+    :func:`~lcm`
+        Least common multiple for sequence of integers.
+    
+    :func:`~core.lcm_single`
+        Least common multiple for two integers.
 
     """
 
     return(reduce(lambda a, b: gcd_single(a, b), seq))
 
 
+# This function calculates the greatest common divisor of two integers
 def gcd_single(a, b):
     """
     Returns the greatest common divisor of the integers `a` and `b` using
@@ -323,9 +338,14 @@ def gcd_single(a, b):
 
     See also
     --------
-    - :func:`~gcd`: Greatest common divisor for sequence of integers.
-    - :func:`~lcm`: Least common multiple for sequence of integers.
-    - :func:`~core.lcm_single`: Least common multiple for two integers.
+    :func:`~gcd`
+        Greatest common divisor for sequence of integers.
+    
+    :func:`~lcm`
+        Least common multiple for sequence of integers.
+    
+    :func:`~core.lcm_single`
+        Least common multiple for two integers.
 
     """
 
@@ -334,6 +354,7 @@ def gcd_single(a, b):
     return(a)
 
 
+# This function determines if a matrix is positive-definite
 def is_PD(matrix):
     """
     Checks if `matrix` is positive-definite or not, by using the
@@ -386,8 +407,8 @@ def is_PD(matrix):
 
     See also
     --------
-    - :func:`~nearest_PD`: Find the nearest positive-definite matrix to the \
-        input `matrix`.
+    :func:`~nearest_PD`
+        Find the nearest positive-definite matrix to the input `matrix`.
 
     """
 
@@ -418,6 +439,7 @@ def is_PD(matrix):
         return(True)
 
 
+# This function calculates the least common multiple of a sequence
 def lcm(*seq):
     """
     Returns the least common multiple of the provided sequence of integers.
@@ -435,20 +457,26 @@ def lcm(*seq):
 
     Example
     -------
-    >>> lcm([8, 9, 21])
+    >>> lcm(8, 9, 21)
     504
 
     See also
     --------
-    - :func:`~gcd`: Greatest common divisor for sequence of integers.
-    - :func:`~core.gcd_single`: Greatest common divisor for two integers.
-    - :func:`~core.lcm_single`: Least common multiple for two integers.
+    :func:`~gcd`
+        Greatest common divisor for sequence of integers.
+    
+    :func:`~core.gcd_single`
+        Greatest common divisor for two integers.
+    
+    :func:`~core.lcm_single`
+        Least common multiple for two integers.
 
     """
 
     return(reduce(lcm_single, seq))
 
 
+# This function calculates the least common multiple of two integers
 def lcm_single(a, b):
     """
     Returns the least common multiple of the integers `a` and `b`.
@@ -485,15 +513,21 @@ def lcm_single(a, b):
 
     See also
     --------
-    - :func:`~gcd`: Greatest common divisor for sequence of integers.
-    - :func:`~core.gcd_single`: Greatest common divisor for two integers.
-    - :func:`~lcm`: Least common multiple for sequence of integers.
+    :func:`~gcd`
+        Greatest common divisor for sequence of integers.
+    
+    :func:`~core.gcd_single`
+        Greatest common divisor for two integers.
+    
+    :func:`~lcm`
+        Least common multiple for sequence of integers.
 
     """
 
     return(0 if(a == 0 or b == 0) else (abs(a)//gcd_single(a, b))*abs(b))
 
 
+# This function calculates the number of unordered arrangements
 def nCr(n, r, repeat=False):
     """
     For a given set S of `n` elements, returns the number of unordered
@@ -537,7 +571,8 @@ def nCr(n, r, repeat=False):
 
     See also
     --------
-    - :func:`~nPr`: Returns the number of ordered arrangements.
+    :func:`~nPr`
+        Returns the number of ordered arrangements.
 
     """
 
@@ -556,6 +591,7 @@ def nCr(n, r, repeat=False):
         return(factorial(n)//(factorial(r)*factorial(n-r)))
 
 
+# This function converts a given matrix to its nearest PD variant
 def nearest_PD(matrix):
     """
     Find the nearest positive-definite matrix to the input `matrix`.
@@ -650,7 +686,8 @@ def nearest_PD(matrix):
 
     See also
     --------
-    - :func:`~is_PD`: Checks if `matrix` is positive-definite or not.
+    :func:`~is_PD`
+        Checks if `matrix` is positive-definite or not.
 
     """
 
@@ -708,6 +745,7 @@ def nearest_PD(matrix):
         return(mat_PD)
 
 
+# This function calculates the number of ordered arrangements
 def nPr(n, r, repeat=False):
     """
     For a given set S of `n` elements, returns the number of ordered
@@ -751,7 +789,8 @@ def nPr(n, r, repeat=False):
 
     See also
     --------
-    - :func:`~nCr`: Returns the number of unordered arrangements.
+    :func:`~nCr`
+        Returns the number of unordered arrangements.
 
     """
 
@@ -766,6 +805,7 @@ def nPr(n, r, repeat=False):
         return(factorial(n)//factorial(n-r))
 
 
+# This function rotates a given array around a specified axis
 def rot90(array, axes=(0, 1), rot_axis='center', n_rot=1):
     """
     Rotates the given `array` by 90 degrees around the point `rot_axis` in the
@@ -888,6 +928,7 @@ def rot90(array, axes=(0, 1), rot_axis='center', n_rot=1):
     return(array_rot)
 
 
+# This function sorts a 2D array in a specified order
 def sort_2D(array, axis=-1, order=None):
     """
     Sorts a 2D `array` in a given `axis` in the specified `order`. This
@@ -995,6 +1036,7 @@ def sort_2D(array, axis=-1, order=None):
     return(np.moveaxis(array, 0, axis))
 
 
+# This function calculates the conjugate transpose of an array
 def transposeC(array, axes=None):
     """
     Returns the (conjugate) transpose of the input `array`.
