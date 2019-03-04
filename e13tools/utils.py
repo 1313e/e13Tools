@@ -24,7 +24,6 @@ import warnings
 from matplotlib.cm import register_cmap
 from matplotlib.colors import LinearSegmentedColormap as LSC
 import numpy as np
-from six import string_types
 
 # e13Tools imports
 from e13tools import InputError
@@ -246,18 +245,16 @@ def delist(list_obj):
 
 
 # This function retrieves a specified outer frame of a function
-def get_outer_frame(name):
+def get_outer_frame(func):
     """
-    Checks whether or not the calling function contains an outer frame called
-    `name` and returns it if so. If this frame cannot be found, returns *None*
-    instead.
+    Checks whether or not the calling function contains an outer frame
+    corresponding to `func` and returns it if so. If this frame cannot be
+    found, returns *None* instead.
 
     Parameters
     ----------
-    name : str or function
-        If str, the name of the function whose frame must be located in the
-        outer frames of the calling function.
-        If function, its frame must be located in the outer frames instead.
+    func : function
+        The function or method whose frame must be located in the outer frames.
 
     Returns
     -------
@@ -266,22 +263,35 @@ def get_outer_frame(name):
 
     """
 
-    # If name is a function or method, obtain its name
-    if isfunction(name) or ismethod(name):
-        name = name.__name__
-
-    # Else, if name is not a string, raise an error
-    elif not isinstance(name, string_types):
-        raise InputError("Input argument 'name' must be a callable function or"
-                         " method, or be of type 'str'!")
+    # If name is a function, obtain its name and module name
+    if isfunction(func):
+        name = func.__name__
+        module_name = func.__module__
+    # Else, if name is a method, obtain its name and class name
+    elif ismethod(func):
+        name = func.__name__
+        class_name = func.__self__.__class__.__name__
+    # Else, raise error
+    else:
+        raise InputError("Input argument 'func' must be a callable function or"
+                         " method!")
 
     # Obtain the caller's frame
     caller_frame = currentframe().f_back
 
-    # Loop over all outer frames and check if name is in there
+    # Loop over all outer frames
     for frame_info in getouterframes(caller_frame):
-        if(frame_info[3] == name):
-            return(frame_info[0])
+        # Check if frame has the correct name
+        if(frame_info.function == name):
+            # If func is a function, return if module name is also correct
+            if(isfunction(func) and
+               frame_info.frame.f_globals['__name__'] == module_name):
+                return(frame_info.frame)
+
+            # Else, return frame if class name is also correct
+            elif(frame_info.frame.f_locals['self'].__class__.__name__ ==
+                 class_name):
+                return(frame_info.frame)
     else:
         return(None)
 

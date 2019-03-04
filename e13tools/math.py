@@ -294,10 +294,10 @@ def gcd(*seq):
     --------
     :func:`~core.gcd_single`
         Greatest common divisor for two integers.
-    
+
     :func:`~lcm`
         Least common multiple for sequence of integers.
-    
+
     :func:`~core.lcm_single`
         Least common multiple for two integers.
 
@@ -340,10 +340,10 @@ def gcd_single(a, b):
     --------
     :func:`~gcd`
         Greatest common divisor for sequence of integers.
-    
+
     :func:`~lcm`
         Least common multiple for sequence of integers.
-    
+
     :func:`~core.lcm_single`
         Least common multiple for two integers.
 
@@ -464,10 +464,10 @@ def lcm(*seq):
     --------
     :func:`~gcd`
         Greatest common divisor for sequence of integers.
-    
+
     :func:`~core.gcd_single`
         Greatest common divisor for two integers.
-    
+
     :func:`~core.lcm_single`
         Least common multiple for two integers.
 
@@ -515,10 +515,10 @@ def lcm_single(a, b):
     --------
     :func:`~gcd`
         Greatest common divisor for sequence of integers.
-    
+
     :func:`~core.gcd_single`
         Greatest common divisor for two integers.
-    
+
     :func:`~lcm`
         Least common multiple for sequence of integers.
 

@@ -5,7 +5,7 @@
 import logging
 from os import path
 from sys import platform
-from inspect import currentframe, getframeinfo
+from inspect import currentframe
 
 # Package imports
 import numpy as np
@@ -23,6 +23,20 @@ dirpath = path.dirname(__file__)
 
 # Save if this platform is Windows
 win32 = platform.startswith('win')
+
+
+# %% CUSTOM CLASSES
+# Define test class for get_outer_frame function testing
+class _Test(object):
+    def __init__(self):
+        self._test()
+
+    def _test(self):
+        _test2(self)
+
+
+def _test2(instance):
+    get_outer_frame(instance.__init__)
 
 
 # %% PYTEST CLASSES AND FUNCTIONS
@@ -125,17 +139,17 @@ def test_delist():
 def test_get_outer_frame():
     # Check if providing a wrong argument raises an error
     with pytest.raises(InputError):
-        get_outer_frame(np.array([]))
+        get_outer_frame('test')
 
     # Check if providing a non-valid frame function returns None
     assert get_outer_frame(get_outer_frame) is None
 
-    # Check if providing a non-valid frame name returns None
-    assert get_outer_frame('test') is None
+    # Check if providing a valid function returns that frame
+    caller_frame = currentframe()
+    assert get_outer_frame(test_get_outer_frame) == caller_frame
 
-    # Check if providing a valid frame returns that frame
-    caller_frame = currentframe().f_back
-    assert get_outer_frame(getframeinfo(caller_frame)[2]) == caller_frame
+    # Check if providing a valid method returns the correct method
+    _Test()
 
 
 # Pytest for the import_cmaps function
