@@ -282,16 +282,16 @@ def get_outer_frame(func):
     # Loop over all outer frames
     for frame_info in getouterframes(caller_frame):
         # Check if frame has the correct name
-        if(frame_info.function == name):
+        if(frame_info[3] == name):
             # If func is a function, return if module name is also correct
             if(isfunction(func) and
-               frame_info.frame.f_globals['__name__'] == module_name):
-                return(frame_info.frame)
+               frame_info[0].f_globals['__name__'] == module_name):
+                return(frame_info[0])
 
             # Else, return frame if class name is also correct
-            elif(frame_info.frame.f_locals['self'].__class__.__name__ ==
+            elif(frame_info[0].f_locals['self'].__class__.__name__ ==
                  class_name):
-                return(frame_info.frame)
+                return(frame_info[0])
     else:
         return(None)
 
