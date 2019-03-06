@@ -152,7 +152,9 @@ def convert_str_seq(seq):
     back to integers, floats and/or strings.
 
     The auxiliary characters are given by the :obj:`~aux_char_list` list. One
-    can add, change and remove characters from the list if required.
+    can add, change and remove characters from the list if required. If one
+    wishes to keep an auxiliary character that is in `seq`, it must be escaped
+    by a backslash.
 
     Parameters
     ----------
@@ -168,12 +170,45 @@ def convert_str_seq(seq):
 
     """
 
-    # Convert sequence to a string
-    seq = str(seq)
+    # Convert sequence to a list of individual characters
+    seq = list(str(seq))
 
-    # Remove all unwanted characters from the string
+    # Process all backslashes
+    for index, char in enumerate(seq):
+        # If char is a backslash
+        if(char == '\\'):
+            # If this backslash is escaped, skip
+            if(index != 0 and seq[index-1] is None):
+                pass
+            # Else, if this backslash escapes a character, replace by None
+            elif(index != len(seq)-1 and seq[index+1] in aux_char_list):
+                seq[index] = None
+
+    # Remove all unwanted characters from the string, except those escaped
     for char in aux_char_list:
-        seq = seq.replace(char, ' ')
+        # Set the search index
+        index = 0
+
+        # Keep looking for the specified character
+        while True:
+            # Check if the character can be found in seq or break if not
+            try:
+                index = seq.index(char, index)
+            except ValueError:
+                break
+
+            # If so, remove it if it was not escaped
+            if(index == 0 or seq[index-1] is not None):
+                seq[index] = ' '
+            # If it was escaped, remove None instead
+            else:
+                seq[index-1] = ''
+
+            # Increment search index by 1
+            index += 1
+
+    # Convert seq back to a single string
+    seq = ''.join(seq)
 
     # Split sequence up into elements
     seq = seq.split()
@@ -200,9 +235,9 @@ def convert_str_seq(seq):
 
 
 # List of auxiliary characters to be used in convert_str_seq()
-aux_char_list = ['(', ')', '[', ']', ',', "'", '"', '|', '/', '{', '}', '<',
-                 '>', '´', '¨', '`', '\\', '?', '!', '%', ';', '=', '$', '~',
-                 '#', '@', '^', '&', '*', '“', '’', '”', '‘']
+aux_char_list = ['(', ')', '[', ']', ',', "'", '"', '|', '/', '\\', '{', '}',
+                 '<', '>', '´', '¨', '`', '?', '!', '%', ':', ';', '=', '$',
+                 '~', '#', '@', '^', '&', '*', '“', '’', '”', '‘']
 
 
 # Function that returns a copy of a list with all empty lists/tuples removed

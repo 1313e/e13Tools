@@ -122,7 +122,7 @@ def test_check_instance():
 # Pytest for the convert_str_seq function
 def test_convert_str_seq():
     # Check if string sequence is converted correctly
-    assert convert_str_seq('[[]]]1e1,\n8.,A<{7)\\B') == [10., 8.0, 'A', 7, 'B']
+    assert convert_str_seq('[[]1e1,\n8.,A<{7)\\\\') == [10., 8.0, 'A', 7, '\\']
 
 
 # Pytest for the delist function
