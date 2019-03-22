@@ -52,13 +52,45 @@ class TestDecorators(object):
     def append_method2(self):
         """original """
 
+    # Create old-style class with no docstring that is appended
+    @docstring_append("appended")
+    class append_old_class1:
+        pass
+
+    # Create old-style class with a docstring that is appended
+    @docstring_append("appended")
+    class append_old_class2:
+        """original """
+
+    # Create new-style class with no docstring that is appended
+    @docstring_append("appended")
+    class append_new_class1(object):
+        pass
+
+    # Create new-style class with a docstring that is appended
+    @docstring_append("appended")
+    class append_new_class2(object):
+        """original """
+
     # Check if docstring_append works correctly
     def test_docstring_append(self):
         assert self.append_method1.__doc__ == "appended"
         assert self.append_method2.__doc__ == "original appended"
+        assert self.append_old_class1.__doc__ == "appended"
+        assert self.append_old_class2.__doc__ == "original appended"
+        assert self.append_new_class1.__doc__ == "appended"
+        assert self.append_new_class2.__doc__ == "original appended"
+        assert self.append_new_class1.__name__ == 'append_new_class1'
+        assert self.append_new_class1.__module__ != 'e13tools.utils'
+        assert self.append_new_class2.__name__ == 'append_new_class2'
+        assert self.append_new_class2.__module__ != 'e13tools.utils'
 
     # Create method with no docstring at all
     def empty_method(self):
+        pass
+
+    # Create new-style class with no docstring at all
+    class empty_class(object):
         pass
 
     # Create method that copies an empty docstring
@@ -67,20 +99,62 @@ class TestDecorators(object):
         pass
 
     # Create method that copies a docstring
-    @docstring_copy(append_method1)
+    @docstring_copy(append_method2)
     def copy_method2(self):
+        pass
+
+    # Create old-style class that copies an empty docstring
+    @docstring_copy(empty_class)
+    class copy_old_class1:
+        pass
+
+    # Create old-style class that copies a docstring
+    @docstring_copy(append_old_class2)
+    class copy_old_class2:
+        pass
+
+    # Create new-style class that copies an empty docstring
+    @docstring_copy(empty_class)
+    class copy_new_class1(object):
+        pass
+
+    # Create new-style class that copies a docstring
+    @docstring_copy(append_new_class2)
+    class copy_new_class2(object):
         pass
 
     # Check if docstring_copy works correctly
     def test_docstring_copy(self):
         assert self.copy_method1.__doc__ is None
         assert self.copy_method1.__doc__ == self.empty_method.__doc__
-        assert self.copy_method2.__doc__ == self.append_method1.__doc__
+        assert self.copy_method2.__doc__ == self.append_method2.__doc__
+        assert self.copy_old_class1.__doc__ is None
+        assert self.copy_old_class1.__doc__ == self.empty_class.__doc__
+        assert self.copy_old_class2.__doc__ == self.append_old_class2.__doc__
+        assert self.copy_new_class1.__doc__ is None
+        assert self.copy_new_class1.__doc__ == self.empty_class.__doc__
+        assert self.copy_new_class2.__doc__ == self.append_new_class2.__doc__
+        assert self.copy_new_class1.__name__ == 'copy_new_class1'
+        assert self.copy_new_class1.__module__ != 'e13tools.utils'
+        assert self.copy_new_class2.__name__ == 'copy_new_class2'
+        assert self.copy_new_class2.__module__ != 'e13tools.utils'
 
-    # Check if providing both args and kwargs raises an error
+    # Check if providing both args and kwargs raises an error, method
     with pytest.raises(InputError):
         @docstring_substitute("positional", x="keyword")
         def substitute_method1(self):
+            pass
+
+    # Check if providing both args and kwargs raises an error, old-style class
+    with pytest.raises(InputError):
+        @docstring_substitute("positional", x="keyword")
+        class substitute_old_class1:
+            pass
+
+    # Check if providing both args and kwargs raises an error, new-style class
+    with pytest.raises(InputError):
+        @docstring_substitute("positional", x="keyword")
+        class substitute_new_class1(object):
             pass
 
     # Create method using args substitutes
@@ -93,16 +167,56 @@ class TestDecorators(object):
     def substitute_method3(self):
         """%(x)s"""
 
+    # Create old-style class using args substitutes
+    @docstring_substitute("positional")
+    class substitute_old_class2:
+        """%s"""
+
+    # Create old-style class using kwargs substitutes
+    @docstring_substitute(x="keyword")
+    class substitute_old_class3:
+        """%(x)s"""
+
+    # Create new-style class using args substitutes
+    @docstring_substitute("positional")
+    class substitute_new_class2(object):
+        """%s"""
+
+    # Create new-style class using kwargs substitutes
+    @docstring_substitute(x="keyword")
+    class substitute_new_class3(object):
+        """%(x)s"""
+
     # Check if providing args to a method with no docstring raises an error
     with pytest.raises(InputError):
         @docstring_substitute("positional")
         def substitute_method4(self):
             pass
 
+    # Check providing args to an old_style class with no docstring
+    with pytest.raises(InputError):
+        @docstring_substitute("positional")
+        class substitute_old_class4:
+            pass
+
+    # Check providing args to a new_style class with no docstring
+    with pytest.raises(InputError):
+        @docstring_substitute("positional")
+        class substitute_new_class4(object):
+            pass
+
     # Check if docstring_substitute works correctly
     def test_docstring_substitute(self):
         assert self.substitute_method2.__doc__ == "positional"
         assert self.substitute_method3.__doc__ == "keyword"
+        assert self.substitute_old_class2.__doc__ == "positional"
+        assert self.substitute_old_class3.__doc__ == "keyword"
+        assert self.substitute_new_class2.__doc__ == "positional"
+        assert self.substitute_new_class3.__doc__ == "keyword"
+        assert self.substitute_new_class2.__name__ == 'substitute_new_class2'
+        assert self.substitute_new_class2.__module__ != 'e13tools.utils'
+        assert self.substitute_new_class3.__name__ == 'substitute_new_class3'
+        assert self.substitute_new_class3.__module__ != 'e13tools.utils'
 
 
 # Pytest for the check_instance function

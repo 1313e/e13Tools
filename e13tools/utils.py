@@ -24,6 +24,7 @@ import warnings
 from matplotlib.cm import register_cmap
 from matplotlib.colors import LinearSegmentedColormap as LSC
 import numpy as np
+from six import PY2
 
 # e13Tools imports
 from e13tools import InputError
@@ -48,31 +49,92 @@ rank = MPI.COMM_WORLD.Get_rank()
 def docstring_append(addendum, join=''):
     """
     Custom decorator that allows a given string `addendum` to be appended to
-    the docstring of the target function, separated by a given string `join`.
+    the docstring of the target function/class, separated by a given string
+    `join`.
+
+    Note
+    ----
+    In Python 2, classes that inherit the :class:`~object` class cannot have
+    their docstrings modified after it has been defined. In this case, this
+    decorator makes a subclass of the target class, sets the docstring during
+    class definition and returns that instead. The returned subclass is
+    functionally exactly the same as the target class.
 
     """
 
+    # This function performs the docstring append on a given definition
     def do_append(target):
-        if target.__doc__:
-            target.__doc__ = join.join([target.__doc__, addendum])
+        # In Python 2, classes inheriting object cannot have their __doc__
+        # modified after definition
+        if PY2 and isclass(target) and issubclass(target, object):
+            # Make a dummy class inheriting the target class
+            class Target(target):
+                # Perform modified append
+                if target.__doc__:
+                    __doc__ = join.join([target.__doc__, addendum])
+                else:
+                    __doc__ = addendum
+
+            # Copy over the name and module of the target class
+            Target.__name__ = target.__name__
+            Target.__module__ = target.__module__
+            target = Target
+
+        # Perform normal append in all other cases
         else:
-            target.__doc__ = addendum
+            if target.__doc__:
+                target.__doc__ = join.join([target.__doc__, addendum])
+            else:
+                target.__doc__ = addendum
+
+        # Return the target definition
         return(target)
+
+    # Return decorator function
     return(do_append)
 
 
 # Define custom decorator for copying docstrings from one function to another
 def docstring_copy(source):
     """
-    Custom decorator that allows the docstring of a function `source` to be
-    copied to the target function.
+    Custom decorator that allows the docstring of a function/class `source` to
+    be copied to the target function/class.
+
+    Note
+    ----
+    In Python 2, classes that inherit the :class:`~object` class cannot have
+    their docstrings modified after it has been defined. In this case, this
+    decorator makes a subclass of the target class, sets the docstring during
+    class definition and returns that instead. The returned subclass is
+    functionally exactly the same as the target class.
 
     """
 
+    # This function performs the docstring copy on a given definition
     def do_copy(target):
+        # Check if source has a docstring
         if source.__doc__:
-            target.__doc__ = source.__doc__
+            # In Python 2, classes inheriting object cannot have their __doc__
+            # modified after definition
+            if PY2 and isclass(target) and issubclass(target, object):
+                # Make a dummy class inheriting the target class
+                class Target(target):
+                    # Perform modified copy
+                    __doc__ = source.__doc__
+
+                # Copy over the name and module of the target class
+                Target.__name__ = target.__name__
+                Target.__module__ = target.__module__
+                target = Target
+
+            # Perform normal copy in all other cases
+            else:
+                target.__doc__ = source.__doc__
+
+        # Return the target definition
         return(target)
+
+    # Return decorator function
     return(do_copy)
 
 
@@ -81,23 +143,55 @@ def docstring_substitute(*args, **kwargs):
     """
     Custom decorator that allows either given positional arguments `args` or
     keyword arguments `kwargs` to be substituted into the docstring of the
-    target function.
+    target function/class.
+
+    Note
+    ----
+    In Python 2, classes that inherit the :class:`~object` class cannot have
+    their docstrings modified after it has been defined. In this case, this
+    decorator makes a subclass of the target class, sets the docstring during
+    class definition and returns that instead. The returned subclass is
+    functionally exactly the same as the target class.
 
     """
 
+    # Check if solely args or kwargs were provided
     if len(args) and len(kwargs):
         raise InputError("Either only positional or keyword arguments are "
                          "allowed!")
     else:
         params = args or kwargs
 
+    # This function performs the docstring substitution on a given definition
     def do_substitution(target):
+        # Check if target has a docstring that can be substituted to
         if target.__doc__:
-            target.__doc__ = target.__doc__ % (params)
+            # In Python 2, classes inheriting object cannot have their __doc__
+            # modified after definition
+            if PY2 and isclass(target) and issubclass(target, object):
+                # Make a dummy class inheriting the target class
+                class Target(target):
+                    # Perform modified substitution
+                    __doc__ = target.__doc__ % (params)
+
+                # Copy over the name and module of the target class
+                Target.__name__ = target.__name__
+                Target.__module__ = target.__module__
+                target = Target
+
+            # Perform normal substitution in all other cases
+            else:
+                target.__doc__ = target.__doc__ % (params)
+
+        # Raise error if target has no docstring
         else:
             raise InputError("Target has no docstring available for "
                              "substitutions!")
+
+        # Return the target definition
         return(target)
+
+    # Return decorator function
     return(do_substitution)
 
 
@@ -234,10 +328,11 @@ def convert_str_seq(seq):
     return(seq)
 
 
-# List of auxiliary characters to be used in convert_str_seq()
-aux_char_list = ['(', ')', '[', ']', ',', "'", '"', '|', '/', '\\', '{', '}',
-                 '<', '>', '´', '¨', '`', '?', '!', '%', ':', ';', '=', '$',
-                 '~', '#', '@', '^', '&', '*', '“', '’', '”', '‘']
+# List/set of auxiliary characters to be used in convert_str_seq()
+aux_char_list = set(['(', ')', '[', ']', ',', "'", '"', '|', '/', '\\', '{',
+                     '}', '<', '>', '´', '¨', '`', '?', '!', '%', ':', ';',
+                     '=', '$', '~', '#', '@', '^', '&', '*', '“', '’', '”',
+                     '‘'])
 
 
 # Function that returns a copy of a list with all empty lists/tuples removed
