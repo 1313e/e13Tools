@@ -14,8 +14,9 @@ Dependencies
 e13Tools requires:
 
 - ``python == 2.7`` or ``python >= 3.5``,
+- ``matplotlib >= 2.2.4``,
 - ``numpy >= 1.8``,
-- ``matplotlib >= 1.4.3``.
+- ``six >= 1.11.0``.
 
 The following packages are used by a few functions and therefore optional:
 

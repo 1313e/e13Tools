@@ -1,3 +1,4 @@
+-e .
 check-manifest
 coveralls
 pytest>=3.8.0

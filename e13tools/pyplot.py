@@ -56,15 +56,15 @@ def apu2tex(unit, unitfrac=False):
     --------
     >>> import astropy.units as apu
     >>> apu2tex(apu.solMass)
-    '\\\\mathrm{M_{\\\\odot}}'
+    '\\mathrm{M_{\\odot}}'
 
     >>> import astropy.units as apu
     >>> apu2tex(apu.solMass/apu.yr, unitfrac=False)
-    '\\\\mathrm{M_{\\\\odot}\\\\,yr^{-1}}'
+    '\\mathrm{M_{\\odot}\\,yr^{-1}}'
 
     >>> import astropy.units as apu
     >>> apu2tex(apu.solMass/apu.yr, unitfrac=True)
-    '\\\\mathrm{\\\\frac{M_{\\\\odot}}{yr}}'
+    '\\mathrm{\\frac{M_{\\odot}}{yr}}'
 
     """
 
@@ -226,97 +226,72 @@ def draw_textline(text, x=None, y=None, pos='start top', ax=None,
                    'rotation'):
             text_kwargs.pop(key)
 
+    # Set line specific variables
     if x is None and y is not None:
-        # Adjust axes to include text in plot
-        ax_ysize = abs(ax.set_ylim()[1]-ax.set_ylim()[0])
+        ax_set_lim = ax.set_ylim
+        other_ax_lim = ax.set_xlim
+        axis = y
+        draw_axes = (other_ax_lim(), [y, y])
 
-        # Adjust axes if line is located on the bottom
-        if(ax.set_ylim()[0] > y):
-            ax.set_ylim(y, ax.set_ylim()[1])
-        if(ax.set_ylim()[0] <= y and ax.set_ylim()[0] >= y-0.1*ax_ysize):
-            ax.set_ylim(y-0.1*ax_ysize, ax.set_ylim()[1])
-        elif(ax.set_ylim()[0] <= y and ax.set_ylim()[0] >= y+0.1*ax_ysize):
-            ax.set_ylim(y+0.1*ax_ysize, ax.set_ylim()[1])
-
-        # Adjust axes if line is located on the top
-        if(ax.set_ylim()[1] < y):
-            ax.set_ylim(ax.set_ylim()[0], y)
-        if(ax.set_ylim()[1] >= y and ax.set_ylim()[1] <= y+0.1*ax_ysize):
-            ax.set_ylim(ax.set_ylim()[0], y+0.1*ax_ysize)
-        elif(ax.set_ylim()[1] >= y and ax.set_ylim()[1] <= y-0.1*ax_ysize):
-            ax.set_ylim(ax.set_ylim()[0], y-0.1*ax_ysize)
-
-        # Draw line
-        ax.plot(ax.set_xlim(), [y, y], **line_kwargs)
-
-        # Gather axis specific text properties
-        x = ax.set_xlim()[0]
-        y = y
-        rotation = 0
-
-        # Gather case specific text properties
-        if ('start') in pos.lower() and ('top') in pos.lower():
-            ha = 'left'
-            va = 'bottom'
-        elif ('start') in pos.lower() and ('bottom') in pos.lower():
-            ha = 'left'
-            va = 'top'
-        elif ('end') in pos.lower() and ('top') in pos.lower():
-            ha = 'right'
-            va = 'bottom'
-        elif ('end') in pos.lower() and ('bottom') in pos.lower():
-            ha = 'right'
-            va = 'top'
-        else:
-            raise ValueError("Input argument 'pos' is invalid!")
-
-    elif y is None and x is not None:
-        # Adjust axes to include text in plot
-        ax_xsize = abs(ax.set_xlim()[1]-ax.set_xlim()[0])
-
-        # Adjust axes if line is located on the left
-        if(ax.set_xlim()[0] > x):
-            ax.set_xlim(x, ax.set_xlim()[1])
-        if(ax.set_xlim()[0] <= x and ax.set_xlim()[0] >= x-0.1*ax_xsize):
-            ax.set_xlim(x-0.1*ax_xsize, ax.set_xlim()[1])
-        elif(ax.set_xlim()[0] <= x and ax.set_xlim()[0] >= x+0.1*ax_xsize):
-            ax.set_xlim(x+0.1*ax_xsize, ax.set_xlim()[1])
-
-        # Adjust axes if line is located on the right
-        if(ax.set_xlim()[1] < x):
-            ax.set_xlim(ax.set_xlim()[0], x)
-        if(ax.set_xlim()[1] >= x and ax.set_xlim()[1] <= x+0.1*ax_xsize):
-            ax.set_xlim(ax.set_xlim()[0], x+0.1*ax_xsize)
-        elif(ax.set_xlim()[1] >= x and ax.set_xlim()[1] <= x-0.1*ax_xsize):
-            ax.set_xlim(ax.set_xlim()[0], x-0.1*ax_xsize)
-
-        # Draw line
-        ax.plot([x, x], ax.set_ylim(), **line_kwargs)
-
-        # Gather axis specific text properties
-        x = x
-        y = ax.set_ylim()[0]
-        rotation = 90
-
-        # Gather case specific text properties
-        if ('start') in pos.lower() and ('top') in pos.lower():
-            ha = 'right'
-            va = 'bottom'
-        elif ('start') in pos.lower() and ('bottom') in pos.lower():
-            ha = 'left'
-            va = 'bottom'
-        elif ('end') in pos.lower() and ('top') in pos.lower():
-            ha = 'right'
-            va = 'top'
-        elif ('end') in pos.lower() and ('bottom') in pos.lower():
-            ha = 'left'
-            va = 'top'
-        else:
-            raise ValueError("Input argument 'pos' is invalid!")
+    elif x is not None and y is None:
+        ax_set_lim = ax.set_xlim
+        other_ax_lim = ax.set_ylim
+        axis = x
+        draw_axes = ([x, x], other_ax_lim())
 
     else:
         raise InputError("Either of input arguments 'x' and 'y' needs to be "
                          "*None*!")
+
+    # Obtain length of selected axis
+    ax_size = abs(ax_set_lim()[1]-ax_set_lim()[0])
+
+    # Adjust axes if line is located on the bottom/left
+    if(ax_set_lim()[0] > axis):
+        ax_set_lim(axis, ax_set_lim()[1])
+    if(ax_set_lim()[0] <= axis and ax_set_lim()[0] >= axis-0.1*ax_size):
+        ax_set_lim(axis-0.1*ax_size, ax_set_lim()[1])
+    elif(ax_set_lim()[0] <= axis and ax_set_lim()[0] >= axis+0.1*ax_size):
+        ax_set_lim(axis+0.1*ax_size, ax_set_lim()[1])
+
+    # Adjust axes if line is located on the top/right
+    if(ax_set_lim()[1] < axis):
+        ax_set_lim(ax_set_lim()[0], axis)
+    if(ax_set_lim()[1] >= axis and ax_set_lim()[1] <= axis+0.1*ax_size):
+        ax_set_lim(ax_set_lim()[0], axis+0.1*ax_size)
+    elif(ax_set_lim()[1] >= axis and ax_set_lim()[1] <= axis-0.1*ax_size):
+        ax_set_lim(ax_set_lim()[0], axis-0.1*ax_size)
+
+    # Draw line
+    ax.plot(*draw_axes, **line_kwargs)
+
+    # Gather case specific text properties
+    if ('start') in pos.lower() and ('top') in pos.lower():
+        ha = 'left' if x is None else 'right'
+        va = 'bottom'
+        other_axis = other_ax_lim()[0]
+    elif ('start') in pos.lower() and ('bottom') in pos.lower():
+        ha = 'left'
+        va = 'top' if x is None else 'bottom'
+        other_axis = other_ax_lim()[0]
+    elif ('end') in pos.lower() and ('top') in pos.lower():
+        ha = 'right'
+        va = 'bottom' if x is None else 'top'
+        other_axis = other_ax_lim()[1]
+    elif ('end') in pos.lower() and ('bottom') in pos.lower():
+        ha = 'right' if x is None else 'left'
+        va = 'top'
+        other_axis = other_ax_lim()[1]
+    else:
+        raise ValueError("Input argument 'pos' is invalid!")
+
+    # Set proper axes and rotation
+    if x is None:
+        x = other_axis
+        rotation = 0
+    else:
+        y = other_axis
+        rotation = 90
 
     # Draw text
     ax.text(x, y, text, rotation=rotation, ha=ha, va=va, **text_kwargs)
@@ -359,7 +334,7 @@ def f2tex(value, sdigits=4, power=3, nobase1=True):
 
 
     >>> f2tex(20.2935826592, power=1)
-    '2.029\\\\cdot 10^{1}'
+    '2.029\\cdot 10^{1}'
 
 
     >>> f2tex(1e6, nobase1=True)
@@ -367,7 +342,7 @@ def f2tex(value, sdigits=4, power=3, nobase1=True):
 
 
     >>> f2tex(1e6, nobase1=False)
-    '1\\\\cdot 10^{6}'
+    '1\\cdot 10^{6}'
 
     """
 
@@ -428,36 +403,36 @@ def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
 
     >>> import astropy.units as apu
     >>> q2tex(20.2935826592*apu.solMass/apu.yr)
-    '20.29\\\\ \\\\mathrm{M_{\\\\odot}\\\\,yr^{-1}}'
+    '20.29\\ \\mathrm{M_{\\odot}\\,yr^{-1}}'
 
     >>> import astropy.units as apu
     >>> q2tex(20.2935826592*apu.solMass/apu.yr, sdigits=6)
-    '20.2936\\\\ \\\\mathrm{M_{\\\\odot}\\\\,yr^{-1}}'
+    '20.2936\\ \\mathrm{M_{\\odot}\\,yr^{-1}}'
 
 
     >>> import astropy.units as apu
     >>> q2tex(20.2935826592*apu.solMass/apu.yr, power=1)
-    '2.029\\\\cdot 10^{1}\\\\ \\\\mathrm{M_{\\\\odot}\\\\,yr^{-1}}'
+    '2.029\\cdot 10^{1}\\ \\mathrm{M_{\\odot}\\,yr^{-1}}'
 
 
     >>> import astropy.units as apu
     >>> q2tex(1e6*apu.solMass/apu.yr, nobase1=True)
-    '10^{6}\\\\ \\\\mathrm{M_{\\\\odot}\\\\,yr^{-1}}'
+    '10^{6}\\ \\mathrm{M_{\\odot}\\,yr^{-1}}'
 
 
     >>> import astropy.units as apu
     >>> q2tex(1e6*apu.solMass/apu.yr, nobase1=False)
-    '1\\\\cdot 10^{6}\\\\ \\\\mathrm{M_{\\\\odot}\\\\,yr^{-1}}'
+    '1\\cdot 10^{6}\\ \\mathrm{M_{\\odot}\\,yr^{-1}}'
 
 
     >>> import astropy.units as apu
     >>> q2tex(20.2935826592*apu.solMass/apu.yr, unitfrac=False)
-    '20.29\\\\ \\\\mathrm{M_{\\\\odot}\\\\,yr^{-1}}'
+    '20.29\\ \\mathrm{M_{\\odot}\\,yr^{-1}}'
 
 
     >>> import astropy.units as apu
     >>> q2tex(20.2935826592*apu.solMass/apu.yr, unitfrac=True)
-    '20.29\\\\ \\\\mathrm{\\\\frac{M_{\\\\odot}}{yr}}'
+    '20.29\\ \\mathrm{\\frac{M_{\\odot}}{yr}}'
 
     """
 
@@ -476,7 +451,7 @@ def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
         # Unit handling
         if unit:
             unit_string = apu2tex(unit, unitfrac)
-            string = ''.join([string, '\ ', unit_string])
+            string = ''.join([string, r'\ ', unit_string])
 
         return(string)
     else:

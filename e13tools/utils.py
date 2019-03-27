@@ -27,11 +27,7 @@ import numpy as np
 from six import PY2
 
 # e13Tools imports
-from e13tools import InputError
-try:
-    from mpi4py import MPI
-except ImportError:
-    import e13tools.dummyMPI as MPI
+from e13tools import InputError, MPI
 
 # All declaration
 __all__ = ['aux_char_list', 'check_instance', 'convert_str_seq', 'delist',

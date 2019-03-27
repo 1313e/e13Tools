@@ -26,7 +26,7 @@ from e13tools import InputError, ShapeError
 
 # All declaration
 __all__ = ['diff', 'gcd', 'is_PD', 'lcm', 'nCr', 'nearest_PD', 'nPr', 'rot90',
-           'sort_2D', 'transposeC']
+           'sort2D', 'transposeC']
 
 
 # %% FUNCTIONS
@@ -76,7 +76,7 @@ def diff(array1, array2=None, axis=0, flatten=True):
         >>> diff(mat1, mat2)
         array([[[-3., -3., -3.],
                 [-6., -6., -6.]],
-        <BLANKLINE>
+
                [[ 0.,  0.,  0.],
                 [-3., -3., -3.]]])
 
@@ -89,11 +89,11 @@ def diff(array1, array2=None, axis=0, flatten=True):
         array([[[-3., -3.],
                 [-4., -4.],
                 [-5., -5.]],
-        <BLANKLINE>
+
                [[-2., -2.],
                 [-3., -3.],
                 [-4., -4.]],
-        <BLANKLINE>
+
                [[-1., -1.],
                 [-2., -2.],
                 [-3., -3.]]])
@@ -108,7 +108,7 @@ def diff(array1, array2=None, axis=0, flatten=True):
         >>> diff(mat, flatten=False)
         array([[[ 0.,  0.,  0.],
                 [-3., -3., -3.]],
-        <BLANKLINE>
+
                [[ 3.,  3.,  3.],
                 [ 0.,  0.,  0.]]])
 
@@ -929,7 +929,7 @@ def rot90(array, axes=(0, 1), rot_axis='center', n_rot=1):
 
 
 # This function sorts a 2D array in a specified order
-def sort_2D(array, axis=-1, order=None):
+def sort2D(array, axis=-1, order=None):
     """
     Sorts a 2D `array` in a given `axis` in the specified `order`. This
     function is different from NumPy's :func:`~sort` function in that it sorts
@@ -966,7 +966,7 @@ def sort_2D(array, axis=-1, order=None):
                [ 7,  4,  9],
                [ 3, 13,  6],
                [ 0,  1,  8]])
-        >>> sort_2D(array)
+        >>> sort2D(array)
         array([[ 0,  1,  1],
                [ 0,  4,  6],
                [ 3,  5,  8],
@@ -975,7 +975,7 @@ def sort_2D(array, axis=-1, order=None):
 
     Sorting the same array in only the first column:
 
-        >>> sort_2D(array, order=(0))
+        >>> sort2D(array, order=0)
         array([[ 0,  5,  1],
                [ 0,  1,  8],
                [ 3, 13,  6],
@@ -984,7 +984,7 @@ def sort_2D(array, axis=-1, order=None):
 
     Sorting all three columns in order:
 
-        >>> sort_2D(array, order=(0, 1, 2))
+        >>> sort2D(array, order=(0, 1, 2))
         array([[ 0,  1,  8],
                [ 0,  5,  1],
                [ 3, 13,  6],
@@ -993,7 +993,7 @@ def sort_2D(array, axis=-1, order=None):
 
     Sorting all three columns in a different order:
 
-        >>> sort_2D(array, order=(0, 2, 1))
+        >>> sort2D(array, order=(0, 2, 1))
         array([[ 0,  5,  1],
                [ 0,  1,  8],
                [ 3, 13,  6],
@@ -1015,8 +1015,7 @@ def sort_2D(array, axis=-1, order=None):
     try:
         array = np.moveaxis(array, axis, 0)
     except Exception as error:
-            raise InputError("Input argument 'axis' is invalid (%s)!"
-                             % (error))
+        raise InputError("Input argument 'axis' is invalid (%s)!" % (error))
 
     # If order is given, transform it into an array
     if order is not None:

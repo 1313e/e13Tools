@@ -15,10 +15,15 @@ Available modules
     imported automatically.
 
 :mod:`~dummyMPI`
-    Dummy module that emulates the functionality of the :mod:`~mpi4py.MPI`
-    module.
+    Dummy module that emulates the functionality of the :mod:`mpi4py.MPI`
+    module. It is automatically imported as :mod:`e13tools.MPI` if
+    :mod:`mpi4py.MPI` is not available.
     This is a specialized version of the `mpi_dummy` package available at
     https://gitlab.mpcdf.mpg.de/ift/mpi_dummy
+
+:mod:`~MPI`
+    :mod:`mpi4py.MPI` if it is available, or :mod:`e13tools.dummyMPI` if it is
+    not.
 
 :mod:`~math`
     Provides a collection of functions useful in various mathematical
@@ -45,6 +50,10 @@ from .__version__ import version as __version__
 from . import core
 from .core import *
 from . import dummyMPI
+try:
+    from mpi4py import MPI
+except ImportError:
+    MPI = dummyMPI
 from . import math
 from .math import *
 from . import pyplot
@@ -54,7 +63,7 @@ from .sampling import *
 from . import utils
 from .utils import *
 
-__all__ = ['dummyMPI', 'math', 'pyplot', 'sampling', 'utils']
+__all__ = ['MPI', 'dummyMPI', 'math', 'pyplot', 'sampling', 'utils']
 __all__.extend(core.__all__)
 __all__.extend(math.__all__)
 __all__.extend(pyplot.__all__)

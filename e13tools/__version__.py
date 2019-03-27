@@ -5,4 +5,4 @@ Stores the different versions of the e13Tools package.
 
 """
 
-version = '0.5.5'
+version = '0.5.6'

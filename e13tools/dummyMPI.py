@@ -3,7 +3,9 @@
 """
 Dummy MPI
 =========
-Dummy module that emulates the functionality of the :mod:`~mpi4py.MPI` module.
+Dummy module that emulates the functionality of the :mod:`mpi4py.MPI` module.
+It is automatically imported as :mod:`e13tools.MPI` if :mod:`mpi4py.MPI` is not
+available.
 This is a specialized version of the `mpi_dummy` package available at
 https://gitlab.mpcdf.mpg.de/ift/mpi_dummy
 
