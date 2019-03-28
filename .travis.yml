@@ -20,4 +20,8 @@ script:
 after_success:
   - codecov
 notifications:
-  email: false
+  email:
+    recipients:
+      - ellert_vandervelden@outlook.com
+    on_success: change
+    on_failure: always
