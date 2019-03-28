@@ -18,6 +18,6 @@ script:
   - pip install .
   - pytest
 after_success:
-  - coveralls
+  - codecov
 notifications:
   email: false
