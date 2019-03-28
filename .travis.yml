@@ -13,7 +13,7 @@ matrix:
 install:
   - pip install -r requirements_dev.txt
 script:
-  - check-manifest --ignore appveyor.cmd,.appveyor.yml
+  - check-manifest --ignore appveyor.cmd
   - python setup.py check -m -r -s
   - pip install .
   - pytest

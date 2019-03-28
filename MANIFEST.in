@@ -1,4 +1,9 @@
 include LICENSE
+
 include README.rst
+
 include requirements*.txt
 recursive-include e13tools data/*
+
+
+exclude *.yml
