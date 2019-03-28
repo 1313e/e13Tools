@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 # %% IMPORTS
+# Future imports
+from __future__ import absolute_import, division, print_function
+
 # Built-in imports
 import logging
 from os import path
@@ -16,7 +19,7 @@ from e13tools.core import InputError
 from e13tools.utils import (docstring_append, docstring_copy,
                             docstring_substitute, check_instance,
                             convert_str_seq, delist, get_outer_frame,
-                            import_cmaps, raise_error, raise_warning, rprint)
+                            import_cmaps, raise_error, raise_warning)
 
 # Save the path to this directory
 dirpath = path.dirname(__file__)
@@ -291,9 +294,3 @@ def test_raise_warning():
     logger = logging.getLogger('TEST')
     with pytest.warns(UserWarning):
         raise_warning('WARNING', UserWarning, logger)
-
-
-# Pytest for the rprint function
-def test_rprint():
-    # Check if rprint works correctly
-    rprint('Testing')
