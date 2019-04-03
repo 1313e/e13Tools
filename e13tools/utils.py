@@ -30,7 +30,7 @@ from six import PY2
 from e13tools import InputError
 
 # All declaration
-__all__ = ['aux_char_list', 'check_instance', 'convert_str_seq', 'delist',
+__all__ = ['aux_char_set', 'check_instance', 'convert_str_seq', 'delist',
            'docstring_append', 'docstring_copy', 'docstring_substitute',
            'get_outer_frame', 'import_cmaps', 'raise_error', 'raise_warning']
 
@@ -236,10 +236,10 @@ def convert_str_seq(seq):
     from it, splits it up into individual elements and converts all elements
     back to integers, floats and/or strings.
 
-    The auxiliary characters are given by the :obj:`~aux_char_list` list. One
-    can add, change and remove characters from the list if required. If one
-    wishes to keep an auxiliary character that is in `seq`, it must be escaped
-    by a backslash.
+    The auxiliary characters are given by :obj:`~aux_char_set`. One can add,
+    change and remove characters from the list if required. If one wishes to
+    keep an auxiliary character that is in `seq`, it must be escaped by a
+    backslash (note that backslashes themselves also need to be escaped).
 
     Parameters
     ----------
@@ -266,11 +266,11 @@ def convert_str_seq(seq):
             if(index != 0 and seq[index-1] is None):
                 pass
             # Else, if this backslash escapes a character, replace by None
-            elif(index != len(seq)-1 and seq[index+1] in aux_char_list):
+            elif(index != len(seq)-1 and seq[index+1] in aux_char_set):
                 seq[index] = None
 
     # Remove all unwanted characters from the string, except those escaped
-    for char in aux_char_list:
+    for char in aux_char_set:
         # Set the search index
         index = 0
 
@@ -320,10 +320,9 @@ def convert_str_seq(seq):
 
 
 # List/set of auxiliary characters to be used in convert_str_seq()
-aux_char_list = set(['(', ')', '[', ']', ',', "'", '"', '|', '/', '\\', '{',
-                     '}', '<', '>', '´', '¨', '`', '?', '!', '%', ':', ';',
-                     '=', '$', '~', '#', '@', '^', '&', '*', '“', '’', '”',
-                     '‘'])
+aux_char_set = set(['(', ')', '[', ']', ',', "'", '"', '|', '/', '\\', '{',
+                    '}', '<', '>', '´', '¨', '`', '?', '!', '%', ':', ';', '=',
+                    '$', '~', '#', '@', '^', '&', '*', '“', '’', '”', '‘'])
 
 
 # Function that returns a copy of a list with all empty lists/tuples removed
