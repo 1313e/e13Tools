@@ -35,7 +35,7 @@ Available modules
 from __future__ import absolute_import, division, print_function
 
 # Import package modules
-from .__version__ import version as __version__
+from .__version__ import __version__
 from . import core
 from .core import *
 from . import math
