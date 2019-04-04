@@ -26,14 +26,14 @@ with open('requirements.txt', 'r') as f:
 
 # Read the __version__.py file
 with open('e13tools/__version__.py', 'r') as f:
-    vfile = f.read()
+    vf = f.read()
 
 # Obtain version from read-in __version__.py file
-version = re.search(r"^_*version_* = ['\"]([^'\"]*)['\"]", vfile, re.M)
+version = re.search(r"^_*version_* = ['\"]([^'\"]*)['\"]", vf, re.M).group(1)
 
 # Setup function declaration
 setup(name="e13tools",
-      version=version.group(1),
+      version=version,
       author="Ellert van der Velden",
       author_email='ellert_vandervelden@outlook.com',
       description=("Provides a collection of functions that were created by "
