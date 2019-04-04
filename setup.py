@@ -9,6 +9,7 @@ Setup file for the e13Tools package.
 # %% IMPORTS
 # Built-in imports
 from codecs import open
+import re
 
 # Package imports
 from setuptools import find_packages, setup
@@ -28,12 +29,11 @@ with open('e13tools/__version__.py', 'r') as f:
     vfile = f.read()
 
 # Obtain version from read-in __version__.py file
-vstr = "__version__ = "
-version = vfile.partition(vstr)[2].partition('\n')[0].replace("'", '').strip()
+version = re.search(r"^_*version_* = ['\"]([^'\"]*)['\"]", vfile, re.M)
 
 # Setup function declaration
 setup(name="e13tools",
-      version=version,
+      version=version.group(1),
       author="Ellert van der Velden",
       author_email='ellert_vandervelden@outlook.com',
       description=("Provides a collection of functions that were created by "
