@@ -21,7 +21,7 @@ from os import path
 import warnings
 
 # Package imports
-from matplotlib.cm import register_cmap
+from matplotlib import cm
 from matplotlib.colors import LinearSegmentedColormap as LSC
 import numpy as np
 from six import PY2
@@ -490,8 +490,10 @@ def import_cmaps(cmap_dir):
                                    N=len(colorlist))
 
             # Add cmap to matplotlib's cmap list
-            register_cmap(cmap=cmap)
-            register_cmap(cmap=cmap_r)
+            cm.register_cmap(cmap=cmap)
+            setattr(cm, cm_name, cmap)
+            cm.register_cmap(cmap=cmap_r)
+            setattr(cm, cm_name+'_r', cmap_r)
         except Exception as error:
             raise InputError("Provided colormap %r is invalid! (%s)"
                              % (cm_name, error))
