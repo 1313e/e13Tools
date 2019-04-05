@@ -224,9 +224,9 @@ def check_instance(instance, cls):
     # Check if all cls attributes can be called in instance
     for attr in class_attrs:
         if not hasattr(instance, attr):
-            return(0)
+            return(False)
     else:
-        return(1)
+        return(True)
 
 
 # Function for converting a string sequence to a sequence of elements
@@ -237,7 +237,7 @@ def convert_str_seq(seq):
     back to integers, floats and/or strings.
 
     The auxiliary characters are given by :obj:`~aux_char_set`. One can add,
-    change and remove characters from the list if required. If one wishes to
+    change and remove characters from the set if required. If one wishes to
     keep an auxiliary character that is in `seq`, it must be escaped by a
     backslash (note that backslashes themselves also need to be escaped).
 
@@ -284,7 +284,7 @@ def convert_str_seq(seq):
 
             # If so, remove it if it was not escaped
             if(index == 0 or seq[index-1] is not None):
-                seq[index] = ' '
+                seq[index] = '\n'
             # If it was escaped, remove None instead
             else:
                 seq[index-1] = ''
@@ -296,7 +296,14 @@ def convert_str_seq(seq):
     seq = ''.join(seq)
 
     # Split sequence up into elements
-    seq = seq.split()
+    seq = seq.split('\n')
+
+    # Remove all empty strings
+    while True:
+        try:
+            seq.remove('')
+        except ValueError:
+            break
 
     # Loop over all elements in seq
     for i, val in enumerate(seq):
@@ -322,7 +329,8 @@ def convert_str_seq(seq):
 # List/set of auxiliary characters to be used in convert_str_seq()
 aux_char_set = set(['(', ')', '[', ']', ',', "'", '"', '|', '/', '\\', '{',
                     '}', '<', '>', '´', '¨', '`', '?', '!', '%', ':', ';', '=',
-                    '$', '~', '#', '@', '^', '&', '*', '“', '’', '”', '‘'])
+                    '$', '~', '#', '@', '^', '&', '*', '“', '’', '”', '‘',
+                    ' '])
 
 
 # Function that returns a copy of a list with all empty lists/tuples removed
