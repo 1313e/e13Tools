@@ -330,7 +330,7 @@ def convert_str_seq(seq):
 aux_char_set = set(['(', ')', '[', ']', ',', "'", '"', '|', '/', '\\', '{',
                     '}', '<', '>', '´', '¨', '`', '?', '!', '%', ':', ';', '=',
                     '$', '~', '#', '@', '^', '&', '*', '“', '’', '”', '‘',
-                    ' '])
+                    ' ', '\t'])
 
 
 # Function that returns a copy of a list with all empty lists/tuples removed
