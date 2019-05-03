@@ -546,7 +546,8 @@ def raise_warning(warn_msg, warn_type=UserWarning, logger=None, stacklevel=1):
         If *None*, the :obj:`~logging.RootLogger` logger is used instead.
     stacklevel : int. Default: 1
         The stack level of the warning message at the location of this function
-        call. The actual used stack level is increased by one.
+        call. The actual used stack level is increased by one to account for
+        this function call.
 
     """
 
