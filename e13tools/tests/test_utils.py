@@ -19,7 +19,7 @@ from e13tools.core import InputError
 from e13tools.utils import (docstring_append, docstring_copy,
                             docstring_substitute, check_instance,
                             convert_str_seq, delist, get_outer_frame,
-                            import_cmaps, raise_error, raise_warning)
+                            raise_error, raise_warning)
 
 # Save the path to this directory
 dirpath = path.dirname(__file__)
@@ -267,17 +267,6 @@ def test_get_outer_frame():
 
     # Check if providing a valid method returns the correct method
     _Test()
-
-
-# Pytest for the import_cmaps function
-def test_import_cmaps():
-    # Check if providing a non-existing directory raises an error
-    with pytest.raises(OSError):
-        import_cmaps('./test')
-
-    # Check if providing a custom directory with invalid cmaps raises an error
-    with pytest.raises(InputError):
-        import_cmaps(path.join(dirpath, 'data'))
 
 
 # Pytest for the raise_error function
