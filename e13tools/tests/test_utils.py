@@ -16,7 +16,7 @@ import pytest
 
 # e13Tools imports
 from e13tools.core import InputError
-from e13tools.utils import (docstring_append, docstring_copy,
+from e13tools.utils import (add_to_all, docstring_append, docstring_copy,
                             docstring_substitute, check_instance,
                             convert_str_seq, delist, get_outer_frame,
                             raise_error, raise_warning)
@@ -42,7 +42,26 @@ def _test2(instance):
     get_outer_frame(instance.__init__)
 
 
+# Create function to be added to module's __all__
+@add_to_all
+def add_to_all_test():
+    pass
+
+
 # %% PYTEST CLASSES AND FUNCTIONS
+# Pytest for the add_to_all decorator
+class Test_add_to_all(object):
+    # Test if function was added successfully
+    def test_function_add(self):
+        assert globals().get('__all__') == ['add_to_all_test']
+
+    # Test if trying to add an object raises an error
+    def test_add_no_name(self):
+        obj = []
+        with pytest.raises(AttributeError):
+            add_to_all(obj)
+
+
 # Pytest for the custom function decorators
 class TestDecorators(object):
     # Create method with no docstring that is appended

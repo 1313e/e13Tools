@@ -427,7 +427,7 @@ def is_PD(matrix):
                          " must be a square matrix!" % (rows, columns))
 
     # Check if matrix is Hermitian
-    if not((transposeC(matrix) == matrix).all()):
+    if not np.allclose(transposeC(matrix), matrix):
         raise ValueError("Input argument 'matrix' must be Hermitian!")
 
     # Try to use Cholesky on matrix. If it fails,

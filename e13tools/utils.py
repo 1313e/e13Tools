@@ -25,12 +25,44 @@ from six import PY2
 from e13tools import InputError
 
 # All declaration
-__all__ = ['aux_char_set', 'check_instance', 'convert_str_seq', 'delist',
-           'docstring_append', 'docstring_copy', 'docstring_substitute',
-           'get_outer_frame', 'raise_error', 'raise_warning']
+__all__ = ['add_to_all', 'aux_char_set', 'check_instance', 'convert_str_seq',
+           'delist', 'docstring_append', 'docstring_copy',
+           'docstring_substitute', 'get_outer_frame', 'raise_error',
+           'raise_warning']
 
 
 # %% DECORATOR DEFINITIONS
+# Define custom decorator for automatically appending names to __all__
+def add_to_all(obj):
+    """
+    Custom decorator that allows for the name of the provided object `obj` to
+    be automatically added to the `__all__` attribute of the frame this
+    decorator is used in. The provided `obj` must have a `__name__` attribute.
+
+    """
+
+    # Obtain caller's frame
+    frame = currentframe().f_back
+
+    # Get __all__ list in caller's frame
+    __all__ = frame.f_globals.get('__all__')
+
+    # If __all__ does not exist yet, make a new one
+    if __all__ is None:
+        __all__ = []
+        frame.f_globals['__all__'] = __all__
+
+    # Append name of given obj to __all__
+    if hasattr(obj, '__name__'):
+        __all__.append(obj.__name__)
+    else:
+        raise AttributeError("Input argument 'obj' does not have attribute"
+                             "'__name__'!")
+
+    # Return obj
+    return(obj)
+
+
 # Define custom decorator for appending docstrings to a function's docstring
 def docstring_append(addendum, join=''):
     """
