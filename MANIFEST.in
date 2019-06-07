@@ -1,9 +1,11 @@
 include LICENSE
-
 include README.rst
-
+include MANIFEST.in
 include requirements*.txt
 recursive-include e13tools data/*
 
-
+exclude docs
+recursive-exclude docs *
 exclude *.yml
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
