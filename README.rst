@@ -1,9 +1,11 @@
-|PyPI| |Python| |License| |Travis| |AppVeyor| |Coverage|
+|PyPI| |Python| |License| |Travis| |AppVeyor| |ReadTheDocs| |Coverage|
 
 Description
 ===========
-This package contains a collection of functions that were created by 1313e.
+This package contains a collection of utility functions that were created by `@1313e`_.
 Most functions were created for personal use, but have been changed and optimized to work for others as well.
+
+.. _@1313e: https://github.com/1313e
 
 How to install
 ==============
@@ -37,6 +39,9 @@ The following packages are used by a few functions and therefore optional:
 .. |AppVeyor| image:: https://img.shields.io/appveyor/ci/1313e/e13Tools/master.svg?logo=appveyor&logoColor=white&label=AppVeyor
    :target: https://ci.appveyor.com/project/1313e/e13Tools
    :alt: AppVeyor - Build Status
+.. |ReadTheDocs| image:: https://img.shields.io/readthedocs/e13tools/latest.svg?logo=read%20the%20docs&logoColor=white&label=Docs
+    :target: https://e13tools.readthedocs.io/en/latest
+    :alt: ReadTheDocs - Build Status
 .. |Coverage| image:: https://img.shields.io/codecov/c/github/1313e/e13Tools/master.svg?logo=codecov&logoColor=white&label=Coverage
     :target: https://codecov.io/gh/1313e/e13Tools/branches/master
     :alt: CodeCov - Coverage Status

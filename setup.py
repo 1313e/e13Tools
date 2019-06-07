@@ -36,8 +36,8 @@ setup(name="e13tools",
       version=version,
       author="Ellert van der Velden",
       author_email='ellert_vandervelden@outlook.com',
-      description=("Provides a collection of functions that were created by "
-                   "1313e."),
+      description=("A collection of utility functions that were created by "
+                   "1313e"),
       long_description=long_description,
       url='https://www.github.com/1313e/e13Tools',
       license='BSD-3',

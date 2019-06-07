@@ -3,7 +3,7 @@
 """
 e13Tools
 ========
-Provides a collection of functions that were created by **1313e**.
+Provides a collection of utility functions that were created by **1313e**.
 Recommended usage::
 
     import e13tools as e13
