@@ -76,7 +76,7 @@ def diff(array1, array2=None, axis=0, flatten=True):
         >>> diff(mat1, mat2)
         array([[[-3., -3., -3.],
                 [-6., -6., -6.]],
-
+        <BLANKLINE>
                [[ 0.,  0.,  0.],
                 [-3., -3., -3.]]])
 
@@ -89,11 +89,11 @@ def diff(array1, array2=None, axis=0, flatten=True):
         array([[[-3., -3.],
                 [-4., -4.],
                 [-5., -5.]],
-
+        <BLANKLINE>
                [[-2., -2.],
                 [-3., -3.],
                 [-4., -4.]],
-
+        <BLANKLINE>
                [[-1., -1.],
                 [-2., -2.],
                 [-3., -3.]]])
@@ -108,7 +108,7 @@ def diff(array1, array2=None, axis=0, flatten=True):
         >>> diff(mat, flatten=False)
         array([[[ 0.,  0.,  0.],
                 [-3., -3., -3.]],
-
+        <BLANKLINE>
                [[ 3.,  3.,  3.],
                 [ 0.,  0.,  0.]]])
 
@@ -271,13 +271,13 @@ def diff(array1, array2=None, axis=0, flatten=True):
 
 
 # This function calculates the greatest common divisor of a sequence
-def gcd(*seq):
+def gcd(*args):
     """
     Returns the greatest common divisor of the provided sequence of integers.
 
     Parameters
     ----------
-    seq : 1D array_like of int
+    args : tuple of int
         Integers to calculate the greatest common divisor for.
 
     Returns
@@ -292,18 +292,12 @@ def gcd(*seq):
 
     See also
     --------
-    :func:`~core.gcd_single`
-        Greatest common divisor for two integers.
-
     :func:`~lcm`
         Least common multiple for sequence of integers.
 
-    :func:`~core.lcm_single`
-        Least common multiple for two integers.
-
     """
 
-    return(reduce(lambda a, b: gcd_single(a, b), seq))
+    return(reduce(lambda a, b: gcd_single(a, b), args))
 
 
 # This function calculates the greatest common divisor of two integers
@@ -358,7 +352,7 @@ def gcd_single(a, b):
 def is_PD(matrix):
     """
     Checks if `matrix` is positive-definite or not, by using the
-    :func:`~np.linalg.cholesky` function. It is required for `matrix` to be
+    :func:`~numpy.linalg.cholesky` function. It is required for `matrix` to be
     Hermitian.
 
     Parameters
@@ -440,14 +434,14 @@ def is_PD(matrix):
 
 
 # This function calculates the least common multiple of a sequence
-def lcm(*seq):
+def lcm(*args):
     """
     Returns the least common multiple of the provided sequence of integers.
     If at least one integer is zero, the output will also be zero.
 
     Parameters
     ----------
-    seq : 1D array_like of int
+    args : tuple of int
         Integers to calculate the least common multiple for.
 
     Returns
@@ -465,15 +459,9 @@ def lcm(*seq):
     :func:`~gcd`
         Greatest common divisor for sequence of integers.
 
-    :func:`~core.gcd_single`
-        Greatest common divisor for two integers.
-
-    :func:`~core.lcm_single`
-        Least common multiple for two integers.
-
     """
 
-    return(reduce(lcm_single, seq))
+    return(reduce(lcm_single, args))
 
 
 # This function calculates the least common multiple of two integers
@@ -932,8 +920,8 @@ def rot90(array, axes=(0, 1), rot_axis='center', n_rot=1):
 def sort2D(array, axis=-1, order=None):
     """
     Sorts a 2D `array` in a given `axis` in the specified `order`. This
-    function is different from NumPy's :func:`~sort` function in that it sorts
-    in a given axis rather than along it, and the order can be given as
+    function is different from NumPy's :func:`~numpy.sort` function in that it
+    sorts in a given axis rather than along it, and the order can be given as
     integers rather than field strings.
 
     Parameters

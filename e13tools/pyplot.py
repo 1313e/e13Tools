@@ -40,12 +40,12 @@ __all__ = ['apu2tex', 'center_spines', 'draw_textline', 'f2tex',
 # This function converts an astropy unit into a TeX string
 def apu2tex(unit, unitfrac=False):
     """
-    Transform a :obj:`~astropy.units.core.Unit` object into a (La)TeX string
-    for usage in a :obj:`~matplotlib.figure.Figure` instance.
+    Transform a :obj:`~astropy.units.Unit` object into a (La)TeX string for
+    usage in a :obj:`~matplotlib.figure.Figure` instance.
 
     Parameters
     ----------
-    unit : :obj:`~astropy.units.core.Unit` object
+    unit : :obj:`~astropy.units.Unit` object
         Unit to be transformed.
 
     Optional
@@ -106,8 +106,8 @@ def center_spines(centerx=0, centery=0, set_xticker=False, set_yticker=False,
     set_yticker : int, float or False. Default: False
         If int or float, sets the y-axis ticker to `set_yticker`.
         If *False*, let :obj:`~matplotlib.figure.Figure` instance decide.
-    ax : :obj:`~matplotlib.axes._axes.Axes` object or None. Default: None
-        If :obj:`~matplotlib.axes._axes.Axes` object, centers the axis spines
+    ax : :obj:`~matplotlib.axes.Axes` object or None. Default: None
+        If :obj:`~matplotlib.axes.Axes` object, centers the axis spines
         of specified :obj:`~matplotlib.figure.Figure` instance.
         If *None*, centers the axis spines of current
         :obj:`~matplotlib.figure.Figure` instance.
@@ -197,15 +197,16 @@ def draw_textline(text, x=None, y=None, pos='start top', ax=None,
         If 'top', prints the text above the drawn line.
         If 'bottom', prints the text below the drawn line.
         Arguments must be given as a single string.
-    ax : :obj:`~matplotlib.axes._axes.Axes` object or None. Default: None
-        If :obj:`~matplotlib.axes._axes.Axes` object, draws line in specified
+    ax : :obj:`~matplotlib.axes.Axes` object or None. Default: None
+        If :obj:`~matplotlib.axes.Axes` object, draws line in specified
         :obj:`~matplotlib.figure.Figure` instance.
         If *None*, draws line in current :obj:`~matplotlib.figure.Figure`
         instance.
-    line_kwargs : dict of :func:`~matplotlib.lines.Line2D` properties.\
+    line_kwargs : dict of :class:`~matplotlib.lines.Line2D` properties.\
         Default: {}
         The keyword arguments used for drawing the line.
-    text_kwargs : dict of :func:`~matplotlib.text.Text` properties. Default: {}
+    text_kwargs : dict of :class:`~matplotlib.text.Text` properties.\
+        Default: {}
         The keyword arguments used for drawing the text.
 
     """
@@ -543,7 +544,7 @@ def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
 def suplabel(label, axis, fig=None, **kwargs):
     """
     Adds a super label in the provided figure `fig` for the specified `axis`.
-    Works similarly to :meth:`~matplotlib.pyplot.Figure.suptitle`, but for axes
+    Works similarly to :meth:`~matplotlib.figure.Figure.suptitle`, but for axes
     labels instead of figure titles.
 
     This algorithm is based on a Stack Overflow answer by KYC [1]_.
@@ -561,7 +562,7 @@ def suplabel(label, axis, fig=None, **kwargs):
         In which :obj:`~matplotlib.figure.Figure` object the axis label needs
         to be drawn. If *None*, the current :obj:`~matplotlib.figure.Figure`
         object will be used.
-    kwargs : dict of :func:`~matplotlib.text.Text` properties. Default: {}
+    kwargs : dict of :class:`~matplotlib.text.Text` properties. Default: {}
         The keyword arguments used for drawing the text.
 
     References

@@ -56,7 +56,8 @@ extensions = [
 # Intersphinx configuration
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None),
                        'numpy': ('https://docs.scipy.org/doc/numpy', None),
-                       'matplotlib': ('https://matplotlib.org', None)}
+                       'matplotlib': ('https://matplotlib.org', None),
+                       'astropy': ('https://docs.astropy.org/en/stable', None)}
 
 # Autodoc configuration
 autodoc_default_options = {'members': None,
