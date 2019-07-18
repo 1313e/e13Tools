@@ -217,6 +217,8 @@ def lhd(n_sam, n_val, val_rng=None, method='random', criterion=None,
     # Check for cases in which some methods make no sense
     if(n_sam == 1 and method.lower() in ('fixed', 'f')):
         method = 'center'
+    elif(criterion is not None and method.lower() in ('random', 'r')):
+        method = 'fixed'
 
     # Check for cases in which some criterions make no sense
     # If so, criterion will be changed to something useful
@@ -225,11 +227,7 @@ def lhd(n_sam, n_val, val_rng=None, method='random', criterion=None,
     elif(n_sam == 1):
         criterion = None
     elif(n_val == 1 or n_sam == 2):
-        if(criterion is not None and method.lower() in ('random', 'r')):
-            method = 'fixed'
         criterion = None
-    elif(criterion is not None and method.lower() in ('random', 'r')):
-        method = 'fixed'
     elif isinstance(criterion, (int, float)):
         if not(0 <= criterion <= 1):
             raise ValueError("Input argument 'criterion' can only have a "

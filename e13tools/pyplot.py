@@ -485,7 +485,7 @@ def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
 
     >>> import astropy.units as apu
     >>> q2tex(20.2935826592*apu.solMass/apu.yr)
-    '20.29\\ \\mathrm{M_{\\odot}\\,yr^{-1}}'
+    '20.29\\,\\mathrm{M_{\\odot}\\,yr^{-1}}'
 
     >>> import astropy.units as apu
     >>> q2tex(20.2935826592*apu.solMass/apu.yr, sdigits=6)
@@ -494,27 +494,27 @@ def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
 
     >>> import astropy.units as apu
     >>> q2tex(20.2935826592*apu.solMass/apu.yr, power=1)
-    '2.029\\cdot 10^{1}\\ \\mathrm{M_{\\odot}\\,yr^{-1}}'
+    '2.029\\cdot 10^{1}\\,\\mathrm{M_{\\odot}\\,yr^{-1}}'
 
 
     >>> import astropy.units as apu
     >>> q2tex(1e6*apu.solMass/apu.yr, nobase1=True)
-    '10^{6}\\ \\mathrm{M_{\\odot}\\,yr^{-1}}'
+    '10^{6}\\,\\mathrm{M_{\\odot}\\,yr^{-1}}'
 
 
     >>> import astropy.units as apu
     >>> q2tex(1e6*apu.solMass/apu.yr, nobase1=False)
-    '1\\cdot 10^{6}\\ \\mathrm{M_{\\odot}\\,yr^{-1}}'
+    '1\\cdot 10^{6}\\,\\mathrm{M_{\\odot}\\,yr^{-1}}'
 
 
     >>> import astropy.units as apu
     >>> q2tex(20.2935826592*apu.solMass/apu.yr, unitfrac=False)
-    '20.29\\ \\mathrm{M_{\\odot}\\,yr^{-1}}'
+    '20.29\\,\\mathrm{M_{\\odot}\\,yr^{-1}}'
 
 
     >>> import astropy.units as apu
     >>> q2tex(20.2935826592*apu.solMass/apu.yr, unitfrac=True)
-    '20.29\\ \\mathrm{\\frac{M_{\\odot}}{yr}}'
+    '20.29\\,\\mathrm{\\frac{M_{\\odot}}{yr}}'
 
     """
 
@@ -533,7 +533,7 @@ def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
         # Unit handling
         if unit:
             unit_string = apu2tex(unit, unitfrac)
-            string = ''.join([string, r'\ ', unit_string])
+            string = ''.join([string, r'\\,', unit_string])
 
         return(string)
     else:
