@@ -179,66 +179,127 @@ class TestDecorators(object):
         class substitute_new_class1(object):
             pass
 
-    # Create method using args substitutes
+    # Create method using args substitutes with %
     @docstring_substitute("positional")
     def substitute_method2(self):
         """%s"""
 
-    # Create method using kwargs substitutes
+    # Create method using kwargs substitutes with %
     @docstring_substitute(x="keyword")
     def substitute_method3(self):
         """%(x)s"""
 
-    # Create old-style class using args substitutes
+    # Create method using args substitutes with .format
+    @docstring_substitute("positional")
+    def substitute_method4(self):
+        """{}"""
+
+    # Create method using kwargs substitutes with .format
+    @docstring_substitute(x="keyword")
+    def substitute_method5(self):
+        """{x}"""
+
+    # Create old-style class using args substitutes with %
     @docstring_substitute("positional")
     class substitute_old_class2:
         """%s"""
 
-    # Create old-style class using kwargs substitutes
+    # Create old-style class using kwargs substitutes with %
     @docstring_substitute(x="keyword")
     class substitute_old_class3:
         """%(x)s"""
 
-    # Create new-style class using args substitutes
+    # Create old-style class using args substitutes with .format
+    @docstring_substitute("positional")
+    class substitute_old_class4:
+        """{}"""
+
+    # Create old-style class using kwargs substitutes with .format
+    @docstring_substitute(x="keyword")
+    class substitute_old_class5:
+        """{x}"""
+
+    # Create new-style class using args substitutes with %
     @docstring_substitute("positional")
     class substitute_new_class2(object):
         """%s"""
 
-    # Create new-style class using kwargs substitutes
+    # Create new-style class using kwargs substitutes with %
     @docstring_substitute(x="keyword")
     class substitute_new_class3(object):
         """%(x)s"""
 
+    # Create new-style class using args substitutes with .format
+    @docstring_substitute("positional")
+    class substitute_new_class4(object):
+        """{}"""
+
+    # Create new-style class using kwargs substitutes with .format
+    @docstring_substitute(x="keyword")
+    class substitute_new_class5(object):
+        """{x}"""
+
     # Check if providing args to a method with no docstring raises an error
     with pytest.raises(InputError):
         @docstring_substitute("positional")
-        def substitute_method4(self):
+        def substitute_method6(self):
             pass
 
     # Check providing args to an old_style class with no docstring
     with pytest.raises(InputError):
         @docstring_substitute("positional")
-        class substitute_old_class4:
+        class substitute_old_class6:
             pass
 
     # Check providing args to a new_style class with no docstring
     with pytest.raises(InputError):
         @docstring_substitute("positional")
-        class substitute_new_class4(object):
+        class substitute_new_class6(object):
             pass
+
+    # Check if combining % and .format can be done properly, method
+    @docstring_substitute(x="keyword")
+    @docstring_substitute("positional")
+    def substitute_method7(self):
+        """%s {x}"""
+
+    # Check if combining % and .format can be done properly, old-style class
+    @docstring_substitute(x="keyword")
+    @docstring_substitute("positional")
+    class substitute_old_class7:
+        """%s {x}"""
+
+    # Check if combining % and .format can be done properly, new-style class
+    @docstring_substitute(x="keyword")
+    @docstring_substitute("positional")
+    class substitute_new_class7(object):
+        """%s {x}"""
 
     # Check if docstring_substitute works correctly
     def test_docstring_substitute(self):
         assert self.substitute_method2.__doc__ == "positional"
         assert self.substitute_method3.__doc__ == "keyword"
+        assert self.substitute_method4.__doc__ == "positional"
+        assert self.substitute_method5.__doc__ == "keyword"
+        assert self.substitute_method7.__doc__ == "positional keyword"
         assert self.substitute_old_class2.__doc__ == "positional"
         assert self.substitute_old_class3.__doc__ == "keyword"
+        assert self.substitute_old_class4.__doc__ == "positional"
+        assert self.substitute_old_class5.__doc__ == "keyword"
+        assert self.substitute_old_class7.__doc__ == "positional keyword"
         assert self.substitute_new_class2.__doc__ == "positional"
         assert self.substitute_new_class3.__doc__ == "keyword"
+        assert self.substitute_new_class4.__doc__ == "positional"
+        assert self.substitute_new_class5.__doc__ == "keyword"
+        assert self.substitute_new_class7.__doc__ == "positional keyword"
         assert self.substitute_new_class2.__name__ == 'substitute_new_class2'
         assert self.substitute_new_class2.__module__ != 'e13tools.utils'
         assert self.substitute_new_class3.__name__ == 'substitute_new_class3'
         assert self.substitute_new_class3.__module__ != 'e13tools.utils'
+        assert self.substitute_new_class4.__name__ == 'substitute_new_class4'
+        assert self.substitute_new_class4.__module__ != 'e13tools.utils'
+        assert self.substitute_new_class5.__name__ == 'substitute_new_class5'
+        assert self.substitute_new_class5.__module__ != 'e13tools.utils'
 
 
 # Pytest for the check_instance function
@@ -259,6 +320,7 @@ def test_check_instance():
 def test_convert_str_seq():
     # Check if string sequence is converted correctly
     assert convert_str_seq('[[]1e1,\n8.,A<{7)\\\\') == [10., 8.0, 'A', 7, '\\']
+    assert convert_str_seq('A', 1, 20.0, 'B') == ['A', 1, 20.0, 'B']
 
 
 # Pytest for the delist function

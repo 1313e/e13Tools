@@ -370,46 +370,57 @@ def f2tex(value, sdigits=4, power=3, nobase1=True):
     return(string)
 
 
-# Function to import all custom colormaps in a directory
-def import_cmaps(cmap_dir):
+# Function to import all custom colormaps in a file or directory
+def import_cmaps(cmap_path):
     """
-    Reads in custom colormaps from a provided directory `cmap_dir`, transforms
-    them into :obj:`~matplotlib.colors.LinearSegmentedColormap` objects and
-    registers them in the :mod:`~matplotlib.cm` module. Both the imported
-    colormap and its reversed version will be registered.
+    Reads in custom colormaps from a provided file or directory `cmap_path`,
+    transforms them into :obj:`~matplotlib.colors.LinearSegmentedColormap`
+    objects and registers them in the :mod:`~matplotlib.cm` module. Both the
+    imported colormap and its reversed version will be registered.
 
     Parameters
     ----------
-    cmap_dir : str
-        Relative or absolute path to the directory that contains custom
-        colormap files. A colormap file can be a NumPy binary file ('.npy' or
-        '.npz') or any text file.
+    cmap_path : str
+        Relative or absolute path to a custom colormap file or directory that
+        contains custom colormap files. A colormap file can be a NumPy binary
+        file ('.npy' or '.npz') or any text file.
 
     Notes
     -----
-    All colormap files in `cmap_dir` must have names starting with 'cm\\_'. The
-    resulting colormaps will have the name of their file without the prefix and
+    All colormap files must have names starting with 'cm\\_'. The resulting
+    colormaps will have the name of their file without the prefix and
     extension.
 
     """
 
-    # Obtain path to directory with colormaps
-    cmap_dir = path.abspath(cmap_dir)
+    # Obtain path to file or directory with colormaps
+    cmap_path = path.abspath(cmap_path)
 
-    # Check if provided directory exists
-    if not path.exists(cmap_dir):
-        raise OSError("Input argument 'cmap_dir' is a non-existing path (%r)!"
-                      % (cmap_dir))
+    # Check if provided file or directory exists
+    if not path.exists(cmap_path):
+        raise OSError("Input argument 'cmap_path' is a non-existing path (%r)!"
+                      % (cmap_path))
 
-    # Obtain the names of all files in cmap_dir
-    filenames = next(os.walk(cmap_dir))[2]
-    cm_files = []
+    # Check if cmap_path is a file or directory and act accordingly
+    if path.isfile(cmap_path):
+        # If file, split cmap_path up into dir and file components
+        cmap_dir, cmap_file = path.split(cmap_path)
 
-    # Extract the files with defined colormaps
-    for filename in filenames:
-        if(filename[:3] == 'cm_'):
-            cm_files.append(filename)
-    cm_files.sort()
+        # Check if its name starts with 'cm_' and raise error if not
+        if(cmap_file[:3] != 'cm_'):
+            raise OSError("Input argument 'cmap_path' does not lead to a file "
+                          "with the 'cm_' prefix (%r)!" % (cmap_path))
+
+        # Set cm_files to be the sole read-in file
+        cm_files = [cmap_file]
+    else:
+        # If directory, obtain the names of all files in cmap_path
+        cmap_dir = cmap_path
+        filenames = next(os.walk(cmap_dir))[2]
+
+        # Extract the files with defined colormaps
+        cm_files = [name for name in filenames if name[:3] == 'cm_']
+        cm_files.sort()
 
     # Read in all the defined colormaps, transform and register them
     for cm_file in cm_files:

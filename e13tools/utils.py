@@ -163,6 +163,10 @@ def docstring_substitute(*args, **kwargs):
     keyword arguments `kwargs` to be substituted into the docstring of the
     target function/class.
 
+    Both `%` and `.format()` string formatting styles are supported. Keep in
+    mind that this decorator will always attempt to do %-formatting first, and
+    only uses `.format()` if the first fails.
+
     Note
     ----
     In Python 2, classes that inherit the :class:`~object` class cannot have
@@ -190,7 +194,18 @@ def docstring_substitute(*args, **kwargs):
                 # Make a dummy class inheriting the target class
                 class Target(target):
                     # Perform modified substitution
-                    __doc__ = target.__doc__ % (params)
+                    # Try to use %-formatting
+                    try:
+                        __doc__ = target.__doc__ % (params)
+                    # If that raises an error, use .format with *args
+                    except TypeError:
+                        __doc__ = target.__doc__.format(*params)
+                    # Using **kwargs with % raises no errors if .format is
+                    # required
+                    else:
+                        # Check if formatting was done and use .format if not
+                        if(__doc__ == target.__doc__):
+                            __doc__ = target.__doc__.format(**params)
 
                 # Copy over the name and module of the target class
                 Target.__name__ = target.__name__
@@ -199,7 +214,20 @@ def docstring_substitute(*args, **kwargs):
 
             # Perform normal substitution in all other cases
             else:
-                target.__doc__ = target.__doc__ % (params)
+                # Make a copy of the target docstring to check formatting later
+                doc_presub = str(target.__doc__)
+
+                # Try to use %-formatting
+                try:
+                    target.__doc__ = target.__doc__ % (params)
+                # If that raises an error, use .format with *args
+                except TypeError:
+                    target.__doc__ = target.__doc__.format(*params)
+                # Using **kwargs with % raises no errors if .format is required
+                else:
+                    # Check if formatting was done and use .format if not
+                    if(target.__doc__ == doc_presub):
+                        target.__doc__ = target.__doc__.format(**params)
 
         # Raise error if target has no docstring
         else:
@@ -257,7 +285,7 @@ def check_instance(instance, cls):
 
 
 # Function for converting a string sequence to a sequence of elements
-def convert_str_seq(seq):
+def convert_str_seq(*seq):
     """
     Converts a provided sequence to a string, removes all auxiliary characters
     from it, splits it up into individual elements and converts all elements
@@ -270,7 +298,7 @@ def convert_str_seq(seq):
 
     Parameters
     ----------
-    seq : str or array_like
+    seq : str, array_like or tuple of arguments
         The sequence that needs to be converted to individual elements.
         If array_like, `seq` is first converted to a string.
 
@@ -280,7 +308,29 @@ def convert_str_seq(seq):
         A list with all individual elements converted to integers, floats
         and/or strings.
 
+    Examples
+    --------
+    The following function calls all produce the same output:
+
+        >>> convert_str_seq('A', 1, 20.0, 'B')
+        ['A', 1, 20.0, 'B']
+        >>> convert_str_seq(['A', 1, 2e1, 'B'])
+        ['A', 1, 20.0, 'B']
+        >>> convert_str_seq("A 1 20. B")
+        ['A', 1, 20.0, 'B']
+        >>> convert_str_seq("“’[“(A / }| ; <1{}) , ,”>20.0000 !! < )?% \\B‘")
+        ['A', 1, 20.0, 'B']
+
+    If one wants to keep the '?' in the last string above, it must be escaped:
+
+        >>> convert_str_seq("“’[“(A / }| ; <1{}) , ,”>20.0000 !! < )\\?% \\B‘")
+        ['A', 1, 20.0, '?', 'B']
+
     """
+
+    # If only a single element was provided, use that instead
+    if(len(seq) == 1):
+        seq = seq[0]
 
     # Convert sequence to a list of individual characters
     seq = list(str(seq))
