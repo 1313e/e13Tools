@@ -456,6 +456,10 @@ def import_cmaps(cmap_path):
                              % (cm_name, error))
 
 
+# Import all colormaps defined in './colormaps'
+import_cmaps(path.join(path.dirname(__file__), 'colormaps'))
+
+
 # This function converts an astropy quantity into a TeX string
 def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
     """
