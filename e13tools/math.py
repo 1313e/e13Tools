@@ -235,39 +235,40 @@ def diff(array1, array2=None, axis=0, flatten=True):
 
         # If the arrays have different number of dimensions
         else:
-            # Swap axes in the bigger array to put the given axis as first axis
-            if(n_dim1 > n_dim2):
-                try:
-                    array1 = np.moveaxis(array1, axis, 0).copy()
-                except Exception as error:
-                    raise InputError("Input argument 'axis' is invalid (%s)!"
-                                     % (error))
+            # If second array is bigger than first, swap them
+            if(n_dim1 < n_dim2):
+                # Swap arrays
+                temp_array = array1
+                array1 = array2
+                array2 = temp_array
 
-                # Check if the length of all other axes are the same
-                if(array1.shape[1:n_dim1] != array2.shape):
-                    raise ShapeError("Input arguments 'array1' and 'array2' do"
-                                     " not have the same axes lengths: %s != "
-                                     "%s"
-                                     % (array1.shape[1:n_dim1], array2.shape))
-                else:
-                    # Return difference array
-                    return(array1-array2)
+                # Swap ndims
+                temp_ndim = n_dim1
+                n_dim1 = n_dim2
+                n_dim2 = temp_ndim
+
+                # Save that arrays were swapped
+                sign = -1
             else:
-                try:
-                    array2 = np.moveaxis(array2, axis, 0).copy()
-                except Exception as error:
-                    raise InputError("Input argument 'axis' is invalid (%s)!"
-                                     % (error))
+                sign = 1
 
-                # Check if the length of all other axes are the same
-                if(array1.shape != array2.shape[1:n_dim2]):
-                    raise ShapeError("Input arguments 'array1' and 'array2' do"
-                                     " not have the same axes lengths: %s != "
-                                     "%s"
-                                     % (array1.shape, array2.shape[1:n_dim2]))
-                else:
-                    # Return difference array
-                    return(array1-array2)
+            # Swap axes in the bigger array to put the given axis as first axis
+            try:
+                array1 = np.moveaxis(array1, axis, 0).copy()
+            except Exception as error:
+                raise InputError("Input argument 'axis' is invalid (%s)!"
+                                 % (error))
+
+            # Check if the length of all other axes are the same
+            if(array1.shape[1:n_dim1] != array2.shape):
+                args = ((array1.shape[1:n_dim1], array2.shape) if(sign == 1)
+                        else (array2.shape, array1.shape[1:n_dim1]))
+                raise ShapeError("Input arguments 'array1' and 'array2' do"
+                                 " not have the same axes lengths: %s != "
+                                 "%s" % args)
+            else:
+                # Return difference array
+                return(sign*(array1-array2))
 
 
 # This function calculates the greatest common divisor of a sequence
@@ -571,6 +572,8 @@ def nCr(n, r, repeat=False):
         return(n)
     elif repeat:
         return(factorial(n+r-1)//(factorial(r)*factorial(n-1)))
+    elif(r == n-1):
+        return(n)
     elif(r == n):
         return(1)
     elif(r > n):
@@ -783,10 +786,12 @@ def nPr(n, r, repeat=False):
     """
 
     # Check if repeat is True or not and act accordingly
-    if repeat:
-        return(pow(n, r))
-    elif(r == 0):
+    if(r == 0):
         return(1)
+    elif(r == 1):
+        return(n)
+    elif repeat:
+        return(pow(n, r))
     elif(r > n):
         return(0)
     else:
@@ -997,13 +1002,14 @@ def sort2D(array, axis=-1, order=None):
         raise ShapeError("Input argument 'array' must be two-dimensional!")
     else:
         # Obtain the number of vectors along the given axis
-        n_vec = array.shape[axis]
+        try:
+            n_vec = array.shape[axis]
+        except Exception as error:
+            raise InputError("Input argument 'axis' is invalid (%s)!"
+                             % (error))
 
     # Move the given axis to be the first axis
-    try:
-        array = np.moveaxis(array, axis, 0)
-    except Exception as error:
-        raise InputError("Input argument 'axis' is invalid (%s)!" % (error))
+    array = np.moveaxis(array, axis, 0)
 
     # If order is given, transform it into an array
     if order is not None:
@@ -1012,7 +1018,7 @@ def sort2D(array, axis=-1, order=None):
     # Check what order is given and act accordingly
     if order is None:
         array.sort(axis=-1)
-    elif not(((-n_vec <= order)*(order < n_vec)).any()):
+    elif not(((-n_vec <= order)*(order < n_vec)).all()):
         raise ValueError("Input argument 'order' contains values that are "
                          "out of bounds!")
     else:

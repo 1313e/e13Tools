@@ -48,6 +48,22 @@ def add_to_all_test():
     pass
 
 
+# Define custom class for check_instance test
+class CustomClass(object):
+    def __init__(self):
+        self._prop = True
+
+    @property
+    def prop(self):
+        return(self._prop)
+
+
+# Custom class that inherits incorrectly from CustomClass
+class CustomSubClass(CustomClass):
+    def __init__(self, *args, **kwargs):
+        pass
+
+
 # %% PYTEST CLASSES AND FUNCTIONS
 # Pytest for the add_to_all decorator
 class Test_add_to_all(object):
@@ -312,8 +328,11 @@ def test_check_instance():
     with pytest.raises(TypeError):
         check_instance(list(), np.ndarray)
 
-    # Check if providing a proper instance of a class gives 1
-    assert check_instance(np.array(1), np.ndarray) == 1
+    # Check if providing a proper instance of a class returns True
+    assert check_instance(np.array(1), np.ndarray)
+
+    # Check if providing an improper instance of a class returns False
+    assert not check_instance(CustomSubClass(), CustomClass)
 
 
 # Pytest for the convert_str_seq function

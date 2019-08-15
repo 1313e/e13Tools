@@ -51,12 +51,12 @@ with open("{0}/{0}.py".format(name), 'w') as f:
     f.write(cm_py_file)
 
 # Import created .py-file as a module
+# Functions as a test to see if it can be imported and accessed correctly
 cmap_mod = import_module("{0}.{0}".format(name))
 
 # Create colormap figure
-cmap_obj = getattr(cmap_mod, 'test_cm')
 x = np.linspace(0, 1, 256)
-rgb = cmap_obj(x)[np.newaxis, :, :3]
+rgb = cmap_mod.test_cm(x)[np.newaxis, :, :3]
 fig, ax = plt.subplots(frameon=False, figsize=(12.8, 1.35))
 fig.subplots_adjust(wspace=0)
 ax.imshow(rgb, aspect='auto')
@@ -68,8 +68,7 @@ plt.savefig("{0}/{0}.png".format(name), dpi=1000, bbox_inches='tight',
 plt.close(fig)
 
 # Create txt-file with colormap data
-cm_data = getattr(cmap_mod, 'cm_data')
-np.savetxt("cm_{0}.txt".format(name), cm_data)
+np.savetxt("cm_{0}.txt".format(name), cmap_mod.cm_data)
 
 # Delete the created __pycache__ in the loaded cmap module
 shutil.rmtree("{0}/__pycache__".format(name), ignore_errors=True)
