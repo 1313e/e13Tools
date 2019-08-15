@@ -1,4 +1,4 @@
-|PyPI| |Python| |License| |Travis| |AppVeyor| |ReadTheDocs| |Coverage|
+|PyPI| |Python| |Travis| |AppVeyor| |ReadTheDocs| |Coverage|
 
 Description
 ===========
@@ -24,15 +24,12 @@ The following packages are used by a few functions and therefore optional:
 
 - ``astropy >= 1.3``.
 
-.. |PyPI| image:: https://img.shields.io/pypi/v/e13Tools.svg?label=PyPI
+.. |PyPI| image:: https://img.shields.io/pypi/v/e13Tools.svg?logo=pypi&logoColor=white&label=PyPI
    :target: https://pypi.python.org/pypi/e13Tools
    :alt: PyPI - Latest Release
 .. |Python| image:: https://img.shields.io/pypi/pyversions/e13Tools.svg?logo=python&logoColor=white&label=Python
    :target: https://pypi.python.org/pypi/e13Tools
    :alt: PyPI - Python Versions
-.. |License| image:: https://img.shields.io/pypi/l/e13Tools.svg?colorB=blue&label=License
-   :target: https://github.com/1313e/e13Tools/raw/master/LICENSE
-   :alt: PyPI - License
 .. |Travis| image:: https://img.shields.io/travis/1313e/e13Tools/master.svg?logo=travis%20ci&logoColor=white&label=Travis%20CI
    :target: https://travis-ci.org/1313e/e13Tools
    :alt: Travis CI - Build Status
