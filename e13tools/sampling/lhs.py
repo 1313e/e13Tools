@@ -184,9 +184,8 @@ def lhd(n_sam, n_val, val_rng=None, method='random', criterion=None,
 
         # Check if the given val_rng is in the correct shape
         if not(val_rng.shape == (n_val, 2)):
-            raise ShapeError("'val_rng' has incompatible shape: (%s, %s) "
-                             "!= (%s, %s)"
-                             % (val_rng.shape[0], val_rng.shape[1], n_val, 2))
+            raise ShapeError("'val_rng' has incompatible shape: %s != (%s, %s)"
+                             % (val_rng.shape, n_val, 2))
 
     # TODO: Implement constraints method again!
     # Make sure that constraints is a numpy array
@@ -205,10 +204,6 @@ def lhd(n_sam, n_val, val_rng=None, method='random', criterion=None,
     elif(constraints.shape[-1] == n_val):
         # If constraints has the same number of values, it is valid
         constraints = _extract_sam_set(constraints, val_rng)
-
-        # If constraints is empty after extraction, there are no constraints
-        if(constraints.shape[-1] == 0):
-            constraints = None
     else:
         # If not empty and not right shape, it is invalid
         raise ShapeError("Constraints has incompatible number of values: "

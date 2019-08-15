@@ -7,7 +7,6 @@ from __future__ import absolute_import, division, print_function
 # Built-in imports
 import os
 from os import path
-from sys import platform
 
 # Package imports
 import astropy.units as apu
@@ -23,9 +22,6 @@ from e13tools.pyplot import (apu2tex, center_spines, draw_textline, f2tex,
 
 # Save the path to this directory
 dirpath = path.dirname(__file__)
-
-# Save if this platform is Windows
-win32 = platform.startswith('win')
 
 
 # %% PYTEST CLASSES AND FUNCTIONS

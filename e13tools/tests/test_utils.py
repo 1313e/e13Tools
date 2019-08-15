@@ -6,8 +6,6 @@ from __future__ import absolute_import, division, print_function
 
 # Built-in imports
 import logging
-from os import path
-from sys import platform
 from inspect import currentframe
 
 # Package imports
@@ -20,12 +18,6 @@ from e13tools.utils import (add_to_all, docstring_append, docstring_copy,
                             docstring_substitute, check_instance,
                             convert_str_seq, delist, get_outer_frame,
                             raise_error, raise_warning)
-
-# Save the path to this directory
-dirpath = path.dirname(__file__)
-
-# Save if this platform is Windows
-win32 = platform.startswith('win')
 
 
 # %% CUSTOM CLASSES
