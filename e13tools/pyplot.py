@@ -20,7 +20,7 @@ from os import path
 try:
     import astropy.units as apu
     import_astropy = 1
-except ImportError:
+except ImportError:  # pragma: no cover
     import_astropy = 0
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -33,7 +33,7 @@ from e13tools import InputError
 
 # All declaration
 __all__ = ['apu2tex', 'center_spines', 'draw_textline', 'f2tex',
-           'import_cmaps', 'q2tex', 'suplabel']
+           'import_cmaps', 'q2tex']
 
 
 # %% FUNCTIONS
@@ -82,7 +82,7 @@ def apu2tex(unit, unitfrac=False):
 
         # Remove '$' from the string and make output a string (py2.7)
         return(str(string.replace("$", "")))
-    else:
+    else:  # pragma: no cover
         raise ImportError("This function requires AstroPy!")
 
 
@@ -133,7 +133,7 @@ def center_spines(centerx=0, centery=0, set_xticker=False, set_yticker=False,
     for axis, center in zip([ax.xaxis, ax.yaxis], [centerx, centery]):
         # TODO: STILL HAVE TO FIX THAT THE TICKLABELS ARE ALWAYS HIDDEN
         # Hide the ticklabels at <centerx, centery>
-        formatter = CenteredFormatter()
+        formatter = mpl.ticker.ScalarFormatter()
         formatter.center = center
         axis.set_major_formatter(formatter)
 
@@ -144,29 +144,12 @@ def center_spines(centerx=0, centery=0, set_xticker=False, set_yticker=False,
                     textcoords='offset points', ha='right', va='top')
 
     # Set x-axis ticker
-    if not set_xticker:
+    if set_xticker:
         ax.xaxis.set_major_locator(mpl.ticker.MultipleLocator(set_xticker))
 
     # Set y-axis ticker
-    if not set_yticker:
+    if set_yticker:
         ax.yaxis.set_major_locator(mpl.ticker.MultipleLocator(set_yticker))
-
-
-# This class is used by the center_spines function
-class CenteredFormatter(mpl.ticker.ScalarFormatter):
-    """
-    Acts exactly like the default Scalar Formatter, but yields an empty
-    label for ticks at "center".
-
-    """
-
-    center = 0
-
-    def __call__(self, value, pos=None):
-        if(value == self.center):
-            return("")
-        else:
-            return(mpl.ticker.ScalarFormatter.__call__(self, value, pos))
 
 
 # This function draws a line with text in the provided figure
@@ -228,7 +211,8 @@ def draw_textline(text, x=None, y=None, pos='start top', ax=None,
     text_kwargs = default_text_kwargs
 
     # Check if certain keyword arguments are present in text_fmt
-    for key, val in text_kwargs.items():
+    text_keys = list(text_kwargs.keys())
+    for key in text_keys:
         if key in ('va', 'ha', 'verticalalignment', 'horizontalalignment',
                    'rotation'):
             text_kwargs.pop(key)
@@ -258,16 +242,12 @@ def draw_textline(text, x=None, y=None, pos='start top', ax=None,
         ax_set_lim(axis, ax_set_lim()[1])
     if(ax_set_lim()[0] <= axis and ax_set_lim()[0] >= axis-0.1*ax_size):
         ax_set_lim(axis-0.1*ax_size, ax_set_lim()[1])
-    elif(ax_set_lim()[0] <= axis and ax_set_lim()[0] >= axis+0.1*ax_size):
-        ax_set_lim(axis+0.1*ax_size, ax_set_lim()[1])
 
     # Adjust axes if line is located on the top/right
     if(ax_set_lim()[1] < axis):
         ax_set_lim(ax_set_lim()[0], axis)
     if(ax_set_lim()[1] >= axis and ax_set_lim()[1] <= axis+0.1*ax_size):
         ax_set_lim(ax_set_lim()[0], axis+0.1*ax_size)
-    elif(ax_set_lim()[1] >= axis and ax_set_lim()[1] <= axis-0.1*ax_size):
-        ax_set_lim(ax_set_lim()[0], axis-0.1*ax_size)
 
     # Draw line
     ax.plot(*draw_axes, **line_kwargs)
@@ -502,9 +482,10 @@ def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
     >>> q2tex(20.2935826592*apu.solMass/apu.yr)
     '20.29\\,\\mathrm{M_{\\odot}\\,yr^{-1}}'
 
+
     >>> import astropy.units as apu
     >>> q2tex(20.2935826592*apu.solMass/apu.yr, sdigits=6)
-    '20.2936\\ \\mathrm{M_{\\odot}\\,yr^{-1}}'
+    '20.2936\\,\\mathrm{M_{\\odot}\\,yr^{-1}}'
 
 
     >>> import astropy.units as apu
@@ -548,59 +529,8 @@ def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
         # Unit handling
         if unit:
             unit_string = apu2tex(unit, unitfrac)
-            string = ''.join([string, r'\\,', unit_string])
+            string = ''.join([string, r'\,', unit_string])
 
         return(string)
-    else:
+    else:  # pragma: no cover
         f2tex(quantity, sdigits, power, nobase1)
-
-
-# This function adds a superlabel to a provided figure
-def suplabel(label, axis, fig=None, **kwargs):
-    """
-    Adds a super label in the provided figure `fig` for the specified `axis`.
-    Works similarly to :meth:`~matplotlib.figure.Figure.suptitle`, but for axes
-    labels instead of figure titles.
-
-    This algorithm is based on a Stack Overflow answer by KYC [1]_.
-
-    Parameters
-    ----------
-    label : str
-        The text to be used as the axis label.
-    axis : {'x', 'y'}
-        String indicating which axis will receive the created label.
-
-    Optional
-    --------
-    fig : :obj:`~matplotlib.figure.Figure` object or None. Default: None
-        In which :obj:`~matplotlib.figure.Figure` object the axis label needs
-        to be drawn. If *None*, the current :obj:`~matplotlib.figure.Figure`
-        object will be used.
-    kwargs : dict of :class:`~matplotlib.text.Text` properties. Default: {}
-        The keyword arguments used for drawing the text.
-
-    References
-    ----------
-    .. [1] https://stackoverflow.com/a/44020303
-
-    """
-
-    # Obtain a reference to the current figure if not provided
-    if fig is None:
-        fig = plt.gcf()
-
-    # Get all properties for axis label
-    if(axis.lower() == 'x'):
-        fig.axes[0].xaxis.label.set_transform(
-            mpl.transforms.blended_transform_factory(
-                fig.transFigure, mpl.transforms.IdentityTransform()))
-        fig.axes[0].set_xlabel(label, **kwargs)
-    elif(axis.lower() == 'y'):
-        fig.axes[0].yaxis.label.set_transform(
-            mpl.transforms.blended_transform_factory(
-                mpl.transforms.IdentityTransform(), fig.transFigure))
-        fig.axes[0].set_ylabel(label, **kwargs)
-
-    else:
-        raise InputError("Input argument 'axis' is invalid!")
