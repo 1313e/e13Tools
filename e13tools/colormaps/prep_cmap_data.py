@@ -57,13 +57,13 @@ cmap_mod = import_module("{0}.{0}".format(name))
 # Create colormap figure
 x = np.linspace(0, 1, 256)
 rgb = cmap_mod.test_cm(x)[np.newaxis, :, :3]
-fig, ax = plt.subplots(frameon=False, figsize=(12.8, 1.35))
+fig, ax = plt.subplots(frameon=False, figsize=(12.8, 3.2))
 fig.subplots_adjust(wspace=0)
 ax.imshow(rgb, aspect='auto')
 ax.set_axis_off()
 ax.xaxis.set_visible(False)
 ax.yaxis.set_visible(False)
-plt.savefig("{0}/{0}.png".format(name), dpi=1000, bbox_inches='tight',
+plt.savefig("{0}/{0}.png".format(name), dpi=200, bbox_inches='tight',
             pad_inches=0)
 plt.close(fig)
 
