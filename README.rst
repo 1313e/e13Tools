@@ -30,8 +30,8 @@ The following packages are used by a few functions and therefore optional:
 .. |Python| image:: https://img.shields.io/pypi/pyversions/e13Tools.svg?logo=python&logoColor=white&label=Python
    :target: https://pypi.python.org/pypi/e13Tools
    :alt: PyPI - Python Versions
-.. |Travis| image:: https://img.shields.io/travis/1313e/e13Tools/master.svg?logo=travis%20ci&logoColor=white&label=Travis%20CI
-   :target: https://travis-ci.org/1313e/e13Tools
+.. |Travis| image:: https://img.shields.io/travis/com/1313e/e13Tools/master.svg?logo=travis%20ci&logoColor=white&label=Travis%20CI
+   :target: https://travis-ci.com/1313e/e13Tools
    :alt: Travis CI - Build Status
 .. |AppVeyor| image:: https://img.shields.io/appveyor/ci/1313e/e13Tools/master.svg?logo=appveyor&logoColor=white&label=AppVeyor
    :target: https://ci.appveyor.com/project/1313e/e13Tools
