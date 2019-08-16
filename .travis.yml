@@ -1,6 +1,7 @@
 language: python
 dist: xenial
 sudo: true
+os: linux
 matrix:
   include:
     - python: 2.7
@@ -10,6 +11,10 @@ matrix:
     - python: 3.6-dev
     - python: 3.7
     - python: 3.7-dev
+    - os: osx
+      python: 3.7
+      osx_image: xcode10.2
+      language: generic
 before_install:
   - pip install --upgrade pip setuptools wheel
   - pip install -r requirements_dev.txt
