@@ -2,8 +2,18 @@ language: python
 dist: xenial
 sudo: true
 os: linux
+
 matrix:
   include:
+    - os: osx
+      python: 2.7
+      osx_image: xcode10.2
+      language: generic
+    - os: osx
+      python: 3.7
+      osx_image: xcode10.2
+      language: generic
+      env: PY=3
     - python: 2.7
     - python: 3.5
     - python: 3.5-dev
@@ -11,16 +21,12 @@ matrix:
     - python: 3.6-dev
     - python: 3.7
     - python: 3.7-dev
-    - os: osx
-      python: 3.7
-      osx_image: xcode10.2
-      language: generic
 before_install:
-  - pip install --upgrade pip setuptools wheel
-  - pip install -r requirements_dev.txt
+  - pip$PY install --upgrade pip setuptools wheel
+  - pip$PY install -r requirements_dev.txt
 install:
   - check-manifest
-  - python setup.py sdist bdist_wheel
+  - python$PY setup.py sdist bdist_wheel
   - twine check dist/*
 script:
   - pytest
