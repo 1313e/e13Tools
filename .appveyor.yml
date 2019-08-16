@@ -51,3 +51,6 @@ build: false
 
 test_script:
     - "pytest"
+
+on_success:
+    - "codecov"
