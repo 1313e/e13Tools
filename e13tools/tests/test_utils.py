@@ -330,7 +330,8 @@ def test_check_instance():
 # Pytest for the convert_str_seq function
 def test_convert_str_seq():
     # Check if string sequence is converted correctly
-    assert convert_str_seq('[[]1e1,\n8.,A<{7)\\\\') == [10., 8.0, 'A', 7, '\\']
+    assert (convert_str_seq('[[]1e1,\n8.,A<{7)\\\\"True') ==
+            [10., 8.0, 'A', 7, '\\', True])
     assert convert_str_seq('A', 1, 20.0, 'B') == ['A', 1, 20.0, 'B']
 
 

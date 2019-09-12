@@ -13,6 +13,7 @@ Provides several useful utility functions.
 from __future__ import absolute_import, division, print_function
 
 # Built-in imports
+from ast import literal_eval
 from inspect import currentframe, getouterframes, isclass, isfunction, ismethod
 import logging
 import logging.config
@@ -289,7 +290,7 @@ def convert_str_seq(*seq):
     """
     Converts a provided sequence to a string, removes all auxiliary characters
     from it, splits it up into individual elements and converts all elements
-    back to integers, floats and/or strings.
+    back to booleans; floats; integers; and/or strings.
 
     The auxiliary characters are given by :obj:`~aux_char_set`. One can add,
     change and remove characters from the set if required. If one wishes to
@@ -305,8 +306,8 @@ def convert_str_seq(*seq):
     Returns
     -------
     new_seq : list
-        A list with all individual elements converted to integers, floats
-        and/or strings.
+        A list with all individual elements converted to booleans; floats;
+        integers; and/or strings.
 
     Examples
     --------
@@ -384,19 +385,11 @@ def convert_str_seq(*seq):
 
     # Loop over all elements in seq
     for i, val in enumerate(seq):
-        # Try to convert to int or float
+        # Try to convert back to bool/float/int using literal_eval
         try:
-            # If string contains an E or e, check if it is a float
-            if 'e' in val.lower():
-                seq[i] = float(val)
-            # If string contains a dot, check if it is a float
-            elif '.' in val:
-                seq[i] = float(val)
-            # If string contains no dot, E or e, check if it is an int
-            else:
-                seq[i] = int(val)
-        # If it cannot be converted to int or float, save as string
-        except ValueError:
+            seq[i] = literal_eval(val)
+        # If it cannot be evaluated using literal_eval, save as string
+        except (ValueError, SyntaxError):
             seq[i] = val
 
     # Return it
@@ -531,8 +524,8 @@ def raise_error(err_msg, err_type=Exception, logger=None):
 # This function raises a given warning after logging the warning
 def raise_warning(warn_msg, warn_type=UserWarning, logger=None, stacklevel=1):
     """
-    Raises a given warning `warn_msg` of type `warn_type` and logs the warning
-    using the provided `logger`.
+    Raises/issues a given warning `warn_msg` of type `warn_type` and logs the
+    warning using the provided `logger`.
 
     Parameters
     ----------
@@ -542,7 +535,7 @@ def raise_warning(warn_msg, warn_type=UserWarning, logger=None, stacklevel=1):
     Optional
     --------
     warn_type : :class:`Warning` subclass. Default: :class:`UserWarning`
-        The type of warning that needs to be raised.
+        The type of warning that needs to be raised/issued.
     logger : :obj:`~logging.Logger` object or None. Default: None
         The logger to which the warning message must be written.
         If *None*, the :obj:`~logging.RootLogger` logger is used instead.

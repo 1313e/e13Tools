@@ -28,7 +28,7 @@ So, for example, if one were to use the *rainforest* colormap, this could be don
     plt.scatter(x, y, c=z, cmap=cmap, s=300)
     plt.show()
 
-Accessing the colormaps in other packages than *matplotlib* would require reading in the text-files in the ``e13tools/colormaps`` directory, which contain the RGB values of every colormap, and registering them in the package manually.
+Accessing the colormaps in other packages than *matplotlib* would require reading in the text-files in the ``e13tools/colormaps`` directory, which contain the normalized RGB values of every colormap, and registering them in the package manually.
 
 
 Background
