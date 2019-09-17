@@ -2,7 +2,7 @@
 
 Description
 ===========
-This package contains a collection of utility functions that were created by `@1313e`_.
+This package contains a collection of utility functions and scientific colormaps that were created by `@1313e`_.
 Most functions were created for personal use, but have been changed and optimized to work for others as well.
 
 .. _@1313e: https://github.com/1313e

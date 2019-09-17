@@ -4,6 +4,7 @@
 PyPlot
 ======
 Provides a collection of functions useful in various plotting routines.
+Also automatically registers all defined scientific colormaps.
 
 """
 
