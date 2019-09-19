@@ -22,7 +22,7 @@ import numpy as np
 from numpy.linalg import cholesky, eigvals, LinAlgError, norm, svd
 
 # e13Tools imports
-from e13tools import InputError, ShapeError
+from e13tools.core import InputError, ShapeError
 
 # All declaration
 __all__ = ['diff', 'gcd', 'is_PD', 'lcm', 'nCr', 'nearest_PD', 'nPr', 'rot90',

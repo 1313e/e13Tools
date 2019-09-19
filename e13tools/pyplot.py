@@ -30,7 +30,7 @@ from matplotlib.colors import LinearSegmentedColormap as LSC
 import numpy as np
 
 # e13Tools imports
-from e13tools import InputError
+from e13tools.core import InputError
 
 # All declaration
 __all__ = ['apu2tex', 'center_spines', 'draw_textline', 'f2tex',

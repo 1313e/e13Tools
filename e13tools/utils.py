@@ -23,7 +23,7 @@ import warnings
 from six import PY2
 
 # e13Tools imports
-from e13tools import InputError
+from e13tools.core import InputError
 
 # All declaration
 __all__ = ['add_to_all', 'aux_char_set', 'check_instance', 'convert_str_seq',

@@ -37,15 +37,11 @@ from __future__ import absolute_import, division, print_function
 
 # Import package modules
 from .__version__ import __version__
-from . import core
+from . import core, math, pyplot, sampling, utils
 from .core import *
-from . import math
 from .math import *
-from . import pyplot
 from .pyplot import *
-from . import sampling
 from .sampling import *
-from . import utils
 from .utils import *
 
 __all__ = ['math', 'pyplot', 'sampling', 'utils']
