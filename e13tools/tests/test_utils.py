@@ -15,9 +15,9 @@ import pytest
 # e13Tools imports
 from e13tools.core import InputError
 from e13tools.utils import (add_to_all, docstring_append, docstring_copy,
-                            docstring_substitute, check_instance,
-                            convert_str_seq, delist, get_outer_frame,
-                            raise_error, raise_warning)
+                            docstring_substitute, check_instance, delist,
+                            get_outer_frame, raise_error, raise_warning,
+                            split_seq, unpack_str_seq)
 
 
 # %% CUSTOM CLASSES
@@ -327,14 +327,6 @@ def test_check_instance():
     assert not check_instance(CustomSubClass(), CustomClass)
 
 
-# Pytest for the convert_str_seq function
-def test_convert_str_seq():
-    # Check if string sequence is converted correctly
-    assert (convert_str_seq('[[]1e1,\n8.,A<{7)\\\\"True') ==
-            [10., 8.0, 'A', 7, '\\', True])
-    assert convert_str_seq('A', 1, 20.0, 'B') == ['A', 1, 20.0, 'B']
-
-
 # Pytest for the delist function
 def test_delist():
     # Check if providing not a list raises an error
@@ -376,3 +368,33 @@ def test_raise_warning():
     logger = logging.getLogger('TEST')
     with pytest.warns(UserWarning):
         raise_warning('WARNING', UserWarning, logger)
+
+
+# Pytest for the split_seq function
+def test_split_seq():
+    # Check if the following inputs all yield the same answer
+    assert (split_seq('A', 1, 20.0, 'B') ==
+            split_seq(['A', 1, 2e1, 'B']) ==
+            split_seq("A 1 20. B") ==
+            split_seq([("A", 1), (["20."], "B")]) ==
+            split_seq("[(A / }| ; <1{}) , ,>20.0000 !! < )?% \\B") ==
+            ['A', 1, 20.0, 'B'])
+
+    # Check if a complicated string sequence is converted correctly
+    assert (split_seq('[[]1e1,\n8.,A<{7)\\\\"True') ==
+            [10., 8.0, 'A', 7, '\\', True])
+    assert split_seq('A', 1, 20.0, 'B') == ['A', 1, 20.0, 'B']
+
+
+# Pytest for the unpack_str_seq function
+def test_unpack_str_seq():
+    # Check that the following inputs all yield the same answer
+    assert (unpack_str_seq('A', 1, 20.0, 'B') ==
+            unpack_str_seq(['A', 1, 2e1, 'B']) ==
+            unpack_str_seq("A, 1, 20.0, B") ==
+            unpack_str_seq([("A", 1), (["20.0"], "B")]) ==
+            'A, 1, 20.0, B')
+
+    # Check that providing a non-string separator raises an error
+    with pytest.raises(TypeError):
+        unpack_str_seq([], sep=1)

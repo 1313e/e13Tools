@@ -20,7 +20,7 @@ import logging.config
 import warnings
 
 # Package imports
-from six import PY2
+from six import PY2, string_types
 
 # e13Tools imports
 from e13tools.core import InputError
@@ -29,7 +29,7 @@ from e13tools.core import InputError
 __all__ = ['add_to_all', 'aux_char_set', 'check_instance', 'convert_str_seq',
            'delist', 'docstring_append', 'docstring_copy',
            'docstring_substitute', 'get_outer_frame', 'raise_error',
-           'raise_warning']
+           'raise_warning', 'split_seq', 'unpack_str_seq']
 
 
 # %% DECORATOR DEFINITIONS
@@ -71,6 +71,9 @@ def docstring_append(addendum, join=''):
     the docstring of the target function/class, separated by a given string
     `join`.
 
+    If `addendum` is not a string, its :attr:`~object.__doc__` attribute is
+    used instead.
+
     Note
     ----
     In Python 2, classes that inherit the :class:`~object` class cannot have
@@ -80,6 +83,10 @@ def docstring_append(addendum, join=''):
     functionally exactly the same as the target class.
 
     """
+
+    # If addendum is not a string , try to use its __doc__ attribute
+    if not isinstance(addendum, string_types):
+        addendum = addendum.__doc__
 
     # This function performs the docstring append on a given definition
     def do_append(target):
@@ -285,124 +292,6 @@ def check_instance(instance, cls):
         return(True)
 
 
-# Function for converting a string sequence to a sequence of elements
-def convert_str_seq(*seq):
-    """
-    Converts a provided sequence to a string, removes all auxiliary characters
-    from it, splits it up into individual elements and converts all elements
-    back to booleans; floats; integers; and/or strings.
-
-    The auxiliary characters are given by :obj:`~aux_char_set`. One can add,
-    change and remove characters from the set if required. If one wishes to
-    keep an auxiliary character that is in `seq`, it must be escaped by a
-    backslash (note that backslashes themselves also need to be escaped).
-
-    Parameters
-    ----------
-    seq : str, array_like or tuple of arguments
-        The sequence that needs to be converted to individual elements.
-        If array_like, `seq` is first converted to a string.
-
-    Returns
-    -------
-    new_seq : list
-        A list with all individual elements converted to booleans; floats;
-        integers; and/or strings.
-
-    Examples
-    --------
-    The following function calls all produce the same output:
-
-        >>> convert_str_seq('A', 1, 20.0, 'B')
-        ['A', 1, 20.0, 'B']
-        >>> convert_str_seq(['A', 1, 2e1, 'B'])
-        ['A', 1, 20.0, 'B']
-        >>> convert_str_seq("A 1 20. B")
-        ['A', 1, 20.0, 'B']
-        >>> convert_str_seq("“’[“(A / }| ; <1{}) , ,”>20.0000 !! < )?% \\B‘")
-        ['A', 1, 20.0, 'B']
-
-    If one wants to keep the '?' in the last string above, it must be escaped:
-
-        >>> convert_str_seq("“’[“(A / }| ; <1{}) , ,”>20.0000 !! < )\\?% \\B‘")
-        ['A', 1, 20.0, '?', 'B']
-
-    """
-
-    # If only a single element was provided, use that instead
-    if(len(seq) == 1):
-        seq = seq[0]
-
-    # Convert sequence to a list of individual characters
-    seq = list(str(seq))
-
-    # Process all backslashes
-    for index, char in enumerate(seq):
-        # If char is a backslash
-        if(char == '\\'):
-            # If this backslash is escaped, skip
-            if(index != 0 and seq[index-1] is None):
-                pass
-            # Else, if this backslash escapes a character, replace by None
-            elif(index != len(seq)-1 and seq[index+1] in aux_char_set):
-                seq[index] = None
-
-    # Remove all unwanted characters from the string, except those escaped
-    for char in aux_char_set:
-        # Set the search index
-        index = 0
-
-        # Keep looking for the specified character
-        while True:
-            # Check if the character can be found in seq or break if not
-            try:
-                index = seq.index(char, index)
-            except ValueError:
-                break
-
-            # If so, remove it if it was not escaped
-            if(index == 0 or seq[index-1] is not None):
-                seq[index] = '\n'
-            # If it was escaped, remove None instead
-            else:
-                seq[index-1] = ''
-
-            # Increment search index by 1
-            index += 1
-
-    # Convert seq back to a single string
-    seq = ''.join(seq)
-
-    # Split sequence up into elements
-    seq = seq.split('\n')
-
-    # Remove all empty strings
-    while True:
-        try:
-            seq.remove('')
-        except ValueError:
-            break
-
-    # Loop over all elements in seq
-    for i, val in enumerate(seq):
-        # Try to convert back to bool/float/int using literal_eval
-        try:
-            seq[i] = literal_eval(val)
-        # If it cannot be evaluated using literal_eval, save as string
-        except (ValueError, SyntaxError):
-            seq[i] = val
-
-    # Return it
-    return(seq)
-
-
-# List/set of auxiliary characters to be used in convert_str_seq()
-aux_char_set = set(['(', ')', '[', ']', ',', "'", '"', '|', '/', '\\', '{',
-                    '}', '<', '>', '´', '¨', '`', '?', '!', '%', ':', ';', '=',
-                    '$', '~', '#', '@', '^', '&', '*', '“', '’', '”', '‘',
-                    ' ', '\t'])
-
-
 # Function that returns a copy of a list with all empty lists/tuples removed
 def delist(list_obj):
     """
@@ -513,6 +402,11 @@ def raise_error(err_msg, err_type=Exception, logger=None):
         The logger to which the error message must be written.
         If *None*, the :obj:`~logging.RootLogger` logger is used instead.
 
+    See also
+    --------
+    :func:`~raise_warning`
+        Raises and logs a given warning.
+
     """
 
     # Log the error and raise it right after
@@ -544,9 +438,228 @@ def raise_warning(warn_msg, warn_type=UserWarning, logger=None, stacklevel=1):
         call. The actual used stack level is increased by one to account for
         this function call.
 
+    See also
+    --------
+    :func:`~raise_error`
+        Raises and logs a given error.
+
     """
 
     # Log the warning and raise it right after
     logger = logging.root if logger is None else logger
     logger.warning(warn_msg)
     warnings.warn(warn_msg, warn_type, stacklevel=stacklevel+1)
+
+
+# Function for splitting a string or sequence into a list of elements
+def split_seq(*seq):
+    """
+    Converts a provided sequence `seq` to a string, removes all auxiliary
+    characters from it, splits it up into individual elements and converts all
+    elements back to booleans; floats; integers; and/or strings.
+
+    The auxiliary characters are given by :obj:`~aux_char_set`. One can add,
+    change and remove characters from the set if required. If one wishes to
+    keep an auxiliary character that is in `seq`, it must be escaped by a
+    backslash (note that backslashes themselves also need to be escaped).
+
+    This function can be used to easily unpack a large sequence of nested
+    iterables into a single list, or to convert a formatted string to a list of
+    elements.
+
+    Parameters
+    ----------
+    seq : str, array_like or tuple of arguments
+        The sequence that needs to be split into individual elements.
+        If array_like, `seq` is first unpacked into a string.
+        It is possible for `seq` to be a nested iterable.
+
+    Returns
+    -------
+    new_seq : list
+        A list with all individual elements converted to booleans; floats;
+        integers; and/or strings.
+
+    Examples
+    --------
+    The following function calls all produce the same output:
+
+        >>> split_seq('A', 1, 20.0, 'B')
+        ['A', 1, 20.0, 'B']
+        >>> split_seq(['A', 1, 2e1, 'B'])
+        ['A', 1, 20.0, 'B']
+        >>> split_seq("A 1 20. B")
+        ['A', 1, 20.0, 'B']
+        >>> split_seq([("A", 1), (["20."], "B")])
+        ['A', 1, 20.0, 'B']
+        >>> split_seq("[(A / }| ; <1{}) , ,>20.0000 !! < )?% \\B")
+        ['A', 1, 20.0, 'B']
+
+    If one wants to keep the '?' in the last string above, it must be escaped:
+
+        >>> convert_str_seq("[(A / }| ; <1{}) , ,>20.0000 !! < )\\?% \\B")
+        ['A', 1, 20.0, '?', 'B']
+
+    See also
+    --------
+    :func:`~unpack_str_seq`
+        Unpacks a provided (nested) sequence into a single string.
+
+    """
+
+    # Unpack the provided sequence into a list of characters
+    seq = list(unpack_str_seq(*seq, sep='\n'))
+
+    # Process all backslashes
+    for index, char in enumerate(seq):
+        # If char is a backslash
+        if(char == '\\'):
+            # If this backslash is escaped, skip
+            if(index != 0 and seq[index-1] is None):
+                pass
+            # Else, if this backslash escapes a character, replace by None
+            elif(index != len(seq)-1 and seq[index+1] in aux_char_set):
+                seq[index] = None
+
+    # Remove all unwanted characters from the string, except those escaped
+    for char in aux_char_set:
+        # Set the search index
+        index = 0
+
+        # Keep looking for the specified character
+        while True:
+            # Check if the character can be found in seq or break if not
+            try:
+                index = seq.index(char, index)
+            except ValueError:
+                break
+
+            # If so, remove it if it was not escaped
+            if(index == 0 or seq[index-1] is not None):
+                seq[index] = '\n'
+            # If it was escaped, remove None instead
+            else:
+                seq[index-1] = ''
+
+            # Increment search index by 1
+            index += 1
+
+    # Convert seq back to a single string
+    seq = ''.join(seq)
+
+    # Split sequence up into elements
+    seq = seq.split('\n')
+
+    # Remove all empty strings
+    while True:
+        try:
+            seq.remove('')
+        except ValueError:
+            break
+
+    # Loop over all elements in seq
+    for i, val in enumerate(seq):
+        # Try to convert back to bool/float/int using literal_eval
+        try:
+            seq[i] = literal_eval(val)
+        # If it cannot be evaluated using literal_eval, save as string
+        except (ValueError, SyntaxError):
+            seq[i] = val
+
+    # Return it
+    return(seq)
+
+
+# Compatibility function for split_seq
+@docstring_append(split_seq)
+def convert_str_seq(*seq):      # pragma: no cover
+    """
+    .. deprecated:: 0.6.12
+
+    """
+
+    # Raise warning stating that this function is deprecated
+    warn_msg = ("This function was renamed to 'split_seq' in v0.6.12. This "
+                "compatibility definition will be removed entirely in v0.7.")
+    warnings.warn(warn_msg, FutureWarning, stacklevel=2)
+
+    # Call split_seq and return its result
+    return(split_seq(*seq))
+
+
+# List/set of auxiliary characters to be used in convert_str_seq()
+aux_char_set = set(['(', ')', '[', ']', ',', "'", '"', '|', '/', '\\', '{',
+                    '}', '<', '>', '´', '¨', '`', '?', '!', '%', ':', ';', '=',
+                    '$', '~', '#', '@', '^', '&', '*', '“', '’', '”', '‘',
+                    ' ', '\t'])
+
+
+# Function that unpacks a provided sequence of iterables to a single string
+def unpack_str_seq(*seq, **kwargs):
+    """
+    Unpacks a provided sequence `seq` of elements and iterables, and converts
+    it to a single string separated by `sep`.
+
+    Use :func:`~split_seq` if it is instead required to unpack `seq` into a
+    single list while maintaining the types of all elements.
+
+    Parameters
+    ----------
+    seq : str, array_like or tuple of arguments
+        The sequence that needs to be unpacked into a single string.
+        If `seq` contains nested iterables, this function is used recursively
+        to unpack them as well.
+
+    Optional
+    --------
+    sep : str. Default: ', '
+        The string to use for separating the elements in the unpacked string.
+
+    Returns
+    -------
+    unpacked_seq : str
+        A string containing all elements in `seq` unpacked and converted to a
+        string, separated by `sep`.
+
+    Examples
+    --------
+    The following function calls all produce the same output:
+
+        >>> unpack_str_seq('A', 1, 20.0, 'B')
+        'A, 1, 20.0, B'
+        >>> unpack_str_seq(['A', 1, 2e1, 'B'])
+        'A, 1, 20.0, B'
+        >>> unpack_str_seq("A, 1, 20.0, B")
+        'A, 1, 20.0, B'
+        >>> unpack_str_seq([("A", 1), (["20.0"], "B")])
+        'A, 1, 20.0, B'
+
+    See also
+    --------
+    :func:`~split_seq`
+        Splits up a provided (nested) sequence into a list of individual
+        elements.
+
+    """
+
+    # Extract sep from kwargs
+    sep = kwargs.get('sep', ', ')
+
+    # Check if provided separator is a string
+    if not isinstance(sep, string_types):
+        raise TypeError("Input argument 'sep' is not of type 'str'!")
+
+    # Convert provided sequence to a list
+    seq = list(seq)
+
+    # Loop over all elements in seq and unpack iterables to strings as well
+    for i, arg in enumerate(seq):
+        # If arg can be iterated over and is not a string, unpack it
+        if hasattr(arg, '__iter__') and not isinstance(arg, string_types):
+            seq[i] = unpack_str_seq(*arg, sep=sep)
+
+    # Join entire sequence together to a single string
+    unpacked_seq = sep.join(map(str, seq))
+
+    # Return unpacked_seq
+    return(unpacked_seq)
