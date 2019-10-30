@@ -7,11 +7,9 @@ matrix:
   include:
     - os: osx
       python: 2
-      osx_image: xcode10.2
       language: generic
     - os: osx
       python: 3
-      osx_image: xcode10.2
       language: generic
       env: PY=3
     - python: 2.7
@@ -21,6 +19,10 @@ matrix:
     - python: 3.6-dev
     - python: 3.7
     - python: 3.7-dev
+    - python: 3.8-dev
+  allow_failures:
+    - python: 3.8-dev
+
 before_install:
   - python$PY -m pip install --upgrade pip setuptools wheel
   - pip$PY install -r requirements_dev.txt
