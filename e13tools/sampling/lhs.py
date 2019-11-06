@@ -48,12 +48,12 @@ def lhd(n_sam, n_val, val_rng=None, method='random', criterion=None,
         Array defining the lower and upper limits of every value in a sample.
         Requires: numpy.shape(val_rng) = (`n_val`, 2).
         If *None*, output is normalized.
-    method : {'random', 'fixed', 'center'}. Default: 'random'
+    method : {'random'; 'fixed'; 'center'}. Default: 'random'
         String specifying the method used to construct the Latin Hypercube
         Design. See ``Notes`` for more details.
         If `n_sam` == 1 or `n_val` == 1, `method` is set to the closest
         corresponding method if necessary.
-    criterion : float, {'maximin', 'correlation', 'multi'} or None. \
+    criterion : float, {'maximin'; 'correlation'; 'multi'} or None. \
         Default: None
         Float or string specifying the criterion the Latin Hypercube Design has
         to satisfy or *None* for no criterion. See ``Notes`` for more details.

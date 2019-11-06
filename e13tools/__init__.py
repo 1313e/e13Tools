@@ -35,7 +35,7 @@ Available modules
 # %% IMPORTS AND DECLARATIONS
 from __future__ import absolute_import, division, print_function
 
-# Import package modules
+# e13Tools imports
 from .__version__ import __version__
 from . import core, math, pyplot, sampling, utils
 from .core import *
@@ -44,9 +44,13 @@ from .pyplot import *
 from .sampling import *
 from .utils import *
 
+# All declaration
 __all__ = ['math', 'pyplot', 'sampling', 'utils']
 __all__.extend(core.__all__)
 __all__.extend(math.__all__)
 __all__.extend(pyplot.__all__)
 __all__.extend(sampling.__all__)
 __all__.extend(utils.__all__)
+
+# Author declaration
+__author__ = "Ellert van der Velden (@1313e)"
