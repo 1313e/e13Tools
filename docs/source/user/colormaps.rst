@@ -5,7 +5,8 @@ Colormaps
 The *e13Tools* package provides a collection of scientific colormaps to be used by different *Python* packages and projects, mainly `matplotlib`_ (see `here <https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html>`_ for an overview of all their colormaps as of v3.1.0).
 All colormaps presented here were made using the `viscm`_ package and an overview of them can be found in `Descriptions`_ below.
 
-These colormaps can be made available through *matplotlib* by simply importing *e13Tools* (which automatically executes the :func:`~e13tools.pyplot.import_cmaps` function on the ``e13tools/colormaps`` directory).
+These colormaps can be accessed by simply importing *e13Tools* (which automatically executes the :func:`~e13tools.pyplot.import_cmaps` function on the ``e13tools/colormaps`` directory).
+This makes them available in the :mod:`~matplotlib.cm` module, in addition to storing them in the *e13tools.pyplot.cmaps* dict.
 So, for example, if one were to use the *rainforest* colormap, this could be done with::
 
     # Import e13Tools to register colormaps
@@ -16,8 +17,11 @@ So, for example, if one were to use the *rainforest* colormap, this could be don
     import matplotlib.pyplot as plt
     import numpy as np
 
-    # Access rainforest colormap
+    # Access rainforest colormap through MPL
     cmap = cm.rainforest
+
+    # Access rainforest colormap through e13Tools
+    cmap = e13.pyplot.cmaps['rainforest']
 
     # Generate some data to plot
     x = np.random.rand(100)
@@ -115,6 +119,26 @@ The *freeze* colormap is one of the two main colormaps used in `PRISM`_, and is 
 It covers the full lightness range and solely uses the color blue.
 As it only uses a single color, this colormap is excellent for representing information that varies smoothly, like density/intensity values in a scientific plot.
 
+
+Gothic
+######
+.. figure:: ../../../e13tools/colormaps/gothic/gothic.png
+    :alt: Visual representation of the *gothic* colormap.
+    :width: 100%
+    :align: center
+    :name: gothic_cmap
+
+.. figure:: ../../../e13tools/colormaps/gothic/gothic_viscm.png
+    :alt: Statistics of the *gothic* colormap.
+    :width: 100%
+    :align: center
+    :name: gothic_viscm
+
+The *gothic* colormap is a visual representation of the stereotypical gothic colors.
+It covers the full lightness range and solely uses the color purple.
+As with the *freeze* colormap, this colormap is excellent for representing information that varies smoothly.
+
+
 Heat
 ####
 .. figure:: ../../../e13tools/colormaps/heat/heat.png
@@ -132,6 +156,7 @@ Heat
 The *heat* colormap is an equivalent to how temperature differences are often shown on thermal cameras.
 It covers the full lightness range and mainly uses the colors blue/purple and orange.
 It should mainly be used for representing information where the center values are important.
+
 
 Rainforest
 ##########
@@ -152,6 +177,26 @@ It covers the full lightness range and uses all major colors (as it was created 
 Because it uses all major colors, this colormap is excellent for representing information where small adjacent differences should be clearly visible.
 This also makes *rainforest* a good standard colormap choice as it treats all information as equally important.
 
+
+Sunburst
+########
+.. figure:: ../../../e13tools/colormaps/sunburst/sunburst.png
+    :alt: Visual representation of the *sunburst* colormap.
+    :width: 100%
+    :align: center
+    :name: sunburst_cmap
+
+.. figure:: ../../../e13tools/colormaps/sunburst/sunburst_viscm.png
+    :alt: Statistics of the *sunburst* colormap.
+    :width: 100%
+    :align: center
+    :name: sunburst_viscm
+
+The *sunburst* colormap is a visual representation of a sunburst or solar flare.
+It covers the full lightness range and uses the colors red and yellow.
+Its smoothly varying coloring makes it a good choice for representing data that varies smoothly as well (like intensity or temperature maps).
+
+
 Diverging
 +++++++++
 A different category or class of colormaps, is the group of *diverging* colormaps.
@@ -159,6 +204,7 @@ Unlike sequential colormaps, diverging colormaps start at their lowest (or highe
 This makes them very useful to represent information that has a critical middle value or when data deviates around a common center (usually zero), like topographical maps.
 The *matplotlib* package has quite a few diverging colormaps, but none of them starts and ends at the same lightness value; and most do not change perceptually uniform.
 Therefore, a few alternatives are introduced here.
+
 
 Redshift
 ########

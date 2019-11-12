@@ -430,12 +430,19 @@ def import_cmaps(cmap_path):
             # Add cmap to matplotlib's cmap list
             cm.register_cmap(cmap=cmap)
             setattr(cm, cm_name, cmap)
+            cmaps[cm_name] = cmap
+
+            # Add reversed cmap to matplotlib's cmap list
             cm.register_cmap(cmap=cmap_r)
             setattr(cm, cm_name+'_r', cmap_r)
+            cmaps[cm_name+'_r'] = cmap_r
         except Exception as error:
             raise InputError("Provided colormap %r is invalid! (%s)"
                              % (cm_name, error))
 
+
+# Define empty dict of colormaps
+cmaps = dict()
 
 # Import all colormaps defined in './colormaps'
 import_cmaps(path.join(path.dirname(__file__), 'colormaps'))
