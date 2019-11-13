@@ -82,6 +82,26 @@ However, three of these colormaps use the color red as its main color and none o
 As it might sometimes be desirable to use a different main color or maximize the perceptual range of the colormap, *e13Tools* provides a few sequential colormaps that do exactly that.
 These colormaps are shown below.
 
+Chroma
+######
+.. figure:: ../../../e13tools/colormaps/chroma/chroma.png
+    :alt: Visual representation of the *chroma* colormap.
+    :width: 100%
+    :align: center
+    :name: chroma_cmap
+
+.. figure:: ../../../e13tools/colormaps/chroma/chroma_viscm.png
+    :alt: Statistics of the *chroma* colormap.
+    :width: 100%
+    :align: center
+    :name: chroma_viscm
+
+The *chroma* colormap is a visual representation of all major colors.
+It covers the full lightness range and shows all major colors in roughly equal ratio.
+Because it uses all major colors, this colormap is excellent for representing information where small adjacent differences should be clearly visible.
+Keep in mind that the *chroma* colormap is not as colorblind-friendly as the other colormaps.
+
+
 Dusk
 ####
 .. figure:: ../../../e13tools/colormaps/dusk/dusk.png
@@ -153,7 +173,7 @@ Heat
     :align: center
     :name: heat_viscm
 
-The *heat* colormap is an equivalent to how temperature differences are often shown on thermal cameras.
+The *heat* colormap is a visual representation of the typical blue/orange gas flame.
 It covers the full lightness range and mainly uses the colors blue/purple and orange.
 It should mainly be used for representing information where the center values are important.
 
@@ -173,9 +193,9 @@ Rainforest
     :name: rainforest_viscm
 
 The *rainforest* colormap is one of the two main colormaps used in `PRISM`_, and is a visual representation of Mother Nature, in particular a dense rainforest (with blue representing the water; green the trees/plants; and yellow/red the Sun).
-It covers the full lightness range and uses all major colors (as it was created by an attempt to improve the *jet* colormap).
+It covers the full lightness range and uses basically all major colors (red might be hard to see) as it was created by an attempt to improve the *jet* colormap.
 Because it uses all major colors, this colormap is excellent for representing information where small adjacent differences should be clearly visible.
-This also makes *rainforest* a good standard colormap choice as it treats all information as equally important.
+This also makes *rainforest* a good standard colormap choice as it treats all information as equally important, in addition to being colorblind-friendly.
 
 
 Sunburst
@@ -193,7 +213,7 @@ Sunburst
     :name: sunburst_viscm
 
 The *sunburst* colormap is a visual representation of a sunburst or solar flare.
-It covers the full lightness range and uses the colors red and yellow.
+It covers the full lightness range and uses the colors red and orange.
 Its smoothly varying coloring makes it a good choice for representing data that varies smoothly as well (like intensity or temperature maps).
 
 
