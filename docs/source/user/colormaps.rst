@@ -82,6 +82,25 @@ However, three of these colormaps use the color red as its main color and none o
 As it might sometimes be desirable to use a different main color or maximize the perceptual range of the colormap, *e13Tools* provides a few sequential colormaps that do exactly that.
 These colormaps are shown below.
 
+Arctic
+######
+.. figure:: ../../../e13tools/colormaps/arctic/arctic.png
+    :alt: Visual representation of the *arctic* colormap.
+    :width: 100%
+    :align: center
+    :name: arctic_cmap
+
+.. figure:: ../../../e13tools/colormaps/arctic/arctic_viscm.png
+    :alt: Statistics of the *arctic* colormap.
+    :width: 100%
+    :align: center
+    :name: arctic_viscm
+
+The *arctic* colormap is a visual representation of the cold landscape of the Arctic.
+It covers the full lightness range and solely uses the color blue.
+As the *arctic* colormap uses softer colors, it can be used as an alternative to the *freeze* colormap.
+
+
 Chroma
 ######
 .. figure:: ../../../e13tools/colormaps/chroma/chroma.png
@@ -102,6 +121,25 @@ Because it uses all major colors, this colormap is excellent for representing in
 Keep in mind that the *chroma* colormap is not as colorblind-friendly as the other colormaps.
 
 
+Dream
+#####
+.. figure:: ../../../e13tools/colormaps/dream/dream.png
+    :alt: Visual representation of the *dream* colormap.
+    :width: 100%
+    :align: center
+    :name: dream_cmap
+
+.. figure:: ../../../e13tools/colormaps/dream/dream_viscm.png
+    :alt: Statistics of the *dream* colormap.
+    :width: 100%
+    :align: center
+    :name: dream_viscm
+
+The *dream* colormap is a visual representation of a dream, from the harsh colors of nightmares to the soft and calm colors of a sweet dream.
+It covers the full lightness range and has the colors green and blue as its main colors.
+It features a brownish area close to the minimum, making it great for representing ordered information where the minimum is not important.
+
+
 Dusk
 ####
 .. figure:: ../../../e13tools/colormaps/dusk/dusk.png
@@ -119,6 +157,25 @@ Dusk
 The *dusk* colormap is a visual representation of what the sky looks like during dusk (with the black/blue representing the dark sky and the red/white the last few sunrays above the horizon).
 It covers the full lightness range and has the colors blue and orange as its main colors.
 It features a greyish area in the middle, making it great for representing ordered information where the extremes should be the main focus of the image.
+
+
+Flamingo
+########
+.. figure:: ../../../e13tools/colormaps/flamingo/flamingo.png
+    :alt: Visual representation of the *flamingo* colormap.
+    :width: 100%
+    :align: center
+    :name: flamingo_cmap
+
+.. figure:: ../../../e13tools/colormaps/flamingo/flamingo_viscm.png
+    :alt: Statistics of the *flamingo* colormap.
+    :width: 100%
+    :align: center
+    :name: flamingo_viscm
+
+The *flamingo* colormap is a visual representation of the bird with the same name.
+It covers the full lightness range and solely uses the color red.
+It is the most useful for representing information where the center should be the main focus, but is also great for smoothly varying information.
 
 
 Freeze
@@ -176,6 +233,25 @@ Heat
 The *heat* colormap is a visual representation of the typical blue/orange gas flame.
 It covers the full lightness range and mainly uses the colors blue/purple and orange.
 It should mainly be used for representing information where the center values are important.
+
+
+Jungle
+######
+.. figure:: ../../../e13tools/colormaps/jungle/jungle.png
+    :alt: Visual representation of the *jungle* colormap.
+    :width: 100%
+    :align: center
+    :name: jungle_cmap
+
+.. figure:: ../../../e13tools/colormaps/jungle/jungle_viscm.png
+    :alt: Statistics of the *jungle* colormap.
+    :width: 100%
+    :align: center
+    :name: jungle_viscm
+
+The *jungle* colormap is a visual representation of a jungle.
+It covers the full lightness range and solely uses the color green.
+As with the other single-color colormaps, this colormap is excellent for representing smooth information.
 
 
 Rainforest
