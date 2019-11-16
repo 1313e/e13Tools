@@ -216,8 +216,8 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, project, html_title,
-     author, project, ("A collection of utility functions and scientific "
-                       "colormaps that were created by 1313e"),
+     author, project, ("A collection of utility functions that were created by"
+                       " 1313e"),
      'Miscellaneous'),
 ]
 

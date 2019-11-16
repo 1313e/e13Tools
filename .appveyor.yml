@@ -53,4 +53,5 @@ test_script:
   - "pytest"
 
 on_success:
+  - "pip install codecov"
   - "codecov"

@@ -3,7 +3,7 @@
 """
 e13Tools
 ========
-Provides a collection of utility functions and scientific colormaps.
+Provides a collection of utility functions.
 Recommended usage::
 
     import e13tools as e13
@@ -20,7 +20,6 @@ Available modules
 
 :mod:`~pyplot`
     Provides a collection of functions useful in various plotting routines.
-    Also automatically registers all defined scientific colormaps.
 
 :mod:`~sampling`
     Provides a collection of functions and techniques useful in sampling
@@ -33,7 +32,11 @@ Available modules
 
 
 # %% IMPORTS AND DECLARATIONS
+# Future imports
 from __future__ import absolute_import, division, print_function
+
+# Package imports
+from warnings import warn as _warn
 
 # e13Tools imports
 from .__version__ import __version__

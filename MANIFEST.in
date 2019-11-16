@@ -3,8 +3,6 @@ include README.rst
 include MANIFEST.in
 include requirements*.txt
 recursive-include e13tools data/*
-recursive-exclude e13tools colormaps/*
-recursive-include e13tools *.txt
 
 exclude docs
 recursive-exclude docs *

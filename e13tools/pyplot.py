@@ -4,7 +4,6 @@
 PyPlot
 ======
 Provides a collection of functions useful in various plotting routines.
-Also automatically registers all defined scientific colormaps.
 
 """
 
@@ -14,8 +13,7 @@ Also automatically registers all defined scientific colormaps.
 from __future__ import absolute_import, division, print_function
 
 # Built-in imports
-import os
-from os import path
+import warnings
 
 # Package imports
 try:
@@ -23,18 +21,17 @@ try:
     import_astropy = 1
 except ImportError:  # pragma: no cover
     import_astropy = 0
+from cmasher.cm import cmap_d
+from matplotlib import cm
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-from matplotlib import cm
-from matplotlib.colors import LinearSegmentedColormap as LSC
 import numpy as np
 
 # e13Tools imports
 from e13tools.core import InputError
 
 # All declaration
-__all__ = ['apu2tex', 'center_spines', 'draw_textline', 'f2tex',
-           'import_cmaps', 'q2tex']
+__all__ = ['apu2tex', 'center_spines', 'draw_textline', 'f2tex', 'q2tex']
 
 
 # %% FUNCTIONS
@@ -351,101 +348,18 @@ def f2tex(value, sdigits=4, power=3, nobase1=True):
     return(string)
 
 
-# Function to import all custom colormaps in a file or directory
-def import_cmaps(cmap_path):
-    """
-    Reads in custom colormaps from a provided file or directory `cmap_path`,
-    transforms them into :obj:`~matplotlib.colors.LinearSegmentedColormap`
-    objects and registers them in the :mod:`~matplotlib.cm` module. Both the
-    imported colormap and its reversed version will be registered.
+# Warn about the colormaps having been ported to CMasher
+# TODO: Remove this at some point
+warnings.warn("All scientific colormaps of e13Tools have been ported to a new "
+              "package called 'CMasher' in v0.6.16. Please use 'cmasher.xxx' "
+              "for accessing the colormaps in the future. This backwards "
+              "compatibility still makes them available through the "
+              "'matplotlib.cm' module, but will be removed entirely in "
+              "v0.7.0.", FutureWarning, stacklevel=3)
 
-    Parameters
-    ----------
-    cmap_path : str
-        Relative or absolute path to a custom colormap file or directory that
-        contains custom colormap files. A colormap file can be a NumPy binary
-        file ('.npy' or '.npz') or any text file.
-
-    Notes
-    -----
-    All colormap files must have names starting with 'cm\\_'. The resulting
-    colormaps will have the name of their file without the prefix and
-    extension.
-
-    """
-
-    # Obtain path to file or directory with colormaps
-    cmap_path = path.abspath(cmap_path)
-
-    # Check if provided file or directory exists
-    if not path.exists(cmap_path):
-        raise OSError("Input argument 'cmap_path' is a non-existing path (%r)!"
-                      % (cmap_path))
-
-    # Check if cmap_path is a file or directory and act accordingly
-    if path.isfile(cmap_path):
-        # If file, split cmap_path up into dir and file components
-        cmap_dir, cmap_file = path.split(cmap_path)
-
-        # Check if its name starts with 'cm_' and raise error if not
-        if(cmap_file[:3] != 'cm_'):
-            raise OSError("Input argument 'cmap_path' does not lead to a file "
-                          "with the 'cm_' prefix (%r)!" % (cmap_path))
-
-        # Set cm_files to be the sole read-in file
-        cm_files = [cmap_file]
-    else:
-        # If directory, obtain the names of all files in cmap_path
-        cmap_dir = cmap_path
-        filenames = next(os.walk(cmap_dir))[2]
-
-        # Extract the files with defined colormaps
-        cm_files = [name for name in filenames if name[:3] == 'cm_']
-        cm_files.sort()
-
-    # Read in all the defined colormaps, transform and register them
-    for cm_file in cm_files:
-        # Split basename and extension
-        base_str, ext_str = path.splitext(cm_file)
-        cm_name = base_str[3:]
-
-        # Process colormap files
-        try:
-            # Obtain absolute path to colormap data file
-            cm_file_path = path.join(cmap_dir, cm_file)
-
-            # Read in colormap data
-            if ext_str in ('.npy', '.npz'):
-                # If file is a NumPy binary file
-                colorlist = np.load(cm_file_path).tolist()
-            else:
-                # If file is anything else
-                colorlist = np.genfromtxt(cm_file_path).tolist()
-
-            # Transform colorlist into a Colormap
-            cmap = LSC.from_list(cm_name, colorlist, N=len(colorlist))
-            cmap_r = LSC.from_list(cm_name+'_r', list(reversed(colorlist)),
-                                   N=len(colorlist))
-
-            # Add cmap to matplotlib's cmap list
-            cm.register_cmap(cmap=cmap)
-            setattr(cm, cm_name, cmap)
-            cmaps[cm_name] = cmap
-
-            # Add reversed cmap to matplotlib's cmap list
-            cm.register_cmap(cmap=cmap_r)
-            setattr(cm, cm_name+'_r', cmap_r)
-            cmaps[cm_name+'_r'] = cmap_r
-        except Exception as error:
-            raise InputError("Provided colormap %r is invalid! (%s)"
-                             % (cm_name, error))
-
-
-# Define empty dict of colormaps
-cmaps = dict()
-
-# Import all colormaps defined in './colormaps'
-import_cmaps(path.join(path.dirname(__file__), 'colormaps'))
+# Register all colormaps defined in CMasher into mpl.cm
+for name, cmap in cmap_d.items():
+    setattr(cm, name, cmap)
 
 
 # This function converts an astropy quantity into a TeX string

@@ -38,7 +38,7 @@ install:
 script:
   - pytest
 after_success:
-  - codecov
+  - curl -s https://codecov.io/bash | bash
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
       twine upload --skip-existing dist/*
