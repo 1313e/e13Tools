@@ -20,7 +20,7 @@ import logging.config
 import warnings
 
 # Package imports
-from six import PY2, string_types
+from six import PY2, reraise, string_types
 
 # e13Tools imports
 from e13tools.core import InputError
@@ -418,7 +418,7 @@ def raise_error(err_msg, err_type=Exception, logger=None, err_traceback=None):
     # Log the error and raise it right after
     logger = logging.root if logger is None else logger
     logger.error(err_msg)
-    raise err_type(err_msg).with_traceback(err_traceback)
+    reraise(err_type, err_msg, err_traceback)
 
 
 # This function raises a given warning after logging the warning
