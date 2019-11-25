@@ -384,7 +384,7 @@ def get_outer_frame(func):
 
 
 # This function raises a given error after logging the error
-def raise_error(err_msg, err_type=Exception, logger=None):
+def raise_error(err_msg, err_type=Exception, logger=None, err_traceback=None):
     """
     Raises a given error `err_msg` of type `err_type` and logs the error using
     the provided `logger`.
@@ -401,6 +401,12 @@ def raise_error(err_msg, err_type=Exception, logger=None):
     logger : :obj:`~logging.Logger` object or None. Default: None
         The logger to which the error message must be written.
         If *None*, the :obj:`~logging.RootLogger` logger is used instead.
+    err_traceback : traceback object or None. Default: None
+        The traceback object that must be used for this exception, useful for
+        when this function is used for reraising a caught exception.
+        If *None*, no additional traceback is used.
+
+        .. versionadded:: 0.6.17
 
     See also
     --------
@@ -412,7 +418,7 @@ def raise_error(err_msg, err_type=Exception, logger=None):
     # Log the error and raise it right after
     logger = logging.root if logger is None else logger
     logger.error(err_msg)
-    raise err_type(err_msg)
+    raise err_type(err_msg).with_traceback(err_traceback)
 
 
 # This function raises a given warning after logging the warning
@@ -551,11 +557,8 @@ def split_seq(*seq):
     seq = seq.split('\n')
 
     # Remove all empty strings
-    while True:
-        try:
-            seq.remove('')
-        except ValueError:
-            break
+    while '' in seq:
+        seq.remove('')
 
     # Loop over all elements in seq
     for i, val in enumerate(seq):
