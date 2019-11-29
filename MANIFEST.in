@@ -2,6 +2,7 @@ include LICENSE
 include README.rst
 include MANIFEST.in
 include requirements*.txt
+include conftest.py
 recursive-include e13tools data/*
 
 exclude docs .github

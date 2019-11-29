@@ -10,4 +10,4 @@ Stores the different versions of the *e13Tools* package.
 
 # %% VERSIONS
 # Default/Latest/Current version
-__version__ = '0.6.17'
+__version__ = '0.6.18'
