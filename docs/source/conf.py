@@ -22,7 +22,7 @@ sys.path.insert(0, os.path.abspath('../..'))
 # -- Project information -----------------------------------------------------
 
 project = 'e13Tools'
-copyright = '2019, Ellert van der Velden'
+copyright = '2017-2020, Ellert van der Velden'
 author = 'Ellert van der Velden'
 
 # The short X.Y version

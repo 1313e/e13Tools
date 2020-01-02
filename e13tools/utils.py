@@ -503,7 +503,7 @@ def split_seq(*seq):
 
     If one wants to keep the '?' in the last string above, it must be escaped:
 
-        >>> convert_str_seq("[(A / }| ; <1{}) , ,>20.0000 !! < )\\?% \\B")
+        >>> split_seq("[(A / }| ; <1{}) , ,>20.0000 !! < )\\?% \\B")
         ['A', 1, 20.0, '?', 'B']
 
     See also
