@@ -22,7 +22,6 @@ The documentation of *e13Tools* is spread out over several sections:
     :caption: User Documentation
    
     user/getting_started
-    user/colormaps
     community_guidelines
    
 .. _api-docs:

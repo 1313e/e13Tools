@@ -35,9 +35,6 @@ Available modules
 # Future imports
 from __future__ import absolute_import, division, print_function
 
-# Package imports
-from warnings import warn as _warn
-
 # e13Tools imports
 from .__version__ import __version__
 from . import core, math, pyplot, sampling, utils

@@ -12,17 +12,12 @@ Provides a collection of functions useful in various plotting routines.
 # Future imports
 from __future__ import absolute_import, division, print_function
 
-# Built-in imports
-import warnings
-
 # Package imports
 try:
     import astropy.units as apu
     import_astropy = 1
 except ImportError:  # pragma: no cover
     import_astropy = 0
-from cmasher.cm import cmap_d
-from matplotlib import cm
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
@@ -346,20 +341,6 @@ def f2tex(value, sdigits=4, power=3, nobase1=True):
         else:
             string = r"{0:.{1}g}\cdot 10^{{{2}}}".format(base, sdigits, n)
     return(string)
-
-
-# Warn about the colormaps having been ported to CMasher
-# TODO: Remove this at some point
-warnings.warn("All scientific colormaps of e13Tools have been ported to a new "
-              "package called 'CMasher' in v0.6.16. Please use 'cmasher.xxx' "
-              "for accessing the colormaps in the future. This backwards "
-              "compatibility still makes them available through the "
-              "'matplotlib.cm' module, but will be removed entirely in "
-              "v0.7.0.", FutureWarning, stacklevel=3)
-
-# Register all colormaps defined in CMasher into mpl.cm
-for name, cmap in cmap_d.items():
-    setattr(cm, name, cmap)
 
 
 # This function converts an astropy quantity into a TeX string
