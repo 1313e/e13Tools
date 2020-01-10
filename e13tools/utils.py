@@ -26,10 +26,10 @@ from six import PY2, reraise, string_types
 from e13tools.core import InputError
 
 # All declaration
-__all__ = ['add_to_all', 'aux_char_set', 'check_instance', 'convert_str_seq',
-           'delist', 'docstring_append', 'docstring_copy',
-           'docstring_substitute', 'get_outer_frame', 'raise_error',
-           'raise_warning', 'split_seq', 'unpack_str_seq']
+__all__ = ['add_to_all', 'aux_char_set', 'check_instance', 'delist',
+           'docstring_append', 'docstring_copy', 'docstring_substitute',
+           'get_outer_frame', 'raise_error', 'raise_warning', 'split_seq',
+           'unpack_str_seq']
 
 
 # %% DECORATOR DEFINITIONS
@@ -571,23 +571,6 @@ def split_seq(*seq):
 
     # Return it
     return(seq)
-
-
-# Compatibility function for split_seq
-@docstring_append(split_seq)
-def convert_str_seq(*seq):      # pragma: no cover
-    """
-    .. deprecated:: 0.6.12
-
-    """
-
-    # Raise warning stating that this function is deprecated
-    warn_msg = ("This function was renamed to 'split_seq' in v0.6.12. This "
-                "compatibility definition will be removed entirely in v0.7.")
-    warnings.warn(warn_msg, FutureWarning, stacklevel=2)
-
-    # Call split_seq and return its result
-    return(split_seq(*seq))
 
 
 # List/set of auxiliary characters to be used in convert_str_seq()
