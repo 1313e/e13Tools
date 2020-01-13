@@ -995,7 +995,7 @@ def sort2D(array, axis=-1, order=None):
     """
 
     # Make sure that input array is a numpy array
-    array = np.asarray(array)
+    array = np.array(array)
 
     # Check if array is indeed 2D
     if(array.ndim != 2):
