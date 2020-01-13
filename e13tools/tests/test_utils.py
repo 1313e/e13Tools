@@ -82,6 +82,11 @@ class TestDecorators(object):
     def append_method2(self):
         """original """
 
+    # Create method with a docstring that is appended from another
+    @docstring_append(append_method1)
+    def append_method3(self):
+        """original """
+
     # Create old-style class with no docstring that is appended
     @docstring_append("appended")
     class append_old_class1:
@@ -106,6 +111,7 @@ class TestDecorators(object):
     def test_docstring_append(self):
         assert self.append_method1.__doc__ == "appended"
         assert self.append_method2.__doc__ == "original appended"
+        assert self.append_method3.__doc__ == "original appended"
         assert self.append_old_class1.__doc__ == "appended"
         assert self.append_old_class2.__doc__ == "original appended"
         assert self.append_new_class1.__doc__ == "appended"
