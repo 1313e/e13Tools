@@ -354,7 +354,7 @@ def test_get_outer_frame():
 
     # Check if providing a valid function returns that frame
     caller_frame = currentframe()
-    assert get_outer_frame(test_get_outer_frame) == caller_frame
+    assert get_outer_frame(test_get_outer_frame) is caller_frame
 
     # Check if providing a valid method returns the correct method
     _Test()

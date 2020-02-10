@@ -350,14 +350,14 @@ def get_outer_frame(func):
 
     """
 
-    # If name is a function, obtain its name and module name
+    # If func is a function, obtain its name and module name
     if isfunction(func):
         name = func.__name__
         module_name = func.__module__
-    # Else, if name is a method, obtain its name and class name
+    # Else, if func is a method, obtain its name and class object
     elif ismethod(func):
         name = func.__name__
-        class_name = func.__self__.__class__.__name__
+        class_obj = func.__self__.__class__
     # Else, raise error
     else:
         raise InputError("Input argument 'func' must be a callable function or"
@@ -369,16 +369,15 @@ def get_outer_frame(func):
     # Loop over all outer frames
     for frame_info in getouterframes(caller_frame):
         # Check if frame has the correct name
-        if(frame_info[3] == name):
+        if(frame_info.function == name):
             # If func is a function, return if module name is also correct
             if(isfunction(func) and
-               frame_info[0].f_globals['__name__'] == module_name):
-                return(frame_info[0])
+               frame_info.frame.f_globals['__name__'] == module_name):
+                return(frame_info.frame)
 
-            # Else, return frame if class name is also correct
-            elif(frame_info[0].f_locals['self'].__class__.__name__ ==
-                 class_name):
-                return(frame_info[0])
+            # Else, return frame if class is also correct
+            elif(frame_info.frame.f_locals['self'].__class__ is class_obj):
+                return(frame_info.frame)
     else:
         return(None)
 
