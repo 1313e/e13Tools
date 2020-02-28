@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
 # %% IMPORTS
-# Future imports
-from __future__ import absolute_import, division, print_function
-
 # Built-in imports
 import logging
 from inspect import currentframe
@@ -364,8 +361,14 @@ def test_get_outer_frame():
 def test_raise_error():
     # Create a logger and check if an error can be properly raised and logged
     logger = logging.getLogger('TEST')
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match='ERROR'):
         raise_error('ERROR', ValueError, logger)
+    try:
+        raise ValueError('Error')
+    except Exception as error:
+        with pytest.raises(ValueError, match='Test Error'):
+            raise_error('Test '+str(error), type(error), logger,
+                        error.__traceback__)
 
 
 # Pytest for the raise_warning function

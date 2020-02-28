@@ -10,9 +10,6 @@ calculations and data array manipulations.
 
 
 # %% IMPORTS
-# Future imports
-from __future__ import absolute_import, division, print_function
-
 # Built-in imports
 from functools import reduce
 from math import factorial

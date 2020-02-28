@@ -9,18 +9,12 @@ Provides several useful utility functions.
 
 
 # %% IMPORTS
-# Future imports
-from __future__ import absolute_import, division, print_function
-
 # Built-in imports
 from ast import literal_eval
 from inspect import currentframe, getouterframes, isclass, isfunction, ismethod
 import logging
 import logging.config
 import warnings
-
-# Package imports
-from six import PY2, reraise, string_types
 
 # e13Tools imports
 from e13tools.core import InputError
@@ -74,44 +68,19 @@ def docstring_append(addendum, join=''):
     If `addendum` is not a string, its :attr:`~object.__doc__` attribute is
     used instead.
 
-    Note
-    ----
-    In Python 2, classes that inherit the :class:`~object` class cannot have
-    their docstrings modified after it has been defined. In this case, this
-    decorator makes a subclass of the target class, sets the docstring during
-    class definition and returns that instead. The returned subclass is
-    functionally exactly the same as the target class.
-
     """
 
     # If addendum is not a string , try to use its __doc__ attribute
-    if not isinstance(addendum, string_types):
+    if not isinstance(addendum, str):
         addendum = addendum.__doc__
 
     # This function performs the docstring append on a given definition
     def do_append(target):
-        # In Python 2, classes inheriting object cannot have their __doc__
-        # modified after definition
-        if PY2 and isclass(target) and issubclass(target, object):
-            # Make a dummy class inheriting the target class
-            class Target(target):
-                # Perform modified append
-                if target.__doc__:
-                    __doc__ = join.join([target.__doc__, addendum])
-                else:
-                    __doc__ = addendum
-
-            # Copy over the name and module of the target class
-            Target.__name__ = target.__name__
-            Target.__module__ = target.__module__
-            target = Target
-
-        # Perform normal append in all other cases
+        # Perform append
+        if target.__doc__:
+            target.__doc__ = join.join([target.__doc__, addendum])
         else:
-            if target.__doc__:
-                target.__doc__ = join.join([target.__doc__, addendum])
-            else:
-                target.__doc__ = addendum
+            target.__doc__ = addendum
 
         # Return the target definition
         return(target)
@@ -126,36 +95,14 @@ def docstring_copy(source):
     Custom decorator that allows the docstring of a function/class `source` to
     be copied to the target function/class.
 
-    Note
-    ----
-    In Python 2, classes that inherit the :class:`~object` class cannot have
-    their docstrings modified after it has been defined. In this case, this
-    decorator makes a subclass of the target class, sets the docstring during
-    class definition and returns that instead. The returned subclass is
-    functionally exactly the same as the target class.
-
     """
 
     # This function performs the docstring copy on a given definition
     def do_copy(target):
         # Check if source has a docstring
         if source.__doc__:
-            # In Python 2, classes inheriting object cannot have their __doc__
-            # modified after definition
-            if PY2 and isclass(target) and issubclass(target, object):
-                # Make a dummy class inheriting the target class
-                class Target(target):
-                    # Perform modified copy
-                    __doc__ = source.__doc__
-
-                # Copy over the name and module of the target class
-                Target.__name__ = target.__name__
-                Target.__module__ = target.__module__
-                target = Target
-
-            # Perform normal copy in all other cases
-            else:
-                target.__doc__ = source.__doc__
+            # Perform copy
+            target.__doc__ = source.__doc__
 
         # Return the target definition
         return(target)
@@ -175,14 +122,6 @@ def docstring_substitute(*args, **kwargs):
     mind that this decorator will always attempt to do %-formatting first, and
     only uses `.format()` if the first fails.
 
-    Note
-    ----
-    In Python 2, classes that inherit the :class:`~object` class cannot have
-    their docstrings modified after it has been defined. In this case, this
-    decorator makes a subclass of the target class, sets the docstring during
-    class definition and returns that instead. The returned subclass is
-    functionally exactly the same as the target class.
-
     """
 
     # Check if solely args or kwargs were provided
@@ -196,46 +135,20 @@ def docstring_substitute(*args, **kwargs):
     def do_substitution(target):
         # Check if target has a docstring that can be substituted to
         if target.__doc__:
-            # In Python 2, classes inheriting object cannot have their __doc__
-            # modified after definition
-            if PY2 and isclass(target) and issubclass(target, object):
-                # Make a dummy class inheriting the target class
-                class Target(target):
-                    # Perform modified substitution
-                    # Try to use %-formatting
-                    try:
-                        __doc__ = target.__doc__ % (params)
-                    # If that raises an error, use .format with *args
-                    except TypeError:
-                        __doc__ = target.__doc__.format(*params)
-                    # Using **kwargs with % raises no errors if .format is
-                    # required
-                    else:
-                        # Check if formatting was done and use .format if not
-                        if(__doc__ == target.__doc__):
-                            __doc__ = target.__doc__.format(**params)
+            # Make a copy of the target docstring to check formatting later
+            doc_presub = str(target.__doc__)
 
-                # Copy over the name and module of the target class
-                Target.__name__ = target.__name__
-                Target.__module__ = target.__module__
-                target = Target
-
-            # Perform normal substitution in all other cases
+            # Try to use %-formatting
+            try:
+                target.__doc__ = target.__doc__ % (params)
+            # If that raises an error, use .format with *args
+            except TypeError:
+                target.__doc__ = target.__doc__.format(*params)
+            # Using **kwargs with % raises no errors if .format is required
             else:
-                # Make a copy of the target docstring to check formatting later
-                doc_presub = str(target.__doc__)
-
-                # Try to use %-formatting
-                try:
-                    target.__doc__ = target.__doc__ % (params)
-                # If that raises an error, use .format with *args
-                except TypeError:
-                    target.__doc__ = target.__doc__.format(*params)
-                # Using **kwargs with % raises no errors if .format is required
-                else:
-                    # Check if formatting was done and use .format if not
-                    if(target.__doc__ == doc_presub):
-                        target.__doc__ = target.__doc__.format(**params)
+                # Check if formatting was done and use .format if not
+                if(target.__doc__ == doc_presub):
+                    target.__doc__ = target.__doc__.format(**params)
 
         # Raise error if target has no docstring
         else:
@@ -414,10 +327,18 @@ def raise_error(err_msg, err_type=Exception, logger=None, err_traceback=None):
 
     """
 
-    # Log the error and raise it right after
+    # Log the error
     logger = logging.root if logger is None else logger
     logger.error(err_msg)
-    reraise(err_type, err_type(err_msg), err_traceback)
+
+    # Create error value
+    err_value = err_type(err_msg)
+
+    # Raise error
+    if err_value.__traceback__ is not err_traceback:
+        raise err_value.with_traceback(err_traceback)
+    else:
+        raise err_value
 
 
 # This function raises a given warning after logging the warning
@@ -580,7 +501,7 @@ aux_char_set = set(['(', ')', '[', ']', ',', "'", '"', '|', '/', '\\', '{',
 
 
 # Function that unpacks a provided sequence of iterables to a single string
-def unpack_str_seq(*seq, **kwargs):
+def unpack_str_seq(*seq, sep=', '):
     """
     Unpacks a provided sequence `seq` of elements and iterables, and converts
     it to a single string separated by `sep`.
@@ -627,11 +548,8 @@ def unpack_str_seq(*seq, **kwargs):
 
     """
 
-    # Extract sep from kwargs
-    sep = kwargs.get('sep', ', ')
-
     # Check if provided separator is a string
-    if not isinstance(sep, string_types):
+    if not isinstance(sep, str):
         raise TypeError("Input argument 'sep' is not of type 'str'!")
 
     # Convert provided sequence to a list
@@ -640,7 +558,7 @@ def unpack_str_seq(*seq, **kwargs):
     # Loop over all elements in seq and unpack iterables to strings as well
     for i, arg in enumerate(seq):
         # If arg can be iterated over and is not a string, unpack it
-        if hasattr(arg, '__iter__') and not isinstance(arg, string_types):
+        if hasattr(arg, '__iter__') and not isinstance(arg, str):
             seq[i] = unpack_str_seq(*arg, sep=sep)
 
     # Join entire sequence together to a single string

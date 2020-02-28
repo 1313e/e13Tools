@@ -10,9 +10,6 @@ imported automatically.
 
 
 # %% IMPORTS
-# Future imports
-from __future__ import absolute_import, division, print_function
-
 # Built-in imports
 from pkg_resources import parse_version
 

@@ -2,10 +2,10 @@
 =============================================
 
 This is the documentation for the *e13Tools* package, a collection of utility functions that were created by `@1313e`_.
-It is written in pure `Python 2/3`_ and `publicly available on GitHub`_.
+It is written in pure `Python 3`_ and `publicly available on GitHub`_.
 
 .. _@1313e: https://github.com/1313e
-.. _Python 2/3: https://www.python.org
+.. _Python 3: https://www.python.org
 .. _publicly available on GitHub: https://github.com/1313e/e13Tools
 
 ----

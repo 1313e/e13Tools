@@ -17,10 +17,10 @@ Available submodules
 
 
 # %% IMPORTS
-from __future__ import absolute_import, division, print_function
-
+# Module imports
 from . import lhs
 from .lhs import *
 
+# All declaration
 __all__ = []
 __all__.extend(lhs.__all__)

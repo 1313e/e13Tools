@@ -9,9 +9,6 @@ Provides a collection of functions useful in various plotting routines.
 
 
 # %% IMPORTS
-# Future imports
-from __future__ import absolute_import, division, print_function
-
 # Package imports
 try:
     import astropy.units as apu
