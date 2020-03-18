@@ -36,7 +36,7 @@ The following packages are used by a few functions and therefore optional:
    :target: https://ci.appveyor.com/project/1313e/e13Tools
    :alt: AppVeyor - Build Status
 .. |ReadTheDocs| image:: https://img.shields.io/readthedocs/e13tools/latest.svg?logo=read%20the%20docs&logoColor=white&label=Docs
-    :target: https://e13tools.readthedocs.io/en/latest
+    :target: https://e13tools.readthedocs.io
     :alt: ReadTheDocs - Build Status
 .. |Coverage| image:: https://img.shields.io/codecov/c/github/1313e/e13Tools/master.svg?logo=codecov&logoColor=white&label=Coverage
     :target: https://codecov.io/gh/1313e/e13Tools/branches/master
