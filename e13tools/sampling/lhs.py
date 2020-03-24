@@ -22,7 +22,8 @@ from numpy.random import choice, permutation, rand
 
 # e13Tools imports
 from e13tools.core import ShapeError
-from e13tools.math import diff, nCr
+from e13tools.math import nCr
+from e13tools.numpy import diff
 
 # All declaration
 __all__ = ['lhd']

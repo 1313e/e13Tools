@@ -16,7 +16,10 @@ Available modules
 
 :mod:`~math`
     Provides a collection of functions useful in various mathematical
-    calculations and data array manipulations.
+    calculations.
+
+:mod:`~numpy`
+    Provides a collection of functions useful in manipulating *NumPy* arrays.
 
 :mod:`~pyplot`
     Provides a collection of functions useful in various plotting routines.
@@ -34,17 +37,19 @@ Available modules
 # %% IMPORTS AND DECLARATIONS
 # e13Tools imports
 from .__version__ import __version__
-from . import core, math, pyplot, sampling, utils
+from . import core, math, numpy, pyplot, sampling, utils
 from .core import *
 from .math import *
+from .numpy import *
 from .pyplot import *
 from .sampling import *
 from .utils import *
 
 # All declaration
-__all__ = ['math', 'pyplot', 'sampling', 'utils']
+__all__ = ['math', 'numpy', 'pyplot', 'sampling', 'utils']
 __all__.extend(core.__all__)
 __all__.extend(math.__all__)
+__all__.extend(numpy.__all__)
 __all__.extend(pyplot.__all__)
 __all__.extend(sampling.__all__)
 __all__.extend(utils.__all__)
