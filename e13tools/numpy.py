@@ -16,7 +16,8 @@ import numpy as np
 from e13tools.core import InputError, ShapeError
 
 # All declaration
-__all__ = ['diff', 'rot90', 'sort2D', 'transposeC']
+__all__ = ['diff', 'intersect', 'isin', 'rot90', 'setdiff', 'setxor', 'sort2D',
+           'transposeC', 'union']
 
 
 # %% FUNCTIONS
@@ -24,7 +25,7 @@ __all__ = ['diff', 'rot90', 'sort2D', 'transposeC']
 def diff(array1, array2=None, axis=0, flatten=True):
     """
     Calculates the pair-wise differences between inputs `array1` and `array2`
-    along the given `axis`.
+    over the given `axis`.
 
     Parameters
     ----------
@@ -39,9 +40,9 @@ def diff(array1, array2=None, axis=0, flatten=True):
         If not *None*, the length of all axes except `axis` must be equal for
         both arrays.
     axis : int. Default: 0
-        Along which axis to calculate the pair-wise differences. Default is
-        along the first axis. A negative value counts from the last to the
-        first axis.
+        Over which axis to calculate the pair-wise differences. Default is over
+        the first axis. A negative value counts from the last to the first
+        axis.
     flatten : bool. Default: True
         If `array2` is *None*, whether or not to calculate all pair-wise
         differences.
@@ -54,8 +55,8 @@ def diff(array1, array2=None, axis=0, flatten=True):
     -------
     diff_array : :obj:`~numpy.ndarray` object
         Depending on the input parameters, an array with n dimensions
-        containing the pair-wise differences between `array1` and `array2`
-        along the given `axis`.
+        containing the pair-wise differences between `array1` and `array2` over
+        the given `axis`.
 
     Examples
     --------
@@ -127,7 +128,7 @@ def diff(array1, array2=None, axis=0, flatten=True):
     # If array2 is not provided, both arrays are the same
     if array2 is None:
         # Make sure that input is a numpy array
-        array1 = np.array(array1)
+        array1 = np.asarray(array1)
 
         # Check if a scalar has been provided and act accordingly
         if(array1.ndim == 0):
@@ -135,7 +136,7 @@ def diff(array1, array2=None, axis=0, flatten=True):
 
         # Swap axes in array to put the given axis as the first axis
         try:
-            array1 = np.moveaxis(array1, axis, 0).copy()
+            array1 = np.moveaxis(array1, axis, 0)
         except Exception as error:
             raise InputError("Input argument 'axis' is invalid (%s)!"
                              % (error))
@@ -181,8 +182,8 @@ def diff(array1, array2=None, axis=0, flatten=True):
     # If array2 is provided, both arrays are different
     else:
         # Make sure that inputs are numpy arrays
-        array1 = np.array(array1)
-        array2 = np.array(array2)
+        array1 = np.asarray(array1)
+        array2 = np.asarray(array2)
 
         # Get number of dimensions
         n_dim1 = array1.ndim
@@ -196,8 +197,8 @@ def diff(array1, array2=None, axis=0, flatten=True):
         if(n_dim1 == n_dim2):
             # Swap axes in arrays to put the given axis as the first axis
             try:
-                array1 = np.moveaxis(array1, axis, 0).copy()
-                array2 = np.moveaxis(array2, axis, 0).copy()
+                array1 = np.moveaxis(array1, axis, 0)
+                array2 = np.moveaxis(array2, axis, 0)
             except Exception as error:
                 raise InputError("Input argument 'axis' is invalid (%s)!"
                                  % (error))
@@ -206,11 +207,10 @@ def diff(array1, array2=None, axis=0, flatten=True):
                 len_axis1 = array1.shape[0]
 
             # Check if the length of all other axes are the same
-            if(array1.shape[1:n_dim1] != array2.shape[1:n_dim2]):
+            if(array1.shape[1:] != array2.shape[1:]):
                 raise ShapeError("Input arguments 'array1' and 'array2' do not"
                                  " have the same axes lengths: %s != %s"
-                                 % (array1.shape[1:n_dim1],
-                                    array2.shape[1:n_dim2]))
+                                 % (array1.shape[1:], array2.shape[1:]))
 
             # Obtain the shape of the resulting array and initialize it
             diff_shape = np.concatenate([[len_axis1], array2.shape])
@@ -244,7 +244,7 @@ def diff(array1, array2=None, axis=0, flatten=True):
 
             # Swap axes in the bigger array to put the given axis as first axis
             try:
-                array1 = np.moveaxis(array1, axis, 0).copy()
+                array1 = np.moveaxis(array1, axis, 0)
             except Exception as error:
                 raise InputError("Input argument 'axis' is invalid (%s)!"
                                  % (error))
@@ -259,6 +259,142 @@ def diff(array1, array2=None, axis=0, flatten=True):
             else:
                 # Return difference array
                 return(sign*(array1-array2))
+
+
+# This function returns the intersection between two NumPy arrays
+def intersect(array1, array2, axis=0, assume_unique=False):
+    """
+    Finds the intersection between given arrays `array1` and `array2` over
+    provided `axis` and returns the unique elements that are both in `array1`
+    and `array2`.
+
+    This is an nD-version of NumPy's :func:`~numpy.intersect1d` function.
+
+    Parameters
+    ----------
+    array1 : array_like
+        Input array.
+    array2 : array_like
+        Comparison array with same shape as `array1` except in given `axis`.
+
+    Optional
+    --------
+    axis : int or None. Default: 0
+        Axis over which elements must be checked in both arrays. A negative
+        value counts from the last to the first axis.
+        If *None*, both arrays are flattened first (this is the functionality
+        of :func:`~numpy.intersect1d`).
+    assume_unique : bool. Default: False
+        Whether to assume that the elements in both arrays are unique, which
+        can speed up the calculation.
+
+    Returns
+    -------
+    intersect_array : :obj:`~numpy.ndarray` object
+        Array containing the unique elements found both in `array1`and `array2`
+        over given `axis`.
+
+    Example
+    -------
+    >>> array1 = np.array([[1, 2], [1, 3], [2, 1]])
+    >>> array2 = np.array([[1, 2], [1, 3]])
+    >>> intersect(array1, array2)
+    array([[1, 2], [1, 3]])
+
+    """
+
+    # Check if axis is None
+    if axis is None:
+        # If so, use NumPy's intersect1d function
+        return(np.intersect1d(array1, array2, assume_unique, False))
+
+    # If assume_unique is False, make sure that the arrays are unique
+    if not assume_unique:
+        array1 = np.unique(array1, axis=axis)
+        array2 = np.unique(array2, axis=axis)
+
+    # Obtain which elements in array1 are in array2
+    bool_array = isin(array1, array2, axis, True, invert=False)
+
+    # Obtain the array with the unique elements of both arrays
+    intersect_array = np.compress(bool_array, array1, axis)
+
+    # Return it
+    return(intersect_array)
+
+
+# This function returns which elements of array1 are in array2
+def isin(array1, array2, axis=0, assume_unique=False, invert=False):
+    """
+    Checks over the provided `axis` which elements of given `array1` are also
+    in given `array2` and returns it.
+
+    This is an nD-version of NumPy's :func:`~numpy.isin` function.
+
+    Parameters
+    ----------
+    array1 : array_like
+        Input array.
+    array2 : array_like
+        Comparison array with same shape as `array1` except in given `axis`.
+
+    Optional
+    --------
+    axis : int or None. Default: 0
+        Axis over which elements must be checked in both arrays. A negative
+        value counts from the last to the first axis.
+        If *None*, both arrays are compared element-wise (this is the
+        functionality of :func:`~numpy.isin`).
+    assume_unique : bool. Default: False
+        Whether to assume that the elements in both arrays are unique, which
+        can speed up the calculation.
+    invert : bool. Default: False
+        Whether to invert the returned boolean values. If *True*, the values in
+        `bool_array` are as if calculating ``array1 not in array2``.
+
+    Returns
+    -------
+    bool_array : :obj:`~numpy.ndarray` object of bool
+        Bool array containing the elements found in `array1` that are in
+        `array2` over given `axis`.
+
+    Example
+    -------
+    >>> array1 = np.array([[1, 2], [1, 3], [2, 1]])
+    >>> array2 = np.array([[1, 2], [1, 3]])
+    >>> isin(array1, array2)
+    array([True, True, False])
+
+    """
+
+    # Check if axis is None
+    if axis is None:
+        # If so, use NumPy's isin function
+        return(np.isin(array1, array2, assume_unique, invert))
+
+    # Make sure that given arrays are NumPy arrays
+    array1 = np.asarray(array1)
+    array2 = np.asarray(array2)
+
+    # Make sure that 'axis' is the first axis of both arrays
+    try:
+        array1 = np.moveaxis(array1, axis, 0)
+        array2 = np.moveaxis(array2, axis, 0)
+    except Exception as error:
+        raise InputError("Input argument 'axis' is invalid (%s)!" % (error))
+
+    # Convert arrays to lists
+    list1 = array1.tolist()
+    list2 = array2.tolist()
+
+    # Determine what values in list1 are in list2
+    bool_list = [element in list2 for element in list1]
+
+    # Convert bool_list to bool_array
+    bool_array = np.array(bool_list)
+
+    # Return it
+    return(bool_array if not invert else ~bool_array)
 
 
 # This function rotates a given array around a specified axis
@@ -321,7 +457,7 @@ def rot90(array, axes=(0, 1), rot_axis='center', n_rot=1):
     """
 
     # Make sure that array is a numpy array
-    array = np.array(array)
+    array = np.asarray(array)
 
     # Check if array is indeed two-dimensional and obtain the lengths
     if(array.ndim != 2):
@@ -330,7 +466,7 @@ def rot90(array, axes=(0, 1), rot_axis='center', n_rot=1):
         n_pts, n_dim = array.shape
 
     # Check axes
-    axes = np.array(axes)
+    axes = np.asarray(axes)
     if(axes.ndim == 1 and axes.shape[0] == 2 and (axes < n_dim).all()):
         pass
     else:
@@ -347,7 +483,7 @@ def rot90(array, axes=(0, 1), rot_axis='center', n_rot=1):
         raise ValueError("Input argument 'rot_axis' can only have 'center' as"
                          " a string value!")
     else:
-        rot_axis = np.array(rot_axis)
+        rot_axis = np.asarray(rot_axis)
         if(rot_axis.ndim == 1 and rot_axis.shape[0] == 2):
             pass
         elif(rot_axis.ndim == 1 and rot_axis.shape[0] == n_dim):
@@ -384,12 +520,142 @@ def rot90(array, axes=(0, 1), rot_axis='center', n_rot=1):
     return(array_rot)
 
 
+# This function returns the difference between two NumPy arrays
+def setdiff(array1, array2, axis=0, assume_unique=False):
+    """
+    Finds the set difference between given arrays `array1` and `array2` over
+    provided `axis` and returns the unique elements in `array1` that are not in
+    `array2`.
+
+    This is an nD-version of NumPy's :func:`~numpy.setdiff1d` function.
+
+    Parameters
+    ----------
+    array1 : array_like
+        Input array.
+    array2 : array_like
+        Comparison array with same shape as `array1` except in given `axis`.
+
+    Optional
+    --------
+    axis : int or None. Default: 0
+        Axis over which elements must be checked in both arrays. A negative
+        value counts from the last to the first axis.
+        If *None*, both arrays are flattened first (this is the functionality
+        of :func:`~numpy.setdiff1d`).
+    assume_unique : bool. Default: False
+        Whether to assume that the elements in both arrays are unique, which
+        can speed up the calculation.
+
+    Returns
+    -------
+    diff_array : :obj:`~numpy.ndarray` object
+        Array containing the unique elements found in `array1` but not in
+        `array2` over given `axis`.
+
+    Example
+    -------
+    >>> array1 = np.array([[1, 2], [1, 3], [2, 1]])
+    >>> array2 = np.array([[1, 2], [1, 3]])
+    >>> setdiff(array1, array2)
+    array([[2, 1]])
+
+    """
+
+    # Check if axis is None
+    if axis is None:
+        # If so, use NumPy's setdiff1d function
+        return(np.setdiff1d(array1, array2, assume_unique))
+
+    # If assume_unique is False, make sure that the arrays are unique
+    if not assume_unique:
+        array1 = np.unique(array1, axis=axis)
+        array2 = np.unique(array2, axis=axis)
+
+    # Obtain which elements in array1 are not in array2
+    bool_array = isin(array1, array2, axis, True, invert=True)
+
+    # Obtain the array with the unique elements of array1
+    diff_array = np.compress(bool_array, array1, axis)
+
+    # Return it
+    return(diff_array)
+
+
+# This function returns the exclusive-or between two NumPy arrays
+def setxor(array1, array2, axis=0, assume_unique=False):
+    """
+    Finds the set exclusive-or between given arrays `array1` and `array2` over
+    provided `axis` and returns the unique elements that are in either `array1`
+    or `array2` (but not both).
+
+    This is an nD-version of NumPy's :func:`~numpy.setxor1d` function.
+
+    Parameters
+    ----------
+    array1 : array_like
+        Input array.
+    array2 : array_like
+        Comparison array with same shape as `array1` except in given `axis`.
+
+    Optional
+    --------
+    axis : int or None. Default: 0
+        Axis over which elements must be checked in both arrays. A negative
+        value counts from the last to the first axis.
+        If *None*, both arrays are flattened first (this is the functionality
+        of :func:`~numpy.setxor1d`).
+    assume_unique : bool. Default: False
+        Whether to assume that the elements in both arrays are unique, which
+        can speed up the calculation.
+
+    Returns
+    -------
+    xor_array : :obj:`~numpy.ndarray` object
+        Array containing the unique elements found in either `array1` or
+        `array2` (but not both) over given `axis`.
+
+    Example
+    -------
+    >>> array1 = np.array([[1, 2], [1, 3], [2, 1]])
+    >>> array2 = np.array([[1, 2], [1, 3], [3, 1]])
+    >>> setxor(array1, array2)
+    array([[2, 1], [3, 1]])
+
+    """
+
+    # Check if axis is None
+    if axis is None:
+        # If so, use NumPy's setxor1d function
+        return(np.setxor1d(array1, array2, assume_unique))
+
+    # If assume_unique is False, make sure that the arrays are unique
+    if not assume_unique:
+        array1 = np.unique(array1, axis=axis)
+        array2 = np.unique(array2, axis=axis)
+
+    # Obtain the unique elements in array1 but not in array2
+    xor_array1 = setdiff(array1, array2, axis, True)
+
+    # Obtain the unique elements in array2 but not in array1
+    xor_array2 = setdiff(array2, array1, axis, True)
+
+    # Combine both arrays
+    xor_array = np.concatenate([xor_array1, xor_array2], axis)
+
+    # Sort the array
+    xor_array = np.unique(xor_array, axis=axis)
+
+    # Return it
+    return(xor_array)
+
+
 # This function sorts a 2D array in a specified order
 def sort2D(array, axis=-1, order=None):
     """
-    Sorts a 2D `array` in a given `axis` in the specified `order`. This
+    Sorts a 2D `array` over a given `axis` in the specified `order`. This
     function is different from NumPy's :func:`~numpy.sort` function in that it
-    sorts in a given axis rather than along it, and the order can be given as
+    sorts over a given axis rather than along it, and the order can be given as
     integers rather than field strings.
 
     Parameters
@@ -400,8 +666,9 @@ def sort2D(array, axis=-1, order=None):
     Optional
     --------
     axis : int. Default: -1
-        Axis in which to sort the elements. Default is to sort all elements in
-        the last axis. A negative value counts from the last to the first axis.
+        Axis over which to sort the elements. Default is to sort all elements
+        over the last axis. A negative value counts from the last to the first
+        axis.
     order : int, 1D array_like of int or None. Default: None
         The order in which the vectors in the given `axis` need to be sorted.
         Negative values count from the last to the first vector.
@@ -541,3 +808,56 @@ def transposeC(array, axes=None):
 
     # Take the transpose of the conjugate or the input array and return it
     return(np.transpose(np.conjugate(array), axes))
+
+
+# This function returns the union between two NumPy arrays
+def union(array1, array2, axis=0):
+    """
+    Finds the union between given arrays `array1` and `array2` over provided
+    `axis` and returns the unique elements in `array1` and `array2`.
+
+    This is an nD-version of NumPy's :func:`~numpy.union1d` function.
+
+    Parameters
+    ----------
+    array1 : array_like
+        Input array.
+    array2 : array_like
+        Comparison array with same shape as `array1` except in given `axis`.
+
+    Optional
+    --------
+    axis : int or None. Default: 0
+        Axis over which elements must be checked in both arrays. A negative
+        value counts from the last to the first axis.
+        If *None*, both arrays are flattened first (this is the functionality
+        of :func:`~numpy.union1d`).
+
+    Returns
+    -------
+    union_array : :obj:`~numpy.ndarray` object
+        Sorted array containing the unique elements found in `array1` and
+        `array2` over given `axis`.
+
+    Example
+    -------
+    >>> array1 = np.array([[1, 2], [1, 3], [3, 1]])
+    >>> array2 = np.array([[1, 2], [1, 3], [2, 1]])
+    >>> union(array1, array2)
+    array([[1, 2], [1, 3], [2, 1], [3, 1]])
+
+    """
+
+    # Check if axis is None
+    if axis is None:
+        # If so, use NumPy's union1d function
+        return(np.union1d(array1, array2))
+
+    # Combine both arrays together
+    union_array = np.concatenate([array1, array2], axis)
+
+    # Obtain the unique elements in this array
+    union_array = np.unique(union_array, axis=axis)
+
+    # Return it
+    return(union_array)

@@ -163,7 +163,7 @@ def is_PD(matrix):
     """
 
     # Make sure that matrix is a numpy array
-    matrix = np.array(matrix)
+    matrix = np.asarray(matrix)
 
     # Check if input is a matrix
     if(matrix.ndim != 2):
@@ -438,7 +438,7 @@ def nearest_PD(matrix):
     """
 
     # Make sure that matrix is a numpy array
-    matrix = np.array(matrix)
+    matrix = np.asarray(matrix)
 
     # Check if input is a matrix
     if(matrix.ndim != 2):
