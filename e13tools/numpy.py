@@ -391,10 +391,10 @@ def isin(array1, array2, axis=0, assume_unique=False, invert=False):
     bool_list = [element in list2 for element in list1]
 
     # Convert bool_list to bool_array
-    bool_array = np.array(bool_list)
+    bool_array = np.array(bool_list, dtype=bool)
 
     # Return it
-    return(bool_array if not invert else ~bool_array)
+    return(~bool_array if invert else bool_array)
 
 
 # This function rotates a given array around a specified axis
