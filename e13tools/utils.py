@@ -493,7 +493,7 @@ def split_seq(*seq):
     return(seq)
 
 
-# List/set of auxiliary characters to be used in convert_str_seq()
+# List/set of auxiliary characters to be used in split_seq()
 aux_char_set = set(['(', ')', '[', ']', ',', "'", '"', '|', '/', '\\', '{',
                     '}', '<', '>', '´', '¨', '`', '?', '!', '%', ':', ';', '=',
                     '$', '~', '#', '@', '^', '&', '*', '“', '’', '”', '‘',
