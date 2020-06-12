@@ -558,7 +558,7 @@ def unpack_str_seq(*seq, sep=', '):
     # Loop over all elements in seq and unpack iterables to strings as well
     for i, arg in enumerate(seq):
         # If arg can be iterated over and is not a string, unpack it
-        if hasattr(arg, '__iter__') and not isinstance(arg, str):
+        if isinstance(arg, (list, tuple, set)):
             seq[i] = unpack_str_seq(*arg, sep=sep)
 
     # Join entire sequence together to a single string
