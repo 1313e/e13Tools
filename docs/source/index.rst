@@ -32,6 +32,7 @@ The documentation of *e13Tools* is spread out over several sections:
    
     api/e13tools.core
     api/e13tools.math
+    api/e13tools.numpy
     api/e13tools.pyplot
     api/e13tools.sampling
     api/e13tools.utils
