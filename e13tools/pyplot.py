@@ -275,7 +275,7 @@ def draw_textline(text, x=None, y=None, pos='start top', ax=None,
 
 
 # This function converts a float into a TeX string
-def f2tex(value, sdigits=4, power=3, nobase1=True):
+def f2tex(value, *errs, sdigits=4, power=3, nobase1=True):
     """
     Transform a value into a (La)TeX string for usage in a
     :obj:`~matplotlib.figure.Figure` instance.
@@ -287,13 +287,18 @@ def f2tex(value, sdigits=4, power=3, nobase1=True):
 
     Optional
     --------
+    errs : int or float
+        The upper and lower :math:`1\\sigma`-errors of the given `value`.
+        If only a single value is given, `value` is assumed to have a centered
+        error interval of `errs`.
     sdigits : int. Default: 4
-        Maximum amount of significant digits `value` is returned with.
+        Number of significant digits any value is returned with.
     power : int. Default: 3
-        Minimum log10(`value`) required before `value` is written in
+        Minimum log10(`value`) required before all values are written in
         scientific form.
     nobase1 : bool. Default: True
         Whether or not to include `base` in scientific form if `base=1`.
+        This is always *False* if `errs` contains at least one value.
 
     Returns
     -------
@@ -319,29 +324,92 @@ def f2tex(value, sdigits=4, power=3, nobase1=True):
 
 
     >>> f2tex(1e6, nobase1=False)
-    '1\\cdot 10^{6}'
+    '1.000\\cdot 10^{6}'
+
+    >>> f2tex(20.2935826592, 0.1)
+    '20.29\\pm 0.10'
+
+    >>> f2tex(20.2935826592, 0.1, 0.2)
+    '20.29^{+0.10}_{-0.20}'
+
+    >>> f2tex(1e6, 12, 10)
+    '1.000^{+0.000}_{-0.000}\\cdot 10^{6}'
+
+    >>> f2tex(1e6, 12, 10, sdigits=6)
+    '1.000^{+0.000}_{-0.000}\\cdot 10^{6}'
 
     """
 
-    # If value is zero, it cannot be converted to a log
-    if(value == 0):
-        return('0')
-    else:
-        n = int(np.floor(np.log10(abs(value))))
+    # Collect value and errs together
+    vals = [value, *errs]
 
-    if(abs(n) < power):
-        string = r"{0:.{1}g}".format(value, sdigits)
-    else:
-        base = value/pow(10, n)
-        if(base == 1 and nobase1):
-            string = r"10^{{{0}}}".format(n)
+    # If all values are 0, never use log
+    if not sum(vals):
+        power = None
+
+    # If vals contains more than 1 value, set nobase1 to False
+    if(len(vals) > 1):
+        nobase1 = False
+
+    # Calculate the maximum power required for all values
+    n = [int(np.floor(np.log10(abs(v)))) if v else -np.infty for v in vals]
+    n_max = max(n)
+
+    # Check that n_max is a valid value
+    if(n_max == -np.infty):
+        sdigits = 0
+        n_max = 0
+
+    # Create empty list of string representations
+    strings = []
+
+    # Convert all values into their proper string representations
+    for v, ni in zip(vals, n):
+        # Calculate the number of significant digits each value should have
+        sd = sdigits-(n_max-ni)
+
+        # If the sd is zero or -infinity
+        if(sd <= 0):
+            # Then v must always be zero
+            v = 0
+            sd = sdigits-n_max
+
+        # If no power is required, create string without scientific form
+        if power is None or (abs(n_max) < power):
+            strings.append(r"{0:#.{1}g}".format(v, sd))
+            pow_str = ""
+
+        # Else, convert value to scientific form
         else:
-            string = r"{0:.{1}g}\cdot 10^{{{2}}}".format(base, sdigits, n)
-    return(string)
+            # If v is zero, set sd to the maximum number of significant digits
+            if not v:
+                sd = sdigits
+
+            # Calculate the base value
+            base = v/pow(10, n_max)
+
+            # Determine string representation
+            if(base == 1) and nobase1:
+                strings.append(r"10^{{{0}}}".format(n_max))
+                pow_str = ""
+            else:
+                strings.append(r"{0:#.{1}g}".format(base, sd))
+                pow_str = r"\cdot 10^{{{0}}}".format(n_max)
+
+    # Check contents of strings and convert accordingly
+    if(len(strings) == 1):
+        fmt = r"{0}{1}"
+    elif(len(strings) == 2):
+        fmt = r"{0}\pm {1}{2}"
+    else:
+        fmt = r"{0}^{{+{1}}}_{{-{2}}}{3}"
+
+    # Return string
+    return(fmt.format(*strings, pow_str))
 
 
 # This function converts an astropy quantity into a TeX string
-def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
+def q2tex(quantity, *errs, sdigits=4, power=3, nobase1=True, unitfrac=False):
     """
     Combination of :func:`~e13tools.pyplot.f2tex` and
     :func:`~e13tools.pyplot.apu2tex`.
@@ -356,6 +424,10 @@ def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
 
     Optional
     --------
+    errs : int, float or :obj:`~astropy.units.quantity.Quantity` object
+        The upper and lower :math:`1\\sigma`-errors of the given `quantity`.
+        If only a single value is given, `quantity` is assumed to have a
+        centered error interval of `errs`.
     sdigits : int. Default: 4
         Maximum amount of significant digits `value` is returned with.
     power : int. Default: 3
@@ -363,6 +435,7 @@ def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
         scientific form.
     nobase1 : bool. Default: True
         Whether or not to include `base` in scientific form if `base=1`.
+        This is always *False* if `errs` contains a value.
     unitfrac : bool. Default: False
         Whether or not to write `unit` as a LaTeX fraction.
 
@@ -378,59 +451,68 @@ def q2tex(quantity, sdigits=4, power=3, nobase1=True, unitfrac=False):
     '20.29'
 
 
-    >>> import astropy.units as apu
     >>> q2tex(20.2935826592*apu.solMass/apu.yr)
     '20.29\\,\\mathrm{M_{\\odot}\\,yr^{-1}}'
 
 
-    >>> import astropy.units as apu
     >>> q2tex(20.2935826592*apu.solMass/apu.yr, sdigits=6)
     '20.2936\\,\\mathrm{M_{\\odot}\\,yr^{-1}}'
 
 
-    >>> import astropy.units as apu
     >>> q2tex(20.2935826592*apu.solMass/apu.yr, power=1)
     '2.029\\cdot 10^{1}\\,\\mathrm{M_{\\odot}\\,yr^{-1}}'
 
 
-    >>> import astropy.units as apu
     >>> q2tex(1e6*apu.solMass/apu.yr, nobase1=True)
     '10^{6}\\,\\mathrm{M_{\\odot}\\,yr^{-1}}'
 
 
-    >>> import astropy.units as apu
     >>> q2tex(1e6*apu.solMass/apu.yr, nobase1=False)
-    '1\\cdot 10^{6}\\,\\mathrm{M_{\\odot}\\,yr^{-1}}'
+    '1.000\\cdot 10^{6}\\,\\mathrm{M_{\\odot}\\,yr^{-1}}'
 
 
-    >>> import astropy.units as apu
     >>> q2tex(20.2935826592*apu.solMass/apu.yr, unitfrac=False)
     '20.29\\,\\mathrm{M_{\\odot}\\,yr^{-1}}'
 
 
-    >>> import astropy.units as apu
-    >>> q2tex(20.2935826592*apu.solMass/apu.yr, unitfrac=True)
-    '20.29\\,\\mathrm{\\frac{M_{\\odot}}{yr}}'
+    >>> q2tex(20.2935826592*apu.solMass, 1*apu.solMass, unitfrac=True)
+    '20.29\\pm 1.00\\,\\mathrm{M_{\\odot}}'
 
     """
 
-    # Check if quantity has a unit
+    # Collect quantity and errs together
+    qnts = [quantity, *errs]
+
+    # If astropy is importable, check if there are quantities
     if import_astropy:
-        if isinstance(quantity, apu.quantity.Quantity):
-            value = quantity.value
-            unit = quantity.unit
-        else:
-            value = quantity
-            unit = 0
+        # Make empty lists of values and units
+        values = []
+        units = []
+
+        # Loop over all quantities given and split them up into value and unit
+        for q in qnts:
+            if isinstance(q, apu.quantity.Quantity):
+                values.append(q.value)
+                units.append(q.unit)
+            else:
+                values.append(q)
+                units.append(0)
+
+        # Check if all units are the same
+        assert units == [units[0]]*len(units)
+        unit = units[0]
 
         # Value handling
-        string = f2tex(value, sdigits, power, nobase1)
+        string = f2tex(*values, sdigits=sdigits, power=power, nobase1=nobase1)
 
         # Unit handling
         if unit:
-            unit_string = apu2tex(unit, unitfrac)
+            unit_string = apu2tex(unit, unitfrac=unitfrac)
             string = ''.join([string, r'\,', unit_string])
 
+        # Return string
         return(string)
+
+    # Else, handle given arguments as normal values
     else:  # pragma: no cover
-        f2tex(quantity, sdigits, power, nobase1)
+        return(f2tex(*qnts, sdigits=sdigits, power=power, nobase1=nobase1))
