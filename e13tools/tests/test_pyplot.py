@@ -109,8 +109,12 @@ def test_f2tex():
     assert f2tex(20.2935826592, sdigits=6) == "20.2936"
     assert f2tex(20.2935826592, power=1) == r"2.029\cdot 10^{1}"
     assert f2tex(1e6, nobase1=True) == "10^{6}"
-    assert f2tex(1e6, nobase1=False) == r"1\cdot 10^{6}"
-    assert f2tex(0) == "0"
+    assert f2tex(1e6, nobase1=False) == r"1.000\cdot 10^{6}"
+    assert f2tex(0) == "0."
+    assert f2tex(20.2935826592, 0.1) == r"20.29\pm 0.10"
+    assert f2tex(20.2935826592, 0.1, 0.2) == "20.29^{+0.10}_{-0.20}"
+    assert f2tex(20.2935826592, 0.1, 0.0) == "20.29^{+0.10}_{-0.00}"
+    assert f2tex(1e6, 12, 10) == r"1.000^{+0.000}_{-0.000}\cdot 10^{6}"
 
 
 # Pytest for q2tex()-function
@@ -125,7 +129,7 @@ def test_q2tex():
     assert q2tex(1e6*apu.solMass/apu.yr, nobase1=True) ==\
         r"10^{6}\,\mathrm{M_{\odot}\,yr^{-1}}"
     assert q2tex(1e6*apu.solMass/apu.yr, nobase1=False) ==\
-        r"1\cdot 10^{6}\,\mathrm{M_{\odot}\,yr^{-1}}"
+        r"1.000\cdot 10^{6}\,\mathrm{M_{\odot}\,yr^{-1}}"
     assert q2tex(20.2935826592*apu.solMass/apu.yr, unitfrac=False) ==\
         r"20.29\,\mathrm{M_{\odot}\,yr^{-1}}"
     assert q2tex(20.2935826592*apu.solMass/apu.yr, unitfrac=True) ==\

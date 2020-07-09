@@ -291,8 +291,8 @@ def intersect(array1, array2, axis=0, assume_unique=False):
     Returns
     -------
     intersect_array : :obj:`~numpy.ndarray` object
-        Array containing the unique elements found both in `array1`and `array2`
-        over given `axis`.
+        Array containing the unique elements found both in `array1` and
+        `array2` over given `axis`.
 
     Example
     -------
