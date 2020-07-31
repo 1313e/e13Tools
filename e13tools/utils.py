@@ -14,6 +14,7 @@ from ast import literal_eval
 from inspect import currentframe, getouterframes, isclass, isfunction, ismethod
 import logging
 import logging.config
+import re
 import warnings
 
 # e13Tools imports
@@ -22,8 +23,8 @@ from e13tools.core import InputError
 # All declaration
 __all__ = ['add_to_all', 'aux_char_set', 'check_instance', 'delist',
            'docstring_append', 'docstring_copy', 'docstring_substitute',
-           'get_outer_frame', 'raise_error', 'raise_warning', 'split_seq',
-           'unpack_str_seq']
+           'get_main_desc', 'get_outer_frame', 'raise_error', 'raise_warning',
+           'split_seq', 'unpack_str_seq']
 
 
 # %% DECORATOR DEFINITIONS
@@ -242,6 +243,51 @@ def delist(list_obj):
 
     # Return the copy
     return(delisted_copy)
+
+
+# This function retrieves the main description of an object
+def get_main_desc(source):
+    """
+    Retrieves the main description of the provided object `source` and returns
+    it.
+
+    The main description is defined as the first paragraph of its docstring.
+
+    Parameters
+    ----------
+    source : object
+        The object whose main description must be retrieved.
+
+    Returns
+    -------
+    main_desc : str or None
+        The main description string of the provided `source` or *None* if
+        `source` has not docstring.
+
+    """
+
+    # Retrieve the docstring of provided source
+    doc = source.__doc__
+
+    # If doc is None, return None
+    if doc is None:
+        return(None)
+
+    # Obtain the index of the last character of the first paragraph
+    index = doc.find('\n\n')
+
+    # If index is -1, there is only 1 paragraph
+    if(index == -1):
+        index = len(doc)
+
+    # Gather everything up to this index
+    doc = doc[:index]
+
+    # Replace all occurances of 2 or more whitespace characters by a space
+    doc = re.sub(r"\s{2,}", ' ', doc)
+
+    # Return doc
+    return(doc.strip())
 
 
 # This function retrieves a specified outer frame of a function

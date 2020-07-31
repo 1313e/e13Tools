@@ -11,10 +11,10 @@ import pytest
 
 # e13Tools imports
 from e13tools.core import InputError
-from e13tools.utils import (add_to_all, docstring_append, docstring_copy,
-                            docstring_substitute, check_instance, delist,
-                            get_outer_frame, raise_error, raise_warning,
-                            split_seq, unpack_str_seq)
+from e13tools.utils import (
+    add_to_all, docstring_append, docstring_copy, docstring_substitute,
+    check_instance, delist, get_main_desc, get_outer_frame, raise_error,
+    raise_warning, split_seq, unpack_str_seq)
 
 
 # %% CUSTOM CLASSES
@@ -338,6 +338,46 @@ def test_delist():
 
     # Check if provided list is delisted correctly
     assert delist([[], (), [np.array(1)], [7], 8]) == [[np.array(1)], [7], 8]
+
+
+# Pytest for the get_main_desc function
+class Test_get_main_desc(object):
+    # Test if a function with a single paragraph is handled correctly
+    def test_single_paragraph(self):
+        # Create dummy function
+        def func():
+            "Test"
+            pass
+
+        # Check if the proper string is returned for func
+        assert (get_main_desc(func) == 'Test')
+
+    # Test if a function with multiple paragraphs is handled correctly
+    def test_multiple_paragraphs(self):
+        # Create dummy function
+        def func():
+            """
+            Test.
+
+            More test.
+
+            1313e was right here, I swear!
+
+            """
+
+            pass
+
+        # Check if the proper string is returned for func
+        assert (get_main_desc(func) == 'Test.')
+
+    # Test if a function with no docstring is handled properly
+    def test_no_docstring(self):
+        # Create dummy function
+        def func():
+            pass
+
+        # Check if None is returned for func
+        assert get_main_desc(func) is None
 
 
 # Pytest for the get_outer_frame function
