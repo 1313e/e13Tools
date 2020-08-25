@@ -294,8 +294,10 @@ def f2tex(value, *errs, sdigits=4, power=3, nobase1=True):
     sdigits : int. Default: 4
         Number of significant digits any value is returned with.
     power : int. Default: 3
-        Minimum log10(`value`) required before all values are written in
+        Minimum abs(log10(`value`)) required before all values are written in
         scientific form.
+        This value is ignored if `sdigits` forces scientific form to (not) be
+        used.
     nobase1 : bool. Default: True
         Whether or not to include `base` in scientific form if `base=1`.
         This is always *False* if `errs` contains at least one value.
@@ -303,25 +305,21 @@ def f2tex(value, *errs, sdigits=4, power=3, nobase1=True):
     Returns
     -------
     out : string
-        String containing `value` written in (La)TeX string.
+        String containing `value` and `errs` written in (La)TeX string.
 
     Examples
     --------
     >>> f2tex(20.2935826592)
     '20.29'
 
-
     >>> f2tex(20.2935826592, sdigits=6)
     '20.2936'
-
 
     >>> f2tex(20.2935826592, power=1)
     '2.029\\cdot 10^{1}'
 
-
     >>> f2tex(1e6, nobase1=True)
     '10^{6}'
-
 
     >>> f2tex(1e6, nobase1=False)
     '1.000\\cdot 10^{6}'
@@ -341,11 +339,7 @@ def f2tex(value, *errs, sdigits=4, power=3, nobase1=True):
     """
 
     # Collect value and errs together
-    vals = [value, *errs]
-
-    # If all values are 0, never use log
-    if not sum(vals):
-        power = None
+    vals = [value, *map(abs, errs)]
 
     # If vals contains more than 1 value, set nobase1 to False
     if(len(vals) > 1):
@@ -360,6 +354,13 @@ def f2tex(value, *errs, sdigits=4, power=3, nobase1=True):
         sdigits = 0
         n_max = 0
 
+    # If there are no significant digits requested, never use scientific form
+    if not sdigits:
+        power = None
+    # Else, if n_max >= sdigits, always use scientific form
+    elif(n_max >= sdigits):
+        power = 0
+
     # Create empty list of string representations
     strings = []
 
@@ -371,8 +372,8 @@ def f2tex(value, *errs, sdigits=4, power=3, nobase1=True):
         # If the sd is zero or -infinity
         if(sd <= 0):
             # Then v must always be zero
-            v = 0
-            sd = sdigits-n_max
+            v *= 0.
+            sd = max(0, sdigits-n_max)
 
         # If no power is required, create string without scientific form
         if power is None or (abs(n_max) < power):
@@ -428,11 +429,14 @@ def q2tex(quantity, *errs, sdigits=4, power=3, nobase1=True, unitfrac=False):
         The upper and lower :math:`1\\sigma`-errors of the given `quantity`.
         If only a single value is given, `quantity` is assumed to have a
         centered error interval of `errs`.
+        The unit of `errs` must be convertible to the unit of `quantity`.
     sdigits : int. Default: 4
-        Maximum amount of significant digits `value` is returned with.
+        Maximum amount of significant digits any quantity is returned with.
     power : int. Default: 3
-        Minimum log10(`value`) required before `value` is written in
-        scientific form.
+        Minimum abs(log10(`value`)) required before all quantities are written
+        in scientific form.
+        This value is ignored if `sdigits` forces scientific form to (not) be
+        used.
     nobase1 : bool. Default: True
         Whether or not to include `base` in scientific form if `base=1`.
         This is always *False* if `errs` contains a value.
@@ -442,7 +446,7 @@ def q2tex(quantity, *errs, sdigits=4, power=3, nobase1=True, unitfrac=False):
     Returns
     -------
     out : string
-        String containing `quantity` written in (La)TeX string.
+        String containing `quantity` and `errs` written in (La)TeX string.
 
     Examples
     --------
@@ -450,30 +454,23 @@ def q2tex(quantity, *errs, sdigits=4, power=3, nobase1=True, unitfrac=False):
     >>> q2tex(20.2935826592)
     '20.29'
 
-
     >>> q2tex(20.2935826592*apu.solMass/apu.yr)
     '20.29\\,\\mathrm{M_{\\odot}\\,yr^{-1}}'
-
 
     >>> q2tex(20.2935826592*apu.solMass/apu.yr, sdigits=6)
     '20.2936\\,\\mathrm{M_{\\odot}\\,yr^{-1}}'
 
-
     >>> q2tex(20.2935826592*apu.solMass/apu.yr, power=1)
     '2.029\\cdot 10^{1}\\,\\mathrm{M_{\\odot}\\,yr^{-1}}'
-
 
     >>> q2tex(1e6*apu.solMass/apu.yr, nobase1=True)
     '10^{6}\\,\\mathrm{M_{\\odot}\\,yr^{-1}}'
 
-
     >>> q2tex(1e6*apu.solMass/apu.yr, nobase1=False)
     '1.000\\cdot 10^{6}\\,\\mathrm{M_{\\odot}\\,yr^{-1}}'
 
-
     >>> q2tex(20.2935826592*apu.solMass/apu.yr, unitfrac=False)
     '20.29\\,\\mathrm{M_{\\odot}\\,yr^{-1}}'
-
 
     >>> q2tex(20.2935826592*apu.solMass, 1*apu.solMass, unitfrac=True)
     '20.29\\pm 1.00\\,\\mathrm{M_{\\odot}}'
@@ -496,17 +493,29 @@ def q2tex(quantity, *errs, sdigits=4, power=3, nobase1=True, unitfrac=False):
                 units.append(q.unit)
             else:
                 values.append(q)
-                units.append(0)
+                units.append(apu.dimensionless_unscaled)
 
-        # Check if all units are the same
-        assert units == [units[0]]*len(units)
+        # Obtain the unit of the main value
         unit = units[0]
+
+        # Loop over the errors
+        for i, u in enumerate(units[1:], 1):
+            # Try to convert the error quantity to have the same unit as main
+            try:
+                values[i] *= u.to(unit)
+            # If this fails, raise error
+            except apu.UnitConversionError:
+                raise ValueError("Input argument 'errs[{}]' (unit: {!r}; {}) "
+                                 "cannot be converted to the same unit as "
+                                 "'quantity' (unit: {!r}; {})!".format(
+                                     i-1, str(u), u.physical_type,
+                                     str(unit), unit.physical_type))
 
         # Value handling
         string = f2tex(*values, sdigits=sdigits, power=power, nobase1=nobase1)
 
         # Unit handling
-        if unit:
+        if(unit.physical_type != 'dimensionless'):
             unit_string = apu2tex(unit, unitfrac=unitfrac)
             string = ''.join([string, r'\,', unit_string])
 
