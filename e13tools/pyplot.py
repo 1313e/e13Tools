@@ -454,6 +454,9 @@ def q2tex(quantity, *errs, sdigits=4, power=3, nobase1=True, unitfrac=False):
     >>> q2tex(20.2935826592)
     '20.29'
 
+    >>> q2tex(20.2935826592*apu.kg, 1500*apu.g)
+    '20.29\\pm 1.50\\,\\mathrm{kg}'
+
     >>> q2tex(20.2935826592*apu.solMass/apu.yr)
     '20.29\\,\\mathrm{M_{\\odot}\\,yr^{-1}}'
 

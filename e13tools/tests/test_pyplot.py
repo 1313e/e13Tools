@@ -134,3 +134,7 @@ def test_q2tex():
         r"20.29\,\mathrm{M_{\odot}\,yr^{-1}}"
     assert q2tex(20.2935826592*apu.solMass/apu.yr, unitfrac=True) ==\
         r"20.29\,\mathrm{\frac{M_{\odot}}{yr}}"
+    assert q2tex(20.2935826592*apu.kg, 1500*apu.g) ==\
+        r"20.29\pm 1.50\,\mathrm{kg}"
+    with pytest.raises(ValueError):
+        q2tex(1, 1*apu.kg)
