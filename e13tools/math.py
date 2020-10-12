@@ -53,7 +53,7 @@ def gcd(*args):
 
     """
 
-    return(reduce(lambda a, b: gcd_single(a, b), args))
+    return(reduce(gcd_single, args))
 
 
 # This function calculates the greatest common divisor of two integers
