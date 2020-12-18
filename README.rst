@@ -15,7 +15,7 @@ Dependencies
 ------------
 e13Tools requires:
 
-- ``python >= 3.5``,
+- ``python >= 3.6``,
 - ``matplotlib >= 2.2.4``,
 - ``numpy >= 1.8``.
 
@@ -26,7 +26,7 @@ The following packages are used by a few functions and therefore optional:
 .. |PyPI| image:: https://img.shields.io/pypi/v/e13Tools.svg?logo=pypi&logoColor=white&label=PyPI
    :target: https://pypi.python.org/pypi/e13Tools
    :alt: PyPI - Latest Release
-.. |Python| image:: https://img.shields.io/badge/Python-3.5%2B-blue?logo=python&logoColor=white
+.. |Python| image:: https://img.shields.io/badge/Python-3.6%2B-blue?logo=python&logoColor=white
    :target: https://pypi.python.org/pypi/e13Tools
    :alt: PyPI - Python Versions
 .. |Travis| image:: https://img.shields.io/travis/com/1313e/e13Tools/master.svg?logo=travis%20ci&logoColor=white&label=Travis%20CI
