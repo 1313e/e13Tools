@@ -1,4 +1,4 @@
-|PyPI| |Python| |Travis| |AppVeyor| |ReadTheDocs| |Coverage|
+|PyPI| |Python| |GitHub| |ReadTheDocs| |Coverage|
 
 Description
 ===========
@@ -29,12 +29,9 @@ The following packages are used by a few functions and therefore optional:
 .. |Python| image:: https://img.shields.io/badge/Python-3.6%2B-blue?logo=python&logoColor=white
    :target: https://pypi.python.org/pypi/e13Tools
    :alt: PyPI - Python Versions
-.. |Travis| image:: https://img.shields.io/travis/com/1313e/e13Tools/master.svg?logo=travis%20ci&logoColor=white&label=Travis%20CI
-   :target: https://travis-ci.com/1313e/e13Tools
-   :alt: Travis CI - Build Status
-.. |AppVeyor| image:: https://img.shields.io/appveyor/ci/1313e/e13Tools/master.svg?logo=appveyor&logoColor=white&label=AppVeyor
-   :target: https://ci.appveyor.com/project/1313e/e13Tools
-   :alt: AppVeyor - Build Status
+.. |GitHub| image:: https://img.shields.io/github/workflow/status/1313e/e13Tools/Test?logo=github&logoColor=white&label=Actions
+    :target: https://github.com/1313e/e13Tools/actions
+    :alt: GitHub Actions - Build Status
 .. |ReadTheDocs| image:: https://img.shields.io/readthedocs/e13tools/latest.svg?logo=read%20the%20docs&logoColor=white&label=Docs
     :target: https://e13tools.readthedocs.io
     :alt: ReadTheDocs - Build Status
