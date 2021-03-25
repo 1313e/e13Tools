@@ -17,6 +17,7 @@ except ImportError:  # pragma: no cover
     import_astropy = 0
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+from matplotlib import transforms
 import numpy as np
 
 # e13Tools imports
@@ -143,7 +144,7 @@ def center_spines(centerx=0, centery=0, set_xticker=False, set_yticker=False,
 
 
 # This function draws a line with text in the provided figure
-def draw_textline(text, x=None, y=None, pos='start top', ax=None,
+def draw_textline(text, *, x=None, y=None, pos='start top', ax=None,
                   line_kwargs={}, text_kwargs={}):
     """
     Draws a line on the axis `ax` in a :obj:`~matplotlib.figure.Figure`
@@ -188,6 +189,9 @@ def draw_textline(text, x=None, y=None, pos='start top', ax=None,
     if ax is None:
         ax = plt.gca()
 
+    # Convert pos to lowercase
+    pos = pos.lower()
+
     # Set default line_kwargs and text_kwargs
     default_line_kwargs = {'linestyle': '-',
                            'color': 'k'}
@@ -204,61 +208,35 @@ def draw_textline(text, x=None, y=None, pos='start top', ax=None,
     text_keys = list(text_kwargs.keys())
     for key in text_keys:
         if key in ('va', 'ha', 'verticalalignment', 'horizontalalignment',
-                   'rotation'):
+                   'rotation', 'transform', 'x', 'y', 's'):
             text_kwargs.pop(key)
 
     # Set line specific variables
     if x is None and y is not None:
-        ax_set_lim = ax.set_ylim
-        other_ax_lim = ax.set_xlim
-        axis = y
-        draw_axes = (other_ax_lim(), [y, y])
-
+        ax.axhline(y, **line_kwargs)
     elif x is not None and y is None:
-        ax_set_lim = ax.set_xlim
-        other_ax_lim = ax.set_ylim
-        axis = x
-        draw_axes = ([x, x], other_ax_lim())
-
+        ax.axvline(x, **line_kwargs)
     else:
         raise InputError("Either of input arguments 'x' and 'y' needs to be "
                          "*None*!")
 
-    # Obtain length of selected axis
-    ax_size = abs(ax_set_lim()[1]-ax_set_lim()[0])
-
-    # Adjust axes if line is located on the bottom/left
-    if(ax_set_lim()[0] > axis):
-        ax_set_lim(axis, ax_set_lim()[1])
-    if(ax_set_lim()[0] <= axis and ax_set_lim()[0] >= axis-0.1*ax_size):
-        ax_set_lim(axis-0.1*ax_size, ax_set_lim()[1])
-
-    # Adjust axes if line is located on the top/right
-    if(ax_set_lim()[1] < axis):
-        ax_set_lim(ax_set_lim()[0], axis)
-    if(ax_set_lim()[1] >= axis and ax_set_lim()[1] <= axis+0.1*ax_size):
-        ax_set_lim(ax_set_lim()[0], axis+0.1*ax_size)
-
-    # Draw line
-    ax.plot(*draw_axes, **line_kwargs)
-
     # Gather case specific text properties
-    if ('start') in pos.lower() and ('top') in pos.lower():
+    if ('start') in pos and ('top') in pos:
         ha = 'left' if x is None else 'right'
         va = 'bottom'
-        other_axis = other_ax_lim()[0]
-    elif ('start') in pos.lower() and ('bottom') in pos.lower():
+        other_axis = 0
+    elif ('start') in pos and ('bottom') in pos:
         ha = 'left'
         va = 'top' if x is None else 'bottom'
-        other_axis = other_ax_lim()[0]
-    elif ('end') in pos.lower() and ('top') in pos.lower():
+        other_axis = 0
+    elif ('end') in pos and ('top') in pos:
         ha = 'right'
         va = 'bottom' if x is None else 'top'
-        other_axis = other_ax_lim()[1]
-    elif ('end') in pos.lower() and ('bottom') in pos.lower():
+        other_axis = 1
+    elif ('end') in pos and ('bottom') in pos:
         ha = 'right' if x is None else 'left'
         va = 'top'
-        other_axis = other_ax_lim()[1]
+        other_axis = 1
     else:
         raise ValueError("Input argument 'pos' is invalid!")
 
@@ -266,12 +244,17 @@ def draw_textline(text, x=None, y=None, pos='start top', ax=None,
     if x is None:
         x = other_axis
         rotation = 0
+        transform = transforms.blended_transform_factory(
+            ax.transAxes, ax.transData)
     else:
         y = other_axis
         rotation = 90
+        transform = transforms.blended_transform_factory(
+            ax.transData, ax.transAxes)
 
     # Draw text
-    ax.text(x, y, text, rotation=rotation, ha=ha, va=va, **text_kwargs)
+    ax.text(x, y, text, rotation=rotation, ha=ha, va=va,
+            transform=transform, **text_kwargs)
 
 
 # This function converts a float into a TeX string
