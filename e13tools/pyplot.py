@@ -316,9 +316,6 @@ def f2tex(value, *errs, sdigits=4, power=3, nobase1=True):
     >>> f2tex(1e6, 12, 10)
     '1.000^{+0.000}_{-0.000}\\cdot 10^{6}'
 
-    >>> f2tex(1e6, 12, 10, sdigits=6)
-    '1.000^{+0.000}_{-0.000}\\cdot 10^{6}'
-
     """
 
     # Collect value and errs together

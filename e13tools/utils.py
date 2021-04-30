@@ -262,7 +262,7 @@ def get_main_desc(source):
     -------
     main_desc : str or None
         The main description string of the provided `source` or *None* if
-        `source` has not docstring.
+        `source` has no docstring.
 
     """
 
