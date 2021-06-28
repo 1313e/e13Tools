@@ -12,7 +12,7 @@ import pytest
 # e13Tools imports
 from e13tools.core import InputError
 from e13tools.pyplot import (
-    apu2tex, center_spines, draw_textline, f2tex, q2tex)
+    apu2tex, draw_textline, f2tex, q2tex)
 
 # Save the path to this directory
 dirpath = path.dirname(__file__)
@@ -26,22 +26,6 @@ def test_apu2tex():
         r"\mathrm{M_{\odot}\,yr^{-1}}"
     assert apu2tex(apu.solMass/apu.yr, unitfrac=True) ==\
         r"\mathrm{\frac{M_{\odot}}{yr}}"
-
-
-# Pytest class for center_spines()-function
-class Test_center_spines(object):
-    # Test if default values work
-    def test_default(self):
-        fig = plt.figure()
-        center_spines()
-        plt.close(fig)
-
-    # Test if setting the x and y tickers work
-    def test_set_tickers(self):
-        fig = plt.figure()
-        plt.plot([-1, 1], [-1, 1])
-        center_spines(set_xticker=1, set_yticker=1)
-        plt.close(fig)
 
 
 # Pytest class for draw_textline()-function

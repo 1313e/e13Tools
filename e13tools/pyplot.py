@@ -15,7 +15,6 @@ try:
     import_astropy = 1
 except ImportError:  # pragma: no cover
     import_astropy = 0
-import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib import transforms
 import numpy as np
@@ -24,7 +23,7 @@ import numpy as np
 from e13tools.core import InputError
 
 # All declaration
-__all__ = ['apu2tex', 'center_spines', 'draw_textline', 'f2tex', 'q2tex']
+__all__ = ['apu2tex', 'draw_textline', 'f2tex', 'q2tex']
 
 
 # %% FUNCTIONS
@@ -75,72 +74,6 @@ def apu2tex(unit, unitfrac=False):
         return(str(string.replace("$", "")))
     else:  # pragma: no cover
         raise ImportError("This function requires AstroPy!")
-
-
-# This function centers the axes of the provided axes
-def center_spines(centerx=0, centery=0, set_xticker=False, set_yticker=False,
-                  ax=None):
-    """
-    Centers the axis spines at <`centerx`, `centery`> on the axis `ax` in a
-    :obj:`~matplotlib.figure.Figure` instance. Centers the axis spines at the
-    origin by default.
-
-    Optional
-    --------
-    centerx : int or float. Default: 0
-        Centers x-axis at value `centerx`.
-    centery : int or float. Default: 0
-        Centers y-axis at value `centery`.
-    set_xticker : int, float or False. Default: False
-        If int or float, sets the x-axis ticker to `set_xticker`.
-        If *False*, let :obj:`~matplotlib.figure.Figure` instance decide.
-    set_yticker : int, float or False. Default: False
-        If int or float, sets the y-axis ticker to `set_yticker`.
-        If *False*, let :obj:`~matplotlib.figure.Figure` instance decide.
-    ax : :obj:`~matplotlib.axes.Axes` object or None. Default: None
-        If :obj:`~matplotlib.axes.Axes` object, centers the axis spines
-        of specified :obj:`~matplotlib.figure.Figure` instance.
-        If *None*, centers the axis spines of current
-        :obj:`~matplotlib.figure.Figure` instance.
-
-    """
-
-    # If no AxesSubplot object is provided, make one
-    if ax is None:
-        ax = plt.gca()
-
-    # Set the axis's spines to be centered at the given point
-    # (Setting all 4 spines so that the tick marks go in both directions)
-    ax.spines['left'].set_position(('data', centerx))
-    ax.spines['bottom'].set_position(('data', centery))
-    ax.spines['right'].set_position(('data', centerx))
-    ax.spines['top'].set_position(('data', centery))
-
-    # Hide the line (but not ticks) for "extra" spines
-    for side in ['right', 'top']:
-        ax.spines[side].set_color('none')
-
-    # On both the x and y axes...
-    for axis, center in zip([ax.xaxis, ax.yaxis], [centerx, centery]):
-        # TODO: STILL HAVE TO FIX THAT THE TICKLABELS ARE ALWAYS HIDDEN
-        # Hide the ticklabels at <centerx, centery>
-        formatter = mpl.ticker.ScalarFormatter()
-        formatter.center = center
-        axis.set_major_formatter(formatter)
-
-    # Add origin offset ticklabel if <centerx=0, centery=0> using annotation
-    if(centerx == 0 and centery == 0):
-        xlabel, ylabel = map(formatter.format_data, [centerx, centery])
-        ax.annotate("0", (centerx, centery), xytext=(-4, -4),
-                    textcoords='offset points', ha='right', va='top')
-
-    # Set x-axis ticker
-    if set_xticker:
-        ax.xaxis.set_major_locator(mpl.ticker.MultipleLocator(set_xticker))
-
-    # Set y-axis ticker
-    if set_yticker:
-        ax.yaxis.set_major_locator(mpl.ticker.MultipleLocator(set_yticker))
 
 
 # This function draws a line with text in the provided figure
