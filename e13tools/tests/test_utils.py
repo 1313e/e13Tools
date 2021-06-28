@@ -34,13 +34,13 @@ def _test2(instance):
 # Create function to be added to module's __all__
 @add_to_all
 def add_to_all_test():
-    pass
+    pass                            # pragma: no cover
 
 
 # Define custom class for check_instance test
 class CustomClass(object):
     def __init__(self):
-        self._prop = True
+        self._prop = True           # pragma: no cover
 
     @property
     def prop(self):
@@ -72,7 +72,7 @@ class TestDecorators(object):
     # Create method with no docstring that is appended
     @docstring_append("appended")
     def append_method1(self):
-        pass
+        pass                        # pragma: no cover
 
     # Create method with a docstring that is appended
     @docstring_append("appended")
@@ -120,7 +120,7 @@ class TestDecorators(object):
 
     # Create method with no docstring at all
     def empty_method(self):
-        pass
+        pass                        # pragma: no cover
 
     # Create new-style class with no docstring at all
     class empty_class(object):
@@ -129,12 +129,12 @@ class TestDecorators(object):
     # Create method that copies an empty docstring
     @docstring_copy(empty_method)
     def copy_method1(self):
-        pass
+        pass                        # pragma: no cover
 
     # Create method that copies a docstring
     @docstring_copy(append_method2)
     def copy_method2(self):
-        pass
+        pass                        # pragma: no cover
 
     # Create old-style class that copies an empty docstring
     @docstring_copy(empty_class)
@@ -176,18 +176,18 @@ class TestDecorators(object):
     with pytest.raises(InputError):
         @docstring_substitute("positional", x="keyword")
         def substitute_method1(self):
-            pass
+            pass                    # pragma: no cover
 
     # Check if providing both args and kwargs raises an error, old-style class
     with pytest.raises(InputError):
         @docstring_substitute("positional", x="keyword")
         class substitute_old_class1:
-            pass
+            pass                    # pragma: no cover
 
     # Check if providing both args and kwargs raises an error, new-style class
     with pytest.raises(InputError):
         @docstring_substitute("positional", x="keyword")
-        class substitute_new_class1(object):
+        class substitute_new_class1(object):    # pragma: no cover
             pass
 
     # Create method using args substitutes with %
@@ -254,19 +254,19 @@ class TestDecorators(object):
     with pytest.raises(InputError):
         @docstring_substitute("positional")
         def substitute_method6(self):
-            pass
+            pass                    # pragma: no cover
 
     # Check providing args to an old_style class with no docstring
     with pytest.raises(InputError):
         @docstring_substitute("positional")
         class substitute_old_class6:
-            pass
+            pass                    # pragma: no cover
 
     # Check providing args to a new_style class with no docstring
     with pytest.raises(InputError):
         @docstring_substitute("positional")
         class substitute_new_class6(object):
-            pass
+            pass                    # pragma: no cover
 
     # Check if combining % and .format can be done properly, method
     @docstring_substitute(x="keyword")
@@ -347,7 +347,6 @@ class Test_get_main_desc(object):
         # Create dummy function
         def func():
             "Test"
-            pass
 
         # Check if the proper string is returned for func
         assert (get_main_desc(func) == 'Test')
@@ -365,8 +364,6 @@ class Test_get_main_desc(object):
 
             """
 
-            pass
-
         # Check if the proper string is returned for func
         assert (get_main_desc(func) == 'Test.')
 
@@ -374,7 +371,7 @@ class Test_get_main_desc(object):
     def test_no_docstring(self):
         # Create dummy function
         def func():
-            pass
+            pass                    # pragma: no cover
 
         # Check if None is returned for func
         assert get_main_desc(func) is None
